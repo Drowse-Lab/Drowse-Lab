@@ -47,13 +47,14 @@ h1 {
     margin: 10px;
     padding: 20px;
     text-align: center;
-    width: 200px;
+    width: 30%; /* pxから%に変更 */
+    border: 2px solid #ccc; /* 枠を追加 */
 }
 
 .contributor .avatar {
     border-radius: 50%;
-    width: 100px;
-    height: 100px;
+    width: 50%; /* pxから%に変更 */
+    height: auto;
     object-fit: cover;
 }
 

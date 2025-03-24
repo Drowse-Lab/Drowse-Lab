@@ -33,38 +33,10 @@ h1 {
     margin-top: 20px;
 }
 
-#contributors {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+h2 {
+    margin-top: 20px;
+}
+
+p, ul {
     margin: 20px;
-}
-
-.contributor {
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin: 10px;
-    padding: 20px;
-    text-align: center;
-    width: 200px;
-}
-
-.contributor img {
-    border-radius: 50%;
-}
-
-.contributor h2 {
-    font-size: 1.2em;
-    margin: 10px 0;
-}
-
-.contributor p {
-    font-size: 0.9em;
-    color: #555;
-}
-
-.contributor a {
-    text-decoration: none;
-    color: #0366d6;
 }

@@ -9,9 +9,9 @@ document.getElementById('relaxModeBtn').addEventListener('click', function() {
 function switchMode(mode) {
     const bgm = document.getElementById('bgm');
     if (mode === 'focus') {
-        bgm.src = 'path/to/focus-bgm.mp3'; // 集中できるBGMのパス
+        bgm.src = 'path/to/focus-bgm.mp3'; // 集中できるBGMの正しいパス
     } else if (mode === 'relax') {
-        bgm.src = 'path/to/relax-bgm.mp3'; // リラックスできるBGMのパス
+        bgm.src = 'path/to/relax-bgm.mp3'; // リラックスできるBGMの正しいパス
     }
     bgm.play();
 }

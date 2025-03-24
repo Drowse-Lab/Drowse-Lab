@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     .then(profile => {
                         const profileHtml = `
                             <div class="contributor">
-                                <img src="${profile.avatar_url}" alt="${profile.login}" width="100">
+                                <img src="${profile.avatar_url}" alt="${profile.login}" class="avatar">
                                 <h2>${profile.name || profile.login}</h2>
                                 <p>${profile.bio || '紹介文はありません'}</p>
                                 <a href="${profile.html_url}" target="_blank">GitHubプロフィール</a>

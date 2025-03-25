@@ -46,36 +46,32 @@ h1 {
     margin: 20px;
 }
 
-
-.contributor a {
-    text-decoration: none;
-    color: #0366d6;
-}
 .contributor {
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin: 10px;
-    padding: 20px;
+    margin: 5px;
+    padding: 10px;
     text-align: center;
-    width: 30%;
-    border: 2px solid #ccc; /* 枠を追加 */
+    width: 18%;
+    border: 2px solid #ccc;
+    box-sizing: border-box;
 }
 
 .contributor .avatar {
     border-radius: 50%;
-    width: 50%; /* 画像のサイズを調整 */
-    height: auto; /* 高さを自動調整 */
+    width: 80px;
+    height: 80px;
     object-fit: cover;
 }
 
 .contributor h2 {
-    font-size: 1.2em;
-    margin: 10px 0;
+    font-size: 1em;
+    margin: 5px 0;
 }
 
 .contributor p {
-    font-size: 0.9em;
+    font-size: 0.8em;
     color: #555;
 }
 

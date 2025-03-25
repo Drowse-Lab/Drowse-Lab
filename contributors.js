@@ -5,6 +5,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         const response = await fetch('https://api.github.com/repos/Drowse-Lab/Drowse-Lab/contributors');
         const contributors = await response.json();
 
+        if (contributors.length === 0) {
+            contributorsDiv.textContent = 'No contributors found';
+            return;
+        }
+
         contributors.forEach(contributor => {
             const contributorElement = document.createElement('div');
             contributorElement.classList.add('contributor');
@@ -29,5 +34,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     } catch (error) {
         console.error('Error fetching contributors:', error);
+        contributorsDiv.textContent = 'Error loading contributors';
     }
 });

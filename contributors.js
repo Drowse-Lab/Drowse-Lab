@@ -1,27 +1,33 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const repoOwner = 'Drowse-Lab';
-    const repoName = 'Drowse-Lab';
-    const contributorsUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contributors`;
+document.addEventListener('DOMContentLoaded', async () => {
+    const contributorsDiv = document.getElementById('contributors');
 
-    fetch(contributorsUrl)
-        .then(response => response.json())
-        .then(contributors => {
-            const contributorsContainer = document.getElementById('contributors');
-            contributors.forEach(contributor => {
-                fetch(contributor.url)
-                    .then(response => response.json())
-                    .then(profile => {
-                        const profileHtml = `
-                            <div class="contributor">
-                                <img src="${profile.avatar_url}" alt="${profile.login}" class="avatar">
-                                <h2>${profile.name || profile.login}</h2>
-                                <p>${profile.bio || '紹介文はありません'}</p>
-                                <a href="${profile.html_url}" target="_blank">GitHubプロフィール</a>
-                            </div>
-                        `;
-                        contributorsContainer.innerHTML += profileHtml;
-                    });
-            });
-        })
-        .catch(error => console.error('Error fetching contributors:', error));
+    try {
+        const response = await fetch('https://api.github.com/repos/Drowse-Lab/Drowse-Lab/contributors');
+        const contributors = await response.json();
+
+        contributors.forEach(contributor => {
+            const contributorElement = document.createElement('div');
+            contributorElement.classList.add('contributor');
+
+            const avatar = document.createElement('img');
+            avatar.src = contributor.avatar_url;
+            avatar.alt = `${contributor.login}'s avatar`;
+            avatar.classList.add('avatar');
+
+            const name = document.createElement('h2');
+            name.textContent = contributor.login;
+
+            const profileLink = document.createElement('a');
+            profileLink.href = contributor.html_url;
+            profileLink.textContent = 'GitHub Profile';
+
+            contributorElement.appendChild(avatar);
+            contributorElement.appendChild(name);
+            contributorElement.appendChild(profileLink);
+
+            contributorsDiv.appendChild(contributorElement);
+        });
+    } catch (error) {
+        console.error('Error fetching contributors:', error);
+    }
 });

@@ -17,12 +17,40 @@
     </nav>
 
     <h1>ブログ</h1>
+    <a href="/login">GitHubでログイン</a>
+    <div id="commits"></div>
+
     <form id="blogForm">
         <textarea id="blogContent" placeholder="今日の更新内容..."></textarea>
         <button type="submit">投稿</button>
     </form>
     <div id="blogPosts"></div>
 
-    <script src="blog.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+
+        if (token) {
+            fetch(`/commits?token=${token}`)
+                .then(response => response.json())
+                .then(commits => {
+                    const commitsDiv = document.getElementById('commits');
+                    commits.forEach(commit => {
+                        const commitElement = document.createElement('div');
+                        commitElement.textContent = commit.commit.message;
+                        commitsDiv.appendChild(commitElement);
+                    });
+                });
+        }
+
+        document.getElementById('blogForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const content = document.getElementById('blogContent').value;
+            const blogPosts = document.getElementById('blogPosts');
+            const post = document.createElement('div');
+            post.textContent = content;
+            blogPosts.appendChild(post);
+        });
+    </script>
 </body>
 </html>

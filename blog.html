@@ -17,40 +17,27 @@
     </nav>
 
     <h1>ブログ</h1>
-    <a href="/login">GitHubでログイン</a>
+    <div id="login-container">
+        <h2>ログイン</h2>
+        <input type="email" id="email" placeholder="メールアドレス">
+        <input type="password" id="password" placeholder="パスワード">
+        <button id="login-button">ログイン</button>
+        <button id="signup-button">アカウント作成</button>
+    </div>
+
+    <div id="user-info" style="display:none;">
+        <p id="user-email"></p>
+        <button id="logout-button">ログアウト</button>
+    </div>
+
     <div id="commits"></div>
 
-    <form id="blogForm">
+    <form id="blogForm" style="display:none;">
         <textarea id="blogContent" placeholder="今日の更新内容..."></textarea>
         <button type="submit">投稿</button>
     </form>
     <div id="blogPosts"></div>
 
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const token = urlParams.get('token');
-
-        if (token) {
-            fetch(`/commits?token=${token}`)
-                .then(response => response.json())
-                .then(commits => {
-                    const commitsDiv = document.getElementById('commits');
-                    commits.forEach(commit => {
-                        const commitElement = document.createElement('div');
-                        commitElement.textContent = commit.commit.message;
-                        commitsDiv.appendChild(commitElement);
-                    });
-                });
-        }
-
-        document.getElementById('blogForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const content = document.getElementById('blogContent').value;
-            const blogPosts = document.getElementById('blogPosts');
-            const post = document.createElement('div');
-            post.textContent = content;
-            blogPosts.appendChild(post);
-        });
-    </script>
+    <script src="blog.js"></script>
 </body>
 </html>

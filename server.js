@@ -1,75 +1,58 @@
-require('dotenv').config();
 const express = require('express');
-const axios = require('axios');
-const cors = require('cors');
-const helmet = require('helmet');
-const crypto = require('crypto');
+const session = require('express-session');
+const passport = require('passport');
+const GitHubStrategy = require('passport-github2').Strategy;
+
+const GITHUB_CLIENT_ID = 'YOUR_CLIENT_ID';
+const GITHUB_CLIENT_SECRET = 'YOUR_CLIENT_SECRET';
+
+passport.serializeUser((user, done) => {
+    done(null, user);
+});
+
+passport.deserializeUser((obj, done) => {
+    done(null, obj);
+});
+
+passport.use(new GitHubStrategy({
+    clientID: GITHUB_CLIENT_ID,
+    clientSecret: GITHUB_CLIENT_SECRET,
+    callbackURL: "http://localhost:3000/auth/github/callback"
+  },
+  (accessToken, refreshToken, profile, done) => {
+    return done(null, profile);
+  }
+));
 
 const app = express();
-const clientID = process.env.GITHUB_CLIENT_ID;
-const clientSecret = process.env.GITHUB_CLIENT_SECRET;
-const redirectURI = 'http://localhost:3000/callback';
 
-// セキュリティヘッダーの設定
-app.use(helmet());
+app.use(session({ secret: 'your_secret_key', resave: false, saveUninitialized: true }));
+app.use(passport.initialize());
+app.use(passport.session());
 
-// CORSの設定
-app.use(cors({ origin: 'http://localhost:3000' }));
+app.get('/auth/github', passport.authenticate('github', { scope: ['user:email'] }));
 
-app.get('/login', (req, res) => {
-    const state = crypto.randomBytes(16).toString('hex');
-    const githubAuthURL = `https://github.com/login/oauth/authorize?client_id=${clientID}&redirect_uri=${redirectURI}&state=${state}`;
-    res.redirect(githubAuthURL);
+app.get('/auth/github/callback', 
+  passport.authenticate('github', { failureRedirect: '/' }),
+  (req, res) => {
+    res.redirect('/');
+  });
+
+app.get('/logout', (req, res) => {
+    req.logout((err) => {
+        if (err) { return next(err); }
+        res.redirect('/');
+    });
 });
 
-app.get('/callback', async (req, res) => {
-    const { code, state } = req.query;
-
-    try {
-        const tokenResponse = await axios.post(`https://github.com/login/oauth/access_token`, {
-            client_id: clientID,
-            client_secret: clientSecret,
-            code: code
-        }, {
-            headers: {
-                accept: 'application/json'
-            }
-        });
-
-        const accessToken = tokenResponse.data.access_token;
-        res.redirect(`/app?token=${accessToken}`);
-    } catch (error) {
-        console.error('Error during GitHub OAuth callback:', error);
-        res.status(500).send('Internal Server Error');
-    }
-});
-
-app.get('/commits', async (req, res) => {
-    const token = req.query.token;
-
-    try {
-        const usernameResponse = await axios.get(`https://api.github.com/user`, {
-            headers: {
-                Authorization: `token ${token}`
-            }
-        });
-
-        const username = usernameResponse.data.login;
-        const today = new Date().toISOString().split('T')[0];
-        const commitsResponse = await axios.get(`https://api.github.com/search/commits?q=author:${username}+committer-date:${today}`, {
-            headers: {
-                Accept: 'application/vnd.github.cloak-preview',
-                Authorization: `token ${token}`
-            }
-        });
-
-        res.json(commitsResponse.data.items);
-    } catch (error) {
-        console.error('Error fetching commits:', error);
-        res.status(500).send('Internal Server Error');
+app.get('/', (req, res) => {
+    if (req.isAuthenticated()) {
+        res.send(`<h1>Hello ${req.user.username}</h1><a href="/logout">Logout</a>`);
+    } else {
+        res.send('<h1>Home</h1><a href="/auth/github">Login with GitHub</a>');
     }
 });
 
 app.listen(3000, () => {
-    console.log('Server is running on port 3000');
+    console.log('App listening on port 3000');
 });

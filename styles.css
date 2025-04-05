@@ -33,17 +33,55 @@ h1 {
     margin-top: 20px;
 }
 
-
-#commits {
+#postForm {
+    display: flex;
+    justify-content: center;
     margin: 20px;
 }
 
-#blogForm {
-    margin: 20px;
+#postContent {
+    width: 60%;
+    height: 100px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
 }
 
-#blogPosts {
-    margin: 20px;
+#postForm button {
+    padding: 10px 20px;
+    margin-left: 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#postForm button:hover {
+    background-color: #218838;
+}
+
+#posts {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.post {
+    border-bottom: 1px solid #ccc;
+    padding: 10px 0;
+}
+
+.post:last-child {
+    border-bottom: none;
+}
+
+.post-content {
+    font-size: 16px;
 }
 
 .contributor {

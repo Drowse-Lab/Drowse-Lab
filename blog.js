@@ -16,6 +16,14 @@ const getUserByUsername = (username) => {
     return users.find(user => user.username === username);
 };
 
+// ローカルストレージからユーザー情報を削除
+const deleteUser = (username) => {
+    let users = JSON.parse(localStorage.getItem('users')) || [];
+    users = users.filter(user => user.username !== username);
+    localStorage.setItem('users', JSON.stringify(users));
+    localStorage.removeItem('currentUser');
+};
+
 // ローカルストレージに投稿を保存
 const savePost = (username, content) => {
     const posts = JSON.parse(localStorage.getItem('posts')) || [];
@@ -68,6 +76,22 @@ document.getElementById('logout-button').addEventListener('click', () => {
     alert('ログアウトしました');
     localStorage.removeItem('currentUser');
     hideUserInfo();
+});
+
+// アカウント削除
+document.getElementById('delete-account-button').addEventListener('click', () => {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    const password = prompt('パスワードを入力してください:');
+    if (password) {
+        const user = getUserByUsername(currentUser.username);
+        if (user && user.password === password) {
+            deleteUser(currentUser.username);
+            alert('アカウントが削除されました');
+            hideUserInfo();
+        } else {
+            alert('パスワードが正しくありません');
+        }
+    }
 });
 
 // ユーザー情報を表示

@@ -36,10 +36,10 @@ const displayCommits = async () => {
 };
 
 // 選択したコミットを投稿
-document.getElementById('post-selected-commit').addEventListener('click', () => {
+document.getElementById('post-selected-commit').addEventListener('click', async () => {
   const selectedCommitSha = document.querySelector('input[name="commit"]:checked').value;
   if (selectedCommitSha) {
-    const selectedCommit = fetchCommitBySha(selectedCommitSha);
+    const selectedCommit = await fetchCommitBySha(selectedCommitSha);
     if (selectedCommit) {
       const postContent = `${selectedCommit.commit.message}\n作者: ${selectedCommit.commit.author.name}\n日付: ${new Date(selectedCommit.commit.author.date).toLocaleString()}`;
       savePost('コミット投稿', postContent);
@@ -96,43 +96,44 @@ const hideUserInfo = () => {
 
 // アカウント作成
 document.getElementById('signup-button').addEventListener('click', () => {
-    const username = document.getElementById('username').value;
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    console.log('アカウント作成試行:', { username, email, password });
-    const existingUserByEmail = getUserByEmail(email);
-    const existingUserByUsername = getUserByUsername(username);
-    console.log('既存ユーザー情報:', { existingUserByEmail, existingUserByUsername });
-  
-    if (existingUserByEmail) {
-      alert('このメールアドレスは既に使用されています。');
-    } else if (existingUserByUsername) {
-      alert('このユーザー名は既に使用されています。');
-    } else {
-      saveUser(username, email, password);
-      alert('アカウントが作成されました');
-      localStorage.setItem('currentUser', JSON.stringify({ username }));
-      showUserInfo({ username });
-    }
-  });
+  const username = document.getElementById('username').value;
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  console.log('アカウント作成試行:', { username, email, password });
+  const existingUserByEmail = getUserByEmail(email);
+  const existingUserByUsername = getUserByUsername(username);
+  console.log('既存ユーザー情報:', { existingUserByEmail, existingUserByUsername });
+
+  if (existingUserByEmail) {
+    alert('このメールアドレスは既に使用されています。');
+  } else if (existingUserByUsername) {
+    alert('このユーザー名は既に使用されています。');
+  } else {
+    saveUser(username, email, password);
+    alert('アカウントが作成されました');
+    localStorage.setItem('currentUser', JSON.stringify({ username }));
+    showUserInfo({ username });
+  }
+});
 
 // ログイン
 document.getElementById('login-button').addEventListener('click', () => {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    console.log('ログイン試行:', { email, password });
-    const user = getUserByEmail(email);
-    console.log('ユーザー情報:', user);
-  
-    if (user && user.password === password) {
-      alert('ログイン成功');
-      localStorage.setItem('currentUser', JSON.stringify({ username: user.username }));
-      showUserInfo(user);
-    } else {
-      alert('メールアドレスまたはパスワードが間違っています。');
-      console.log('ログイン失敗');
-    }
-  });
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  console.log('ログイン試行:', { email, password });
+  const user = getUserByEmail(email);
+  console.log('ユーザー情報:', user);
+
+  if (user && user.password === password) {
+    alert('ログイン成功');
+    localStorage.setItem('currentUser', JSON.stringify({ username: user.username }));
+    showUserInfo(user);
+  } else {
+    alert('メールアドレスまたはパスワードが間違っています。');
+    console.log('ログイン失敗');
+  }
+});
+
 // ログアウト
 document.getElementById('logout-button').addEventListener('click', () => {
   alert('ログアウトしました');
@@ -204,4 +205,53 @@ const fetchAdminEmails = async () => {
   });
   const data = await response.json();
   return JSON.parse(atob(data.content)).adminEmails;
+};
+
+// ユーザー管理関数の実装
+const USERS_KEY = 'users';
+
+// ユーザーを保存
+const saveUser = (username, email, password) => {
+  const users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+  users.push({ username, email, password });
+  localStorage.setItem(USERS_KEY, JSON.stringify(users));
+};
+
+// ユーザーを取得 (メールアドレスで取得)
+const getUserByEmail = (email) => {
+  const users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+  return users.find(user => user.email === email);
+};
+
+// ユーザーを取得 (ユーザー名で取得)
+const getUserByUsername = (username) => {
+  const users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+  return users.find(user => user.username === username);
+};
+
+// ユーザーを削除
+const deleteUser = (username) => {
+  let users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+  users = users.filter(user => user.username !== username);
+  localStorage.setItem(USERS_KEY, JSON.stringify(users));
+};
+
+// 投稿を保存
+const savePost = (username, content) => {
+  const posts = JSON.parse(localStorage.getItem('posts')) || [];
+  const date = new Date().toISOString();
+  posts.push({ username, content, date });
+  localStorage.setItem('posts', JSON.stringify(posts));
+};
+
+// 投稿を取得
+const getPosts = () => {
+  return JSON.parse(localStorage.getItem('posts')) || [];
+};
+
+// 投稿を削除
+const deletePost = (username, date) => {
+  let posts = JSON.parse(localStorage.getItem('posts')) || [];
+  posts = posts.filter(post => !(post.username === username && post.date === date));
+  localStorage.setItem('posts', JSON.stringify(posts));
 };

@@ -1,42 +1,70 @@
-// プライベートリポジトリの情報
-const REPO_OWNER = 'Drowse-Lab';
-const REPO_NAME = 'mail-address';
-const FILE_PATH = 'admin_accounts.json';
-
 // GitHub APIトークン（安全な方法で管理する必要があります）
 const GITHUB_TOKEN = 'YOUR_GITHUB_ACCESS_TOKEN';
 
-// GitHub APIを使用してプライベートリポジトリから管理者アカウント情報を取得
-const fetchAdminEmails = async () => {
-  const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
+// プライベートリポジトリの情報
+const REPO_OWNER = 'Drowse-Lab';
+const REPO_NAME = 'mail-address';
+
+// GitHub APIを使用してリポジトリのコミット情報を取得
+const fetchCommits = async (branch = 'main', since = '2025-01-01T00:00:00Z') => {
+  const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/commits?sha=${branch}&since=${since}`;
   const response = await fetch(url, {
     headers: {
       'Authorization': `token ${GITHUB_TOKEN}`,
-      'Accept': 'application/vnd.github.v3.raw'
+      'Accept': 'application/vnd.github.v3+json'
     }
   });
-  const data = await response.json();
-  return JSON.parse(atob(data.content)).adminEmails;
+  const commits = await response.json();
+  return commits;
 };
 
-// 投稿削除ボタンのクリックイベントハンドラ
-const handleDeletePost = async (username, date) => {
-  const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-  const currentUserEmail = getUserByUsername(currentUser.username).email;
-  const adminEmails = await fetchAdminEmails();
+// コミット情報を表示
+const displayCommits = async () => {
+  const commits = await fetchCommits();
+  const commitsDiv = document.getElementById('commits');
+  commitsDiv.innerHTML = ''; // 既存の内容をクリア
+  commits.forEach(commit => {
+    const commitElement = document.createElement('div');
+    commitElement.className = 'commit';
+    commitElement.innerHTML = `
+      <input type="radio" name="commit" value="${commit.sha}">
+      <p>${commit.commit.message}</p>
+      <small>作者: ${commit.commit.author.name} - 日付: ${new Date(commit.commit.author.date).toLocaleString()}</small>
+    `;
+    commitsDiv.appendChild(commitElement);
+  });
+};
 
-  if (confirm('本当にこの投稿を削除しますか？')) {
-    if (currentUser.username === username || adminEmails.includes(currentUserEmail)) {
-      deletePost(username, date);
-      alert('投稿が削除されました');
+// 選択したコミットを投稿
+document.getElementById('post-selected-commit').addEventListener('click', () => {
+  const selectedCommitSha = document.querySelector('input[name="commit"]:checked').value;
+  if (selectedCommitSha) {
+    const selectedCommit = fetchCommitBySha(selectedCommitSha);
+    if (selectedCommit) {
+      const postContent = `${selectedCommit.commit.message}\n作者: ${selectedCommit.commit.author.name}\n日付: ${new Date(selectedCommit.commit.author.date).toLocaleString()}`;
+      savePost('コミット投稿', postContent);
+      alert('コミットが投稿されました');
       displayPosts();
     } else {
-      alert('この投稿を削除する権限がありません');
+      alert('選択したコミットが見つかりませんでした');
     }
+  } else {
+    alert('コミットを選択してください');
   }
-};
+});
 
-// 他のコード...
+// コミットSHAでコミット情報を取得
+const fetchCommitBySha = async (sha) => {
+  const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/commits/${sha}`;
+  const response = await fetch(url, {
+    headers: {
+      'Authorization': `token ${GITHUB_TOKEN}`,
+      'Accept': 'application/vnd.github.v3+json'
+    }
+  });
+  const commit = await response.json();
+  return commit;
+};
 
 // ページ読み込み時に現在のユーザーを確認
 window.onload = () => {
@@ -144,26 +172,32 @@ const displayPosts = () => {
   });
 };
 
-// GitHub APIを使用してリポジトリのコミット情報を取得
-const fetchCommits = async () => {
-  const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/commits`);
-  const commits = await response.json();
-  return commits;
+// 投稿削除ボタンのクリックイベントハンドラ
+const handleDeletePost = async (username, date) => {
+  const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  const currentUserEmail = getUserByUsername(currentUser.username).email;
+  const adminEmails = await fetchAdminEmails();
+
+  if (confirm('本当にこの投稿を削除しますか？')) {
+    if (currentUser.username === username || adminEmails.includes(currentUserEmail)) {
+      deletePost(username, date);
+      alert('投稿が削除されました');
+      displayPosts();
+    } else {
+      alert('この投稿を削除する権限がありません');
+    }
+  }
 };
 
-// コミット情報を表示
-const displayCommits = async () => {
-  const commits = await fetchCommits();
-  const commitsDiv = document.getElementById('commits');
-  commitsDiv.innerHTML = ''; // 既存の内容をクリア
-  commits.forEach(commit => {
-    const commitElement = document.createElement('div');
-    commitElement.className = 'commit';
-    commitElement.innerHTML = `
-      <input type="radio" name="commit" value="${commit.sha}">
-      <p>${commit.commit.message}</p>
-      <small>作者: ${commit.commit.author.name} - 日付: ${new Date(commit.commit.author.date).toLocaleString()}</small>
-    `;
-    commitsDiv.appendChild(commitElement);
+// GitHub APIを使用してプライベートリポジトリから管理者アカウント情報を取得
+const fetchAdminEmails = async () => {
+  const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/admin_accounts.json`;
+  const response = await fetch(url, {
+    headers: {
+      'Authorization': `token ${GITHUB_TOKEN}`,
+      'Accept': 'application/vnd.github.v3.raw'
+    }
   });
+  const data = await response.json();
+  return JSON.parse(atob(data.content)).adminEmails;
 };

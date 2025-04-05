@@ -96,39 +96,43 @@ const hideUserInfo = () => {
 
 // アカウント作成
 document.getElementById('signup-button').addEventListener('click', () => {
-  const username = document.getElementById('username').value;
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-  const existingUserByEmail = getUserByEmail(email);
-  const existingUserByUsername = getUserByUsername(username);
-
-  if (existingUserByEmail) {
-    alert('このメールアドレスは既に使用されています。');
-  } else if (existingUserByUsername) {
-    alert('このユーザー名は既に使用されています。');
-  } else {
-    saveUser(username, email, password);
-    alert('アカウントが作成されました');
-    localStorage.setItem('currentUser', JSON.stringify({ username }));
-    showUserInfo({ username });
-  }
-});
+    const username = document.getElementById('username').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    console.log('アカウント作成試行:', { username, email, password });
+    const existingUserByEmail = getUserByEmail(email);
+    const existingUserByUsername = getUserByUsername(username);
+    console.log('既存ユーザー情報:', { existingUserByEmail, existingUserByUsername });
+  
+    if (existingUserByEmail) {
+      alert('このメールアドレスは既に使用されています。');
+    } else if (existingUserByUsername) {
+      alert('このユーザー名は既に使用されています。');
+    } else {
+      saveUser(username, email, password);
+      alert('アカウントが作成されました');
+      localStorage.setItem('currentUser', JSON.stringify({ username }));
+      showUserInfo({ username });
+    }
+  });
 
 // ログイン
 document.getElementById('login-button').addEventListener('click', () => {
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-  const user = getUserByEmail(email);
-
-  if (user && user.password === password) {
-    alert('ログイン成功');
-    localStorage.setItem('currentUser', JSON.stringify({ username: user.username }));
-    showUserInfo(user);
-  } else {
-    alert('メールアドレスまたはパスワードが間違っています。');
-  }
-});
-
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    console.log('ログイン試行:', { email, password });
+    const user = getUserByEmail(email);
+    console.log('ユーザー情報:', user);
+  
+    if (user && user.password === password) {
+      alert('ログイン成功');
+      localStorage.setItem('currentUser', JSON.stringify({ username: user.username }));
+      showUserInfo(user);
+    } else {
+      alert('メールアドレスまたはパスワードが間違っています。');
+      console.log('ログイン失敗');
+    }
+  });
 // ログアウト
 document.getElementById('logout-button').addEventListener('click', () => {
   alert('ログアウトしました');

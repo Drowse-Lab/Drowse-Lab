@@ -1,20 +1,25 @@
 // ローカルストレージにユーザー情報を保存
-const saveUser = (email, password) => {
+const saveUser = (username, email, password) => {
     const users = JSON.parse(localStorage.getItem('users')) || [];
-    users.push({ email, password });
+    users.push({ username, email, password });
     localStorage.setItem('users', JSON.stringify(users));
 };
 
 // ローカルストレージからユーザー情報を取得
-const getUser = (email) => {
+const getUserByEmail = (email) => {
     const users = JSON.parse(localStorage.getItem('users')) || [];
     return users.find(user => user.email === email);
 };
 
+const getUserByUsername = (username) => {
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    return users.find(user => user.username === username);
+};
+
 // ローカルストレージに投稿を保存
-const savePost = (email, content) => {
+const savePost = (username, content) => {
     const posts = JSON.parse(localStorage.getItem('posts')) || [];
-    posts.push({ email, content, date: new Date().toLocaleString() });
+    posts.push({ username, content, date: new Date().toLocaleString() });
     localStorage.setItem('posts', JSON.stringify(posts));
 };
 
@@ -25,17 +30,21 @@ const getPosts = () => {
 
 // アカウント作成
 document.getElementById('signup-button').addEventListener('click', () => {
+    const username = document.getElementById('username').value;
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-    const existingUser = getUser(email);
+    const existingUserByEmail = getUserByEmail(email);
+    const existingUserByUsername = getUserByUsername(username);
 
-    if (existingUser) {
+    if (existingUserByEmail) {
         alert('このメールアドレスは既に使用されています。');
+    } else if (existingUserByUsername) {
+        alert('このユーザー名は既に使用されています。');
     } else {
-        saveUser(email, password);
+        saveUser(username, email, password);
         alert('アカウントが作成されました');
-        localStorage.setItem('currentUser', JSON.stringify({ email }));
-        showUserInfo({ email });
+        localStorage.setItem('currentUser', JSON.stringify({ username }));
+        showUserInfo({ username });
     }
 });
 
@@ -43,11 +52,11 @@ document.getElementById('signup-button').addEventListener('click', () => {
 document.getElementById('login-button').addEventListener('click', () => {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-    const user = getUser(email);
+    const user = getUserByEmail(email);
 
     if (user && user.password === password) {
         alert('ログイン成功');
-        localStorage.setItem('currentUser', JSON.stringify(user));
+        localStorage.setItem('currentUser', JSON.stringify({ username: user.username }));
         showUserInfo(user);
     } else {
         alert('メールアドレスまたはパスワードが間違っています。');
@@ -65,7 +74,7 @@ document.getElementById('logout-button').addEventListener('click', () => {
 const showUserInfo = (user) => {
     document.getElementById('login-container').style.display = 'none';
     document.getElementById('user-info').style.display = 'block';
-    document.getElementById('user-email').textContent = 'ログイン中: ' + user.email;
+    document.getElementById('user-username').textContent = 'ログイン中: ' + user.username;
     document.getElementById('blogForm').style.display = 'block';
     displayPosts();
 };
@@ -75,6 +84,7 @@ const hideUserInfo = () => {
     document.getElementById('login-container').style.display = 'block';
     document.getElementById('user-info').style.display = 'none';
     document.getElementById('blogForm').style.display = 'none';
+    displayPosts();
 };
 
 // ページ読み込み時に現在のユーザーを確認
@@ -93,7 +103,7 @@ document.getElementById('blogForm').addEventListener('submit', (e) => {
     const blogContent = document.getElementById('blogContent').value;
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (blogContent && currentUser) {
-        savePost(currentUser.email, blogContent);
+        savePost(currentUser.username, blogContent);
         alert('投稿が完了しました');
         document.getElementById('blogContent').value = '';
         displayPosts();
@@ -110,7 +120,7 @@ const displayPosts = () => {
     posts.forEach(post => {
         const postElement = document.createElement('div');
         postElement.className = 'post';
-        postElement.innerHTML = `<p>${post.content}</p><small>投稿者: ${post.email} - 日付: ${post.date}</small>`;
+        postElement.innerHTML = `<p>${post.content}</p><small>投稿者: ${post.username} - 日付: ${post.date}</small>`;
         blogPostsDiv.appendChild(postElement);
     });
 };

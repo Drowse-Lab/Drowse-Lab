@@ -1,44 +1,60 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Drowse Lab - ブログ</title>
-    <link rel="stylesheet" href="styles.css">
+  <title>Blog</title>
+  <style>
+    .commit {
+      padding: 5px;
+      border: 1px solid #ccc;
+      margin: 5px 0;
+    }
+    .post {
+      padding: 10px;
+      border: 1px solid #ddd;
+      margin: 10px 0;
+    }
+    nav ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    nav ul li {
+      display: inline;
+      margin-right: 10px;
+    }
+  </style>
 </head>
 <body>
-    <nav>
-        <ul>
-            <li><a href="index.html">ホーム</a></li>
-            <li><a href="blog.html">ブログ</a></li>
-            <li><a href="contributors.html">コントリビューター紹介</a></li>
-        </ul>
-    </nav>
-
-    <h1>ブログ</h1>
-    <div id="login-container">
-        <h2>ログイン</h2>
-        <input type="text" id="username" placeholder="ユーザー名">
-        <input type="email" id="email" placeholder="メールアドレス">
-        <input type="password" id="password" placeholder="パスワード">
-        <button id="login-button">ログイン</button>
-        <button id="signup-button">アカウント作成</button>
-    </div>
-
-    <div id="user-info" style="display:none;">
-        <p id="user-username"></p>
-        <button id="logout-button">ログアウト</button>
-        <button id="delete-account-button">アカウント削除</button>
-    </div>
-
+  <nav>
+    <ul>
+      <li><a href="index.html">ホーム</a></li>
+      <li><a href="blog.html">ブログ</a></li>
+      <li><a href="contributors.html">コントリビューター紹介</a></li>
+    </ul>
+  </nav>
+  
+  <div id="login-container">
+    <h2>ログイン</h2>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+    <button id="login-button">ログイン</button>
+    <h2>アカウント作成</h2>
+    <input type="text" id="username" placeholder="Username">
+    <input type="email" id="signup-email" placeholder="Email">
+    <input type="password" id="signup-password" placeholder="Password">
+    <button id="signup-button">アカウント作成</button>
+  </div>
+  <div id="user-info" style="display:none;">
+    <span id="user-username"></span>
+    <button id="logout-button">ログアウト</button>
+    <button id="delete-account-button">アカウント削除</button>
+  </div>
+  <div id="blogForm" style="display:none;">
+    <h2>コミットを投稿</h2>
     <div id="commits"></div>
-
-    <form id="blogForm" style="display:none;">
-        <textarea id="blogContent" placeholder="今日の更新内容..."></textarea>
-        <button type="submit">投稿</button>
-    </form>
-    <div id="blogPosts"></div>
-
-    <script src="blog.js"></script>
+    <button id="post-selected-commit">選択したコミットを投稿</button>
+  </div>
+  <h2>投稿一覧</h2>
+  <div id="blogPosts"></div>
+  <script src="blog.js"></script>
 </body>
 </html>

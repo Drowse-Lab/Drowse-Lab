@@ -37,12 +37,12 @@ const displayCommits = async () => {
 
 // 選択したコミットを投稿
 document.getElementById('post-selected-commit').addEventListener('click', async () => {
-  const selectedCommitSha = document.querySelector('input[name="commit"]:checked').value;
+  const selectedCommitSha = document.querySelector('input[name="commit"]:checked');
   if (selectedCommitSha) {
-    const selectedCommit = await fetchCommitBySha(selectedCommitSha);
+    const selectedCommit = await fetchCommitBySha(selectedCommitSha.value);
     if (selectedCommit) {
       const postContent = `${selectedCommit.commit.message}\n作者: ${selectedCommit.commit.author.name}\n日付: ${new Date(selectedCommit.commit.author.date).toLocaleString()}`;
-      savePost('コミット投稿', postContent);
+      savePost(selectedCommit.commit.author.name, postContent);
       alert('コミットが投稿されました');
       displayPosts();
     } else {
@@ -97,8 +97,8 @@ const hideUserInfo = () => {
 // アカウント作成
 document.getElementById('signup-button').addEventListener('click', () => {
   const username = document.getElementById('username').value;
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
+  const email = document.getElementById('signup-email').value;
+  const password = document.getElementById('signup-password').value;
   console.log('アカウント作成試行:', { username, email, password });
   const existingUserByEmail = getUserByEmail(email);
   const existingUserByUsername = getUserByUsername(username);

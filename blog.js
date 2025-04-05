@@ -36,6 +36,13 @@ const getPosts = () => {
     return JSON.parse(localStorage.getItem('posts')) || [];
 };
 
+// ローカルストレージから投稿を削除
+const deletePost = (username, date) => {
+    let posts = JSON.parse(localStorage.getItem('posts')) || [];
+    posts = posts.filter(post => !(post.username === username && post.date === date));
+    localStorage.setItem('posts', JSON.stringify(posts));
+};
+
 // アカウント作成
 document.getElementById('signup-button').addEventListener('click', () => {
     const username = document.getElementById('username').value;
@@ -119,6 +126,7 @@ window.onload = () => {
     } else {
         displayPosts();
     }
+    displayCommits();
 };
 
 // 投稿フォームの送信処理
@@ -141,10 +149,50 @@ const displayPosts = () => {
     const posts = getPosts();
     const blogPostsDiv = document.getElementById('blogPosts');
     blogPostsDiv.innerHTML = '';
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
     posts.forEach(post => {
         const postElement = document.createElement('div');
         postElement.className = 'post';
-        postElement.innerHTML = `<p>${post.content}</p><small>投稿者: ${post.username} - 日付: ${post.date}</small>`;
+        postElement.innerHTML = `
+            <p>${post.content}</p>
+            <small>投稿者: ${post.username} - 日付: ${post.date}</small>
+            ${currentUser && currentUser.username === post.username ? `<button onclick="handleDeletePost('${post.date}')">削除</button>` : ''}
+        `;
         blogPostsDiv.appendChild(postElement);
+    });
+};
+
+// 投稿削除ボタンのクリックイベントハンドラ
+const handleDeletePost = (date) => {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (confirm('本当にこの投稿を削除しますか？')) {
+        deletePost(currentUser.username, date);
+        alert('投稿が削除されました');
+        displayPosts();
+    }
+};
+
+// GitHub APIを使用してリポジトリのコミット情報を取得
+const fetchCommits = async () => {
+    const response = await fetch(`https://api.github.com/repos/Drowse-Lab/Drowse-Lab/commits`);
+    const commits = await response.json();
+    return commits;
+};
+
+// コミット情報を表示
+const displayCommits = async () => {
+    const commits = await fetchCommits();
+    const commitsDiv = document.getElementById('commits');
+    commitsDiv.innerHTML = ''; // 既存の内容をクリア
+    commits.forEach(commit => {
+        const commitElement = document.createElement('div');
+        commitElement.className = 'commit';
+        commitElement.innerHTML = `
+            <input type="radio" name="commit" value="${commit.sha}">
+            <p>${commit.commit.message}</p>
+            <small>作者: ${commit.commit.author.name} - 日付: ${new Date(commit.commit.author.date).toLocaleString()}</small>
+        `;
+        commitsDiv.appendChild(commitElement);
     });
 };

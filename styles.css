@@ -117,3 +117,41 @@ h1 {
     text-decoration: none;
     color: #0366d6;
 }
+
+.blog.commit{
+    padding: 5px;
+    border: 1px solid #ccc;
+    margin: 5px 0;
+  }
+  .blog.post {
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin: 10px 0;
+  }
+.blog nav ul {
+    list-style-type: none;
+    padding: 0;
+  }
+.blog nav ul li {
+    display: inline;
+    margin-right: 10px;
+}
+
+/* .commit {
+    padding: 5px;
+    border: 1px solid #ccc;
+    margin: 5px 0;
+  }
+  .post {
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin: 10px 0;
+  }
+  nav ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  nav ul li {
+    display: inline;
+    margin-right: 10px;
+  } */

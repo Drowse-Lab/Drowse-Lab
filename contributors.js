@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const contributorsDiv = document.getElementById('contributors');
 
     try {
-        const response = await fetch('https://api.github.com/repos/Drowse-Lab/Drowse-Lab/contributors');
+        const response = await fetch('https://api.github.com/orgs/Drowse-Lab/members');
         const contributors = await response.json();
 
         if (contributors.length === 0) {

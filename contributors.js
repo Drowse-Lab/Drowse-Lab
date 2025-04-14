@@ -1,58 +1,45 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const contributorsDiv = document.getElementById('contributors');
 
-    // GitHub APIのリポジトリ情報
-    const REPO_OWNER = 'Drowse-Lab';
-    const REPO_NAME = 'Drowse-Lab';
-
     try {
-        // GitHub APIからコミット情報を取得
-        const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/commits`);
+        // Drowse-Lab組織のメンバーを取得
+        const response = await fetch('https://api.github.com/orgs/Drowse-Lab/members');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const commits = await response.json();
+        const members = await response.json();
 
-        // コミッターのリストを作成
-        const committers = new Map(); // 重複を避けるためMapを使用
-
-        commits.forEach(commit => {
-            const committer = commit.commit.committer;
-            if (committer) {
-                const name = committer.name;
-                const email = committer.email;
-
-                // コミッター情報をMapに追加
-                if (!committers.has(email)) {
-                    committers.set(email, { name, email });
-                }
-            }
-        });
-
-        if (committers.size === 0) {
-            contributorsDiv.textContent = 'コミッターが見つかりませんでした。';
+        if (members.length === 0) {
+            contributorsDiv.textContent = 'メンバーが見つかりませんでした。';
             return;
         }
 
-        // コミッター情報を表示
-        committers.forEach((committer, email) => {
-            const committerElement = document.createElement('div');
-            committerElement.classList.add('committer');
+        // メンバー情報を表示
+        members.forEach(member => {
+            const memberElement = document.createElement('div');
+            memberElement.classList.add('member');
 
-            const nameElement = document.createElement('h2');
-            nameElement.textContent = committer.name;
+            const avatar = document.createElement('img');
+            avatar.src = member.avatar_url;
+            avatar.alt = `${member.login}'s avatar`;
+            avatar.classList.add('avatar');
 
-            const emailElement = document.createElement('p');
-            emailElement.textContent = `Email: ${committer.email}`;
+            const name = document.createElement('h2');
+            name.textContent = member.login;
 
-            committerElement.appendChild(nameElement);
-            committerElement.appendChild(emailElement);
+            const profileLink = document.createElement('a');
+            profileLink.href = member.html_url;
+            profileLink.textContent = 'GitHub Profile';
 
-            contributorsDiv.appendChild(committerElement);
+            memberElement.appendChild(avatar);
+            memberElement.appendChild(name);
+            memberElement.appendChild(profileLink);
+
+            contributorsDiv.appendChild(memberElement);
         });
     } catch (error) {
-        console.error('Error fetching committers:', error);
-        contributorsDiv.textContent = 'コミッター情報の読み込み中にエラーが発生しました。';
+        console.error('Error fetching members:', error);
+        contributorsDiv.textContent = 'メンバー情報の読み込み中にエラーが発生しました。';
     }
 });

@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    const membersDiv = document.getElementById('members');
+    const membersDiv = document.getElementById('contributors');
 
     // GitHub Personal Access Token (必要に応じて設定)
     const GITHUB_TOKEN = 'your_github_personal_access_token'; // トークンを入力

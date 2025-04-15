@@ -1,17 +1,24 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    const contributorsDiv = document.getElementById('contributors');
+    const membersDiv = document.getElementById('members');
+
+    // GitHub Personal Access Token (必要に応じて設定)
+    const GITHUB_TOKEN = 'your_github_personal_access_token'; // トークンを入力してください
 
     try {
-        // Drowse-Lab組織のメンバーを取得
+        // APIからDrowse-Labのメンバー情報を取得
         const response = await fetch('https://api.github.com/orgs/Drowse-Lab/members');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
+        // if (!response.ok) {
+        //     throw new Error(`HTTP error! status: ${response.status}`);
+        // }
+
         const members = await response.json();
 
         if (members.length === 0) {
-            contributorsDiv.textContent = 'メンバーが見つかりませんでした。';
+            membersDiv.textContent = 'メンバーが見つかりませんでした。';
             return;
         }
 
@@ -36,10 +43,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             memberElement.appendChild(name);
             memberElement.appendChild(profileLink);
 
-            contributorsDiv.appendChild(memberElement);
+            membersDiv.appendChild(memberElement);
         });
     } catch (error) {
         console.error('Error fetching members:', error);
-        contributorsDiv.textContent = 'メンバー情報の読み込み中にエラーが発生しました。';
+        membersDiv.textContent = 'メンバー情報の読み込み中にエラーが発生しました。';
     }
 });

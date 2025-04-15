@@ -125,15 +125,15 @@ h1 {
 }
 
 .member {
-    border: 1px solid #ddd;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    margin: 10px;
-    padding: 15px;
-    width: 250px;
-    text-align: center;
-    transition: transform 0.2s;
+    border: 1px solid #ddd; /* 枠の設定 */
+    background-color: #fff; /* 背景色 */
+    border-radius: 8px; /* 角の丸み */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 枠の影 */
+    padding: 15px; /* 内側の余白 */
+    margin: 10px; /* 外側の余白 */
+    text-align: center; /* 中央揃え */
+    width: 250px; /* 横幅 */
+    transition: transform 0.2s; /* ホバー時のアニメーション */
 }
 
 .member:hover {

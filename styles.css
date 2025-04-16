@@ -136,14 +136,6 @@ h1 {
     text-decoration: underline;
 }
 
-#posts {
-    max-width: 80%; /* indexと同じように全体幅を%で指定 */
-    margin: 20px auto; /* 中央揃え */
-    padding: 20px;
-    background-color: white; /* 背景色 */
-    border-radius: 8px; /* 角丸 */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 影 */
-}
 
 #postForm {
     display: flex;
@@ -174,20 +166,42 @@ h1 {
     background-color: #218838;
 }
 
-.blog.post {
-    width: 100%; /* 幅を%指定にする */
-    padding: 10px;
-    border: 1px solid #ddd;
-    margin: 10px 0; /* 各投稿の間隔 */
+#posts {
+    max-width: 80%; /* indexと同じように全体幅を%で指定 */
+    margin: 20px auto; /* 中央揃え */
+    padding: 20px;
+    background-color: white; /* 背景色 */
+    border-radius: 8px; /* 角丸 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 影 */
 }
 
-.blog nav ul {
-    list-style-type: none;
-    padding: 0;
-    text-align: center; /* ナビゲーションを中央揃え */
+.blog nav {
+    background-color: #333;
+    color: white;
+    padding: 10px;
 }
+
+ .blog nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+     /* ナビゲーションを中央揃え  */
 
 .blog nav ul li {
-    display: inline;
-    margin-right: 10px;
+    margin: 0 15px;
+}
+
+
+
+.blog nav ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+.blog h1 {
+    text-align: center;
+    margin-top: 20px;
 }

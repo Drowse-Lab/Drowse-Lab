@@ -7,42 +7,36 @@ body {
     background-color: #f9f9f9; /* 背景色を.memberと統一 */
 }
 
-/* nav */
 nav {
-    background-color: #333; /* 背景色を.member navと統一 */
+    background-color: #333;
     color: white;
-    padding: 10px 20px; /* .member nav ul liのpaddingを適用 */
+    padding: 2% 5%; /* パディングを%で指定 */
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 60px; /* 必要なら高さの指定追加 */
+    height: 10%; /* 高さを%で指定 */
 }
 
-/* nav ul */
 nav ul {
     list-style: none;
     margin: 0;
     padding: 0;
     display: flex;
     justify-content: center;
-    align-items: center; /* 縦方向を中央揃え */
-    background: #333; /* .member nav ulと同様の背景色 */
-    overflow: hidden; /* .member nav ulと同じ */
+    align-items: center;
 }
 
-/* nav ul li */
 nav ul li {
     margin: 0;
-    padding: 10px 20px; /* .member nav ul liのpaddingを適用 */
-    display: inline; /* .memberと同じ */
-    font-size: 18px; /* フォントサイズを統一 */
+    padding: 1% 2%; /* パディングを%で指定 */
+    display: inline;
+    font-size: 1.2rem; /* フォントサイズを相対単位で指定 */
 }
 
-/* nav ul li a */
 nav ul li a {
-    color: white; /* .member nav ul li aの文字色 */
+    color: white;
     text-decoration: none;
-    font-size: 16px; /* 統一された文字サイズ */
+    font-size: 1rem;
 }
 
 /* h1 */

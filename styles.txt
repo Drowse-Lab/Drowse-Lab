@@ -4,54 +4,37 @@ body {
     line-height: 1.6;
     margin: 0;
     padding: 0;
-    background-color: #f9f9f9; /* 背景色を.memberと統一 */
+    background-color: #f9f9f9;
 }
 
-/* nav */
 nav {
-    background-color: #333; /* 背景色を.member navと統一 */
+    background-color: #333;
     color: white;
-    padding: 10px 20px; /* .member nav ul liのpaddingを適用 */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 60px; /* 必要なら高さの指定追加 */
+    padding: 10px;
 }
 
-/* nav ul */
 nav ul {
-    list-style: none;
+    list-style-type: none;
     margin: 0;
     padding: 0;
     display: flex;
     justify-content: center;
-    align-items: center; /* 縦方向を中央揃え */
-    background: #333; /* .member nav ulと同様の背景色 */
-    overflow: hidden; /* .member nav ulと同じ */
 }
 
-/* nav ul li */
 nav ul li {
-    margin: 0;
-    padding: 10px 20px; /* .member nav ul liのpaddingを適用 */
-    display: inline; /* .memberと同じ */
-    font-size: 18px; /* フォントサイズを統一 */
+    margin: 0 15px;
 }
 
-/* nav ul li a */
 nav ul li a {
-    color: white; /* .member nav ul li aの文字色 */
+    color: white;
     text-decoration: none;
-    font-size: 16px; /* 統一された文字サイズ */
 }
 
-/* h1 */
 h1 {
     text-align: center;
-    color: #333; /* .member h1と同じ文字色 */
     margin-top: 20px;
-    font-size: 24px; /* 統一された見出しサイズ */
 }
+
 
 .member nav ul {
     list-style: none;
@@ -164,3 +147,24 @@ h1 {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 影 */
 }
 
+/* #posts {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+} */
+
+/* .post {
+    border-bottom: 1px solid #ccc;
+    padding: 10px 0;
+}
+
+.post:last-child {
+    border-bottom: none;
+}
+
+.post-content {
+    font-size: 16px;
+} */

@@ -1,16 +1,39 @@
+/* ライトモード（デフォルト） */
+:root {
+    --background-color: #f9f9f9;
+    --text-color: #333;
+    --nav-background-color: #333;
+    --nav-text-color: white;
+    --card-background-color: white;
+    --card-border-color: #ddd;
+    --link-color: #007bff;
+}
+
+/* ダークモード */
+.dark-mode {
+    --background-color: #121212;
+    --text-color: #f9f9f9;
+    --nav-background-color: #222;
+    --nav-text-color: #f9f9f9;
+    --card-background-color: #1e1e1e;
+    --card-border-color: #333;
+    --link-color: #4dabf7;
+}
+
 /* body */
 body {
     font-family: Arial, sans-serif;
     line-height: 1.6;
     margin: 0;
     padding: 0;
-    background-color: #f9f9f9;
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
 /* nav */
 nav {
-    background-color: #333;
-    color: white;
+    background-color: var(--nav-background-color);
+    color: var(--nav-text-color);
     padding: 2% 5%;
     display: flex;
     justify-content: center;
@@ -38,7 +61,7 @@ nav ul li {
 
 /* nav ul li a */
 nav ul li a {
-    color: white;
+    color: var(--nav-text-color);
     text-decoration: none;
     font-size: 1.2rem;
 }
@@ -46,7 +69,7 @@ nav ul li a {
 /* h1, h2 */
 h1, h2 {
     text-align: center;
-    color: #333;
+    color: var(--text-color);
     margin-top: 2%;
     font-size: 2rem;
 }
@@ -66,14 +89,15 @@ p, input, button {
     max-width: 80%;
     margin: 2% auto;
     padding: 2%;
-    background-color: white;
+    background-color: var(--card-background-color);
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--card-border-color);
 }
 
 .member {
-    border: 1px solid #ddd;
-    background-color: #fff;
+    background-color: var(--card-background-color);
+    border: 1px solid var(--card-border-color);
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     padding: 2%;
@@ -96,7 +120,7 @@ p, input, button {
 
 .member h2 {
     font-size: 1.5rem;
-    color: #333;
+    color: var(--text-color);
     margin: 1rem 0;
 }
 
@@ -104,7 +128,7 @@ p, input, button {
     display: inline-block;
     margin-top: 1rem;
     text-decoration: none;
-    color: #007bff;
+    color: var(--link-color);
 }
 
 .member a:hover {
@@ -144,14 +168,15 @@ p, input, button {
     max-width: 80%;
     margin: 20px auto;
     padding: 2%;
-    background-color: white;
+    background-color: var(--card-background-color);
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--card-border-color);
 }
 
 /* 追加のリンクスタイル */
 a {
-    color: #007bff;
+    color: var(--link-color);
     text-decoration: none;
 }
 

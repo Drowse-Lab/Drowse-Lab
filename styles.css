@@ -4,20 +4,22 @@ body {
     line-height: 1.6;
     margin: 0;
     padding: 0;
-    background-color: #f9f9f9; /* 背景色を.memberと統一 */
+    background-color: #f9f9f9;
 }
 
+/* nav */
 nav {
     background-color: #333;
     color: white;
-    padding: 2% 5%; /* パディングを%で指定 */
+    padding: 2% 5%;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 10vh; /* ビューポートの高さに基づく指定 */
-    box-sizing: border-box; /* パディングを含めたサイズ計算 */
+    height: 10vh;
+    box-sizing: border-box;
 }
 
+/* nav ul */
 nav ul {
     list-style: none;
     margin: 0;
@@ -27,69 +29,58 @@ nav ul {
     align-items: center;
 }
 
+/* nav ul li */
 nav ul li {
-    margin: 0;
-    padding: 1% 2%; /* パディングを%で指定 */
-    display: inline;
-    font-size: 1.2rem; /* フォントサイズを相対単位で指定 */
+    margin: 0 2%;
+    padding: 1% 2%;
+    font-size: 1.2rem;
 }
 
+/* nav ul li a */
 nav ul li a {
     color: white;
     text-decoration: none;
-    font-size: 1rem;
+    font-size: 1.2rem;
 }
 
-/* h1 */
-h1 {
-    text-align: center;
-    color: #333; /* .member h1と同じ文字色 */
-    margin-top: 20px;
-    font-size: 24px; /* 統一された見出しサイズ */
-}
-
-.member nav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    background: #333;
-    overflow: hidden;
-}
-
-.member nav ul li {
-    display: inline;
-    margin: 0;
-    padding: 10px 20px;
-}
-
-.member nav ul li a {
-    color: white;
-    text-decoration: none;
-}
-
-.member h1 {
+/* h1, h2 */
+h1, h2 {
     text-align: center;
     color: #333;
-    margin-top: 20px;
+    margin-top: 2%;
+    font-size: 2rem;
 }
 
-.members-container {
+/* p, input, button */
+p, input, button {
+    font-size: 1rem;
+    margin: 1% 0;
+    padding: 1%;
+}
+
+/* メンバースタイル */
+.members-container, #blogPosts {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    margin: 20px;
+    max-width: 80%;
+    margin: 2% auto;
+    padding: 2%;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .member {
-    border: 1px solid #ddd; /* 枠の設定 */
-    background-color: #fff; /* 背景色 */
-    border-radius: 8px; /* 角の丸み */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 枠の影 */
-    padding: 15px; /* 内側の余白 */
-    margin: 10px; /* 外側の余白 */
-    text-align: center; /* 中央揃え */
-    width: 250px; /* 横幅 */
-    transition: transform 0.2s; /* ホバー時のアニメーション */
+    border: 1px solid #ddd;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 2%;
+    margin: 2%;
+    text-align: center;
+    width: 250px; /* 固定幅 */
+    transition: transform 0.2s;
 }
 
 .member:hover {
@@ -104,14 +95,14 @@ h1 {
 }
 
 .member h2 {
-    font-size: 18px;
+    font-size: 1.5rem;
     color: #333;
-    margin: 10px 0;
+    margin: 1rem 0;
 }
 
 .member a {
     display: inline-block;
-    margin-top: 10px;
+    margin-top: 1rem;
     text-decoration: none;
     color: #007bff;
 }
@@ -120,7 +111,7 @@ h1 {
     text-decoration: underline;
 }
 
-
+/* フォームのスタイル */
 #postForm {
     display: flex;
     justify-content: center;
@@ -133,7 +124,6 @@ h1 {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-size: 16px;
 }
 
 #postForm button {
@@ -150,22 +140,21 @@ h1 {
     background-color: #218838;
 }
 
-#posts {
-    max-width: 80%; /* indexと同じように全体幅を%で指定 */
-    margin: 20px auto; /* 中央揃え */
-    padding: 20px;
-    background-color: white; /* 背景色 */
-    border-radius: 8px; /* 角丸 */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 影 */
-}
-
-
-/* 全ページで同じ割合を使用
-#blogPosts {
+#posts, #blogPosts {
+    max-width: 80%;
     margin: 20px auto;
     padding: 2%;
-    max-width: 80%; /* 他のページと同じ幅 */
-    /* background-color: white;
+    background-color: white;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-} */ 
+}
+
+/* 追加のリンクスタイル */
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}

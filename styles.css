@@ -1,110 +1,83 @@
-/* ライトモード（デフォルト） */
-:root {
-    --background-color: #f9f9f9;
-    --text-color: #333;
-    --nav-background-color: #333;
-    --nav-text-color: white;
-    --card-background-color: white;
-    --card-border-color: #ddd;
-    --link-color: #007bff;
-}
-
-/* ダークモード */
-.dark-mode {
-    --background-color: #121212;
-    --text-color: #f9f9f9;
-    --nav-background-color: #222;
-    --nav-text-color: #f9f9f9;
-    --card-background-color: #1e1e1e;
-    --card-border-color: #333;
-    --link-color: #4dabf7;
-}
-
 /* body */
 body {
     font-family: Arial, sans-serif;
     line-height: 1.6;
     margin: 0;
     padding: 0;
-    background-color: var(--background-color);
-    color: var(--text-color);
+    background-color: #f9f9f9;
 }
 
-/* nav */
 nav {
-    background-color: var(--nav-background-color);
-    color: var(--nav-text-color);
-    padding: 2% 5%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 10vh;
-    box-sizing: border-box;
+    background-color: #333;
+    color: white;
+    padding: 10px;
 }
 
-/* nav ul */
 nav ul {
-    list-style: none;
+    list-style-type: none;
     margin: 0;
     padding: 0;
     display: flex;
     justify-content: center;
-    align-items: center;
 }
 
-/* nav ul li */
 nav ul li {
-    margin: 0 2%;
-    padding: 1% 2%;
-    font-size: 1.2rem;
+    margin: 0 15px;
 }
 
-/* nav ul li a */
 nav ul li a {
-    color: var(--nav-text-color);
+    color: white;
     text-decoration: none;
-    font-size: 1.2rem;
 }
 
-/* h1, h2 */
-h1, h2 {
+h1 {
     text-align: center;
-    color: var(--text-color);
-    margin-top: 2%;
-    font-size: 2rem;
+    margin-top: 20px;
 }
 
-/* p, input, button */
-p, input, button {
-    font-size: 1rem;
-    margin: 1% 0;
-    padding: 1%;
+
+.member nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background: #333;
+    overflow: hidden;
 }
 
-/* メンバースタイル */
-.members-container, #blogPosts {
+.member nav ul li {
+    display: inline;
+    margin: 0;
+    padding: 10px 20px;
+}
+
+.member nav ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+.member h1 {
+    text-align: center;
+    color: #333;
+    margin-top: 20px;
+}
+
+.members-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    max-width: 80%;
-    margin: 2% auto;
-    padding: 2%;
-    background-color: var(--card-background-color);
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    border: 1px solid var(--card-border-color);
+    margin: 20px;
 }
 
 .member {
-    background-color: var(--card-background-color);
-    border: 1px solid var(--card-border-color);
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    padding: 2%;
-    margin: 2%;
-    text-align: center;
-    width: 250px; /* 固定幅 */
-    transition: transform 0.2s;
+    border: 1px solid #ddd; /* 枠の設定 */
+    background-color: #fff; /* 背景色 */
+    border-radius: 8px; /* 角の丸み */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 枠の影 */
+    padding: 15px; /* 内側の余白 */
+    margin: 10px; /* 外側の余白 */
+    text-align: center; /* 中央揃え */
+    width: 250px; /* 横幅 */
+    transition: transform 0.2s; /* ホバー時のアニメーション */
 }
 
 .member:hover {
@@ -119,23 +92,23 @@ p, input, button {
 }
 
 .member h2 {
-    font-size: 1.5rem;
-    color: var(--text-color);
-    margin: 1rem 0;
+    font-size: 18px;
+    color: #333;
+    margin: 10px 0;
 }
 
 .member a {
     display: inline-block;
-    margin-top: 1rem;
+    margin-top: 10px;
     text-decoration: none;
-    color: var(--link-color);
+    color: #007bff;
 }
 
 .member a:hover {
     text-decoration: underline;
 }
 
-/* フォームのスタイル */
+
 #postForm {
     display: flex;
     justify-content: center;
@@ -148,6 +121,7 @@ p, input, button {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    font-size: 16px;
 }
 
 #postForm button {
@@ -164,22 +138,33 @@ p, input, button {
     background-color: #218838;
 }
 
-#posts, #blogPosts {
-    max-width: 80%;
-    margin: 20px auto;
-    padding: 2%;
-    background-color: var(--card-background-color);
+#posts {
+    max-width: 80%; /* indexと同じように全体幅を%で指定 */
+    margin: 20px auto; /* 中央揃え */
+    padding: 20px;
+    background-color: white; /* 背景色 */
+    border-radius: 8px; /* 角丸 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 影 */
+}
+
+/* #posts {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: white;
     border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    border: 1px solid var(--card-border-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+} */
+
+/* .post {
+    border-bottom: 1px solid #ccc;
+    padding: 10px 0;
 }
 
-/* 追加のリンクスタイル */
-a {
-    color: var(--link-color);
-    text-decoration: none;
+.post:last-child {
+    border-bottom: none;
 }
 
-a:hover {
-    text-decoration: underline;
-}
+.post-content {
+    font-size: 16px;
+} */

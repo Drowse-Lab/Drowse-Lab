@@ -146,25 +146,3 @@ h1 {
     border-radius: 8px; /* 角丸 */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 影 */
 }
-
-/* #posts {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-} */
-
-/* .post {
-    border-bottom: 1px solid #ccc;
-    padding: 10px 0;
-}
-
-.post:last-child {
-    border-bottom: none;
-}
-
-.post-content {
-    font-size: 16px;
-} */

@@ -1,4 +1,7 @@
 // postsフォルダからMarkdownファイルを動的に取得して表示
+const response = await fetch('https://api.github.com/repos/Drowse-Lab/Drowse-Lab/contents/_posts');
+const files = await response.json();
+const markdownFiles = files.filter(file => file.name.endsWith(".md"));
 const loadBlogPosts = async () => {
   const postsDiv = document.getElementById("blogPosts");
   postsDiv.innerHTML = "読み込み中...";

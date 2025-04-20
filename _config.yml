@@ -1,10 +1,16 @@
+
+# サイトの基本設定
 title: Drowse Lab Blog
 description: "Drowse Labのブログ"
 baseurl: "/Drowse-Lab" # リポジトリ名を指定 (プロジェクトページの場合)
-url: "https://drowse-lab.github.io" # サイトの基本URL (トップページのURL
+url: "https://drowse-lab.github.io" # サイトの基本URL (トップページのURL)
 theme: minima # Jekyllのテーマ（minimaはデフォルトテーマ）
 plugins:
   - jekyll-feed # RSSフィードを生成するプラグイン
+  - jekyll-seo-tag # SEO対策用プラグイン
+  - jekyll-sitemap # サイトマップ生成プラグイン
+
+# Markdown 設定
 markdown: kramdown
 kramdown:
   input: GFM # GitHub Flavored Markdownを使用
@@ -14,3 +20,23 @@ collections:
   posts:
     output: true
 permalink: /:categories/:year/:month/:day/:title/ # URL構造
+
+# デフォルトのメタデータ
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: "post"
+
+# ナビゲーションバーの設定 (オプション)
+nav:
+  - title: "Home"
+    url: "/"
+  - title: "About"
+    url: "/about"
+  - title: "Blog"
+    url: "/blog"
+
+# その他のカスタマイズ
+# author: My Name
+# email: myemail@example.com

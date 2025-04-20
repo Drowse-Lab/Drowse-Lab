@@ -12,6 +12,9 @@ plugins:
 
 # Markdown 設定
 markdown: kramdown
+theme: minima
+plugins:
+  - jekyll-feed
 kramdown:
   input: GFM # GitHub Flavored Markdownを使用
 

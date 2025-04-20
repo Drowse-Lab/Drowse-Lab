@@ -113,7 +113,7 @@ h1 {
     margin-top: 20px;
   }
   
-  .post {
+  .blogPosts {
     border: 1px solid #ccc;
     padding: 10px;
     margin-bottom: 10px;
@@ -121,13 +121,13 @@ h1 {
     background-color: #f9f9f9;
   }
   
-  .post small {
+  .blogPosts small {
     display: block;
     margin-top: 10px;
     color: #666;
   }
   
-  .post button {
+  .blogPosts button {
     margin-top: 10px;
     background-color: #f44336;
     color: white;

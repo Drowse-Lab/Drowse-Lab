@@ -1,36 +1,52 @@
-// GitHub APIトークン（安全な方法で管理する必要があります）
-const GITHUB_TOKEN = 'YOUR_GITHUB_ACCESS_TOKEN';
+// postsフォルダからMarkdownファイルを取得して表示
+const loadBlogPosts = async () => {
+  const postsDiv = document.getElementById("blogPosts");
+  postsDiv.innerHTML = "読み込み中...";
 
-// プライベートリポジトリの情報
-const REPO_OWNER = 'Drowse-Lab';
-const REPO_NAME = 'mail-address';
+  try {
+    // postsフォルダ内のファイルを指定
+    const posts = ["2025-04-20-welcome.md"]; // 必要に応じてファイル名を追加
+    postsDiv.innerHTML = ""; // 初期化
 
-// GitHub APIを使用してリポジトリのコミット情報を取得
-const fetchCommits = async (branch = 'main', since = '2025-01-01T00:00:00Z') => {
-  const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/commits?sha=${branch}&since=${since}`;
-  const response = await fetch(url, {
-    headers: {
-      'Authorization': `token ${GITHUB_TOKEN}`,
-      'Accept': 'application/vnd.github.v3+json'
+    for (const post of posts) {
+      const response = await fetch(`posts/${post}`);
+      const text = await response.text();
+
+      // MarkdownをHTMLに変換
+      const html = parseMarkdownToHtml(text);
+
+      const postElement = document.createElement("div");
+      postElement.className = "post";
+      postElement.innerHTML = html;
+      postsDiv.appendChild(postElement);
     }
-  });
-  const commits = await response.json();
-  return commits;
+  } catch (error) {
+    postsDiv.innerHTML = "記事の読み込み中にエラーが発生しました。";
+    console.error(error);
+  }
 };
 
-// コミット情報を表示
-const displayCommits = async () => {
-  const commits = await fetchCommits();
-  const commitsDiv = document.getElementById('commits');
-  commitsDiv.innerHTML = ''; // 既存の内容をクリア
-  commits.forEach(commit => {
-    const commitElement = document.createElement('div');
-    commitElement.className = 'commit';
-    commitElement.innerHTML = `
-      <input type="radio" name="commit" value="${commit.sha}">
-      <p>${commit.commit.message}</p>
-      <small>作者: ${commit.commit.author.name} - 日付: ${new Date(commit.commit.author.date).toLocaleString()}</small>
-    `;
-    commitsDiv.appendChild(commitElement);
+// MarkdownをHTMLに変換
+const parseMarkdownToHtml = (markdown) => {
+  const lines = markdown.split("\n");
+  let html = "";
+
+  lines.forEach((line) => {
+    if (line.startsWith("# ")) {
+      html += `<h1>${line.substring(2)}</h1>`;
+    } else if (line.startsWith("## ")) {
+      html += `<h2>${line.substring(3)}</h2>`;
+    } else if (line.startsWith("---")) {
+      // メタデータはスキップ
+    } else {
+      html += `<p>${line}</p>`;
+    }
   });
+
+  return html;
+};
+
+// ページロード時にブログ記事を読み込む
+window.onload = () => {
+  loadBlogPosts();
 };

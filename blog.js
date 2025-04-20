@@ -5,11 +5,11 @@ const loadBlogPosts = async () => {
   try {
     // GitHub APIからMarkdownファイルを取得
     const headers = {
-      Authorization: `Bearer YOUR_PERSONAL_ACCESS_TOKEN` // トークンを置き換えてください
+      Authorization: `Bearer YOUR_PERSONAL_ACCESS_TOKEN` // 必要に応じてトークンを設定
     };
     const response = await fetch('https://api.github.com/repos/Drowse-Lab/Drowse-Lab/contents/posts', { headers });
     if (!response.ok) {
-      throw new Error("Markdownファイルの取得に失敗しました");
+      throw new Error(`HTTPエラー: ${response.status}`);
     }
 
     const files = await response.json();

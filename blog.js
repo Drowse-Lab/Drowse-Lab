@@ -1,14 +1,14 @@
-// postsフォルダからMarkdownファイルを動的に取得して表示
-const response = await fetch('https://api.github.com/repos/Drowse-Lab/Drowse-Lab/contents/_posts');
-const files = await response.json();
-const markdownFiles = files.filter(file => file.name.endsWith(".md"));
+// GitHub APIからMarkdownファイルを取得して表示
 const loadBlogPosts = async () => {
   const postsDiv = document.getElementById("blogPosts");
   postsDiv.innerHTML = "読み込み中...";
 
   try {
-    // GitHub APIを使用してpostsフォルダ内のファイル一覧を取得
-    const response = await fetch('https://api.github.com/repos/Drowse-Lab/Drowse-Lab/contents/posts');
+    // GitHub APIを使用して_postsディレクトリ内のファイル一覧を取得
+    const headers = {
+      Authorization: `Bearer YOUR_PERSONAL_ACCESS_TOKEN` // トークンを置き換えてください
+    };
+    const response = await fetch('https://api.github.com/repos/Drowse-Lab/Drowse-Lab/contents/_posts', { headers });
     if (!response.ok) {
       throw new Error("Markdownファイルの取得に失敗しました");
     }
@@ -23,7 +23,7 @@ const loadBlogPosts = async () => {
       const text = await fileResponse.text();
 
       // MarkdownをHTMLに変換
-      const html = parseMarkdownToHtml(text);
+      const html = marked(text);
 
       const postElement = document.createElement("div");
       postElement.className = "post";
@@ -36,31 +36,7 @@ const loadBlogPosts = async () => {
   }
 };
 
-// MarkdownをHTMLに変換
-const parseMarkdownToHtml = (markdown) => {
-  const lines = markdown.split("\n");
-  let html = "";
-
-  lines.forEach((line) => {
-    if (line.startsWith("# ")) {
-      html += `<h1>${line.substring(2)}</h1>`;
-    } else if (line.startsWith("## ")) {
-      html += `<h2>${line.substring(3)}</h2>`;
-    } else if (line.startsWith("### ")) {
-      html += `<h3>${line.substring(4)}</h3>`;
-    } else if (line.startsWith("- ")) {
-      html += `<li>${line.substring(2)}</li>`;
-    } else if (line.trim() === "") {
-      html += "<br>";
-    } else {
-      html += `<p>${line}</p>`;
-    }
-  });
-
-  return html;
-};
-
 // ページロード時にブログ記事を読み込む
-window.onload = () => {
-  loadBlogPosts();
+window.onload = async () => {
+  await loadBlogPosts();
 };

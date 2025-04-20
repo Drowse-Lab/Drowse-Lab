@@ -5,7 +5,7 @@ const loadBlogPosts = async () => {
   try {
     // GitHub APIからMarkdownファイルを取得
     const headers = {
-      Authorization: `Bearer YOUR_PERSONAL_ACCESS_TOKEN` // 必要に応じてトークンを追加
+      Authorization: `Bearer YOUR_PERSONAL_ACCESS_TOKEN` // トークンを置き換えてください
     };
     const response = await fetch('https://api.github.com/repos/Drowse-Lab/Drowse-Lab/contents/posts', { headers });
     if (!response.ok) {
@@ -30,8 +30,8 @@ const loadBlogPosts = async () => {
       postsDiv.appendChild(postElement);
     }
   } catch (error) {
-    postsDiv.innerHTML = "記事の読み込み中にエラーが発生しました。";
-    console.error(error);
+    postsDiv.innerHTML = `記事の読み込み中にエラーが発生しました: ${error.message}`;
+    console.error('Error:', error);
   }
 };
 

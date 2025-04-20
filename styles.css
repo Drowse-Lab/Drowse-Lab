@@ -108,4 +108,35 @@ h1 {
     text-decoration: underline;
 }
 
-
+/* 投稿一覧のスタイル */
+#blogPosts {
+    margin-top: 20px;
+  }
+  
+  .post {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+  
+  .post small {
+    display: block;
+    margin-top: 10px;
+    color: #666;
+  }
+  
+  .post button {
+    margin-top: 10px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  
+  .post button:hover {
+    background-color: #d32f2f;
+  }

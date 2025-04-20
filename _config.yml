@@ -2,8 +2,8 @@
 # サイトの基本設定
 title: Drowse Lab Blog
 description: "Drowse Labのブログ"
-baseurl: "/Drowse-Lab" # リポジトリ名を指定 (プロジェクトページの場合)
-url: "https://drowse-lab.github.io" # サイトの基本URL (トップページのURL)
+baseurl: "/Drowse-Lab" # リポジトリ名を指定 (プロジェクトページ用)
+url: "https://drowse-lab.github.io" # サイトの基本URL
 theme: minima # Jekyllのテーマ（minimaはデフォルトテーマ）
 plugins:
   - jekyll-feed # RSSフィードを生成するプラグイン

@@ -1,0 +1,16 @@
+title: Drowse Lab Blog
+description: "Drowse Labのブログ"
+baseurl: "/Drowse-Lab" # リポジトリ名を指定 (プロジェクトページの場合)
+url: "https://drowse-lab.github.io" # サイトの基本URL (トップページのURL
+theme: minima # Jekyllのテーマ（minimaはデフォルトテーマ）
+plugins:
+  - jekyll-feed # RSSフィードを生成するプラグイン
+markdown: kramdown
+kramdown:
+  input: GFM # GitHub Flavored Markdownを使用
+
+# ページやディレクトリの設定
+collections:
+  posts:
+    output: true
+permalink: /:categories/:year/:month/:day/:title/ # URL構造

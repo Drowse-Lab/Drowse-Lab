@@ -1,0 +1,25 @@
+$primary-color: #3498db;
+$font-stack: 'Arial', sans-serif;
+
+body {
+  font-family: $font-stack;
+  color: $primary-color;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background: $primary-color;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+}
+
+a {
+  color: $primary-color;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

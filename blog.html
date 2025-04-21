@@ -3,11 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Drowse Lab - Blog</title>
+  <title>{{ site.title }} - ブログ</title>
   <link rel="stylesheet" href="styles.css">
-  <link rel="icon" type="image/DrowseLabIcon" href="image/DrowseLabIcon.jpg"> 
-  <!-- marked.jsを読み込み -->
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
   <nav>
@@ -18,11 +15,18 @@
     </ul>
   </nav>
 
-  <h1>ブログ</h1>
-  <div id="blogPosts">
-  </div>
+  <h1>{{ site.title }} - ブログ</h1>
+  <p>{{ site.description }}</p>
 
-  <!-- blog.jsを読み込み -->
-  <script src="blog.js"></script>
+  <!-- 記事一覧 -->
+  <ul>
+    {% for post in site.posts %}
+      <li>
+        <a href="{{ post.url }}">{{ post.title }}</a><br>
+        <small>{{ post.date | date: "%Y年%m月%d日" }}</small>
+        <p>{{ post.excerpt }}</p>
+      </li>
+    {% endfor %}
+  </ul>
 </body>
 </html>

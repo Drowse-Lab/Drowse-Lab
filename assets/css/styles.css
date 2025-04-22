@@ -67,6 +67,14 @@ h1 {
     margin: 5%; /* ピクセルから％に変換 */
 }
 
+.member:hover {
+    transform: scale(1.05);
+}
+
+.member a:hover {
+    text-decoration: underline;
+}
+
 .member {
     border: 0.5% solid #ddd; /* 枠の設定 */
     background-color: #fff; /* 背景色 */
@@ -79,9 +87,7 @@ h1 {
     transition: transform 0.2s; /* ホバー時のアニメーションはそのまま */
 }
 
-.member:hover {
-    transform: scale(1.05);
-}
+
 
 .member img {
     width: 40%; /* ピクセルから％に変換 */
@@ -103,9 +109,7 @@ h1 {
     color: #007bff;
 }
 
-.member a:hover {
-    text-decoration: underline;
-}
+
 
 /* 投稿一覧のスタイル */
 #blogPosts {
@@ -147,20 +151,66 @@ h1 {
     flex-direction: column;
     align-items: center;
 }
-
-/* 個々のリポジトリボックスのスタイル */
-.repo {
-    border: 0.5% solid #ddd; /* 枠線 */
+/* メンバー枠のスタイル調整 */
+.member {
+    border: 1px solid #ddd; /* 枠の設定 */
     background-color: #fff; /* 背景色 */
-    border-radius: 2%; /* ピクセルから％に変換 */
-    box-shadow: 0 2% 5% rgba(0, 0, 0, 0.1); /* 影 */
-    padding: 3%; /* ピクセルから％に変換 */
-    margin: 2%; /* ピクセルから％に変換 */
-    width: 80%; /* 幅の調整 */
-    max-width: 90%; /* 最大幅を％に変換 */
+    border-radius: 5%; /* 角を丸く */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 影 */
+    padding: 2%; /* 内側の余白を少なく */
+    margin: 1%; /* 外側の余白を少なく */
+    text-align: center; /* 中央揃え */
+    width: 200px; /* 幅を固定 */
+    transition: transform 0.2s; /* ホバー時のアニメーション */
+}
+
+/* メンバー枠内の文字サイズ調整 */
+.member h2 {
+    font-size: 1.2rem; /* タイトルの文字サイズを拡大 */
+    color: #333;
+    margin: 10px 0;
+}
+
+.member a {
+    font-size: 1rem; /* リンク文字のサイズを調整 */
+    text-decoration: none;
+    color: #007bff;
+}
+
+.member img {
+    width: 80px; /* アイコン画像のサイズを小さく */
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+/* リポジトリ枠のスタイル調整 */
+.repo {
+    border: 1px solid #ddd; /* 枠線 */
+    background-color: #fff; /* 背景色 */
+    border-radius: 5%; /* 角を丸く */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 影 */
+    padding: 2%; /* 内側の余白を少なく */
+    margin: 1%; /* 外側の余白を少なく */
+    width: 90%; /* 幅を調整 */
+    max-width: 500px; /* 最大幅を制限 */
     transition: transform 0.2s; /* ホバー時のアニメーション */
     text-align: left; /* テキストの左揃え */
 }
+
+/* リポジトリ内の文字サイズ調整 */
+.repo h3 {
+    font-size: 1.5rem; /* タイトルの文字サイズを拡大 */
+    color: #007bff; /* 青色 */
+    margin-bottom: 10px;
+}
+
+.repo p {
+    font-size: 1rem; /* 説明文の文字サイズを調整 */
+    color: #333;
+    line-height: 1.6;
+}
+
 
 /* リポジトリボックスのホバー時の動き */
 .repo:hover {
@@ -174,13 +224,6 @@ h1 {
     color: #007bff; /* 青色 */
     font-size: 120%; /* 相対フォントサイズ */
     text-decoration: none;
-}
-
-/* リポジトリの説明 */
-.repo p {
-    margin: 5% 0; /* ピクセルから％に変換 */
-    color: #333;
-    line-height: 1.6;
 }
 
 /* 特定リポジトリをハイライト */

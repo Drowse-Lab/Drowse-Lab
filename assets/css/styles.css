@@ -140,3 +140,63 @@ h1 {
   .post button:hover {
     background-color: #d32f2f;
   }
+
+/* リポジトリリスト全体のスタイル */
+#repo-list {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 個々のリポジトリボックスのスタイル */
+.repo {
+    border: 1px solid #ddd; /* 枠線 */
+    background-color: #fff; /* 背景色 */
+    border-radius: 8px; /* 角の丸み */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 影 */
+    padding: 15px; /* 内側の余白 */
+    margin: 10px; /* 外側の余白 */
+    width: 80%; /* 幅の調整 */
+    max-width: 600px; /* 最大幅 */
+    transition: transform 0.2s; /* ホバー時のアニメーション */
+    text-align: left; /* テキストの左揃え */
+}
+
+/* リポジトリボックスのホバー時の動き */
+.repo:hover {
+    transform: scale(1.05); /* 少し拡大 */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* 影を強調 */
+}
+
+/* リポジトリ名のスタイル */
+.repo h3 {
+    margin: 0;
+    color: #007bff; /* 青色 */
+    font-size: 1.5em;
+    text-decoration: none;
+}
+
+/* リポジトリの説明 */
+.repo p {
+    margin: 10px 0;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* 特定リポジトリをハイライト */
+.repo.highlight {
+    background-color: #ffeb3b; /* 黄色背景 */
+}
+
+/* GitHubリンクのスタイル */
+.repo a {
+    display: inline-block;
+    margin-top: 10px;
+    text-decoration: none;
+    color: #007bff;
+}
+
+.repo a:hover {
+    text-decoration: underline;
+}

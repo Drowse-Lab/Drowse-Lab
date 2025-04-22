@@ -19,11 +19,10 @@ nav ul {
     padding: 0;
     display: flex;
     justify-content: center;
-    align-items: center; /* 垂直方向の中央揃え */
 }
 
 nav ul li {
-    margin: 0 10px; /* 左右の余白をコンパクトに */
+    margin: 0 2%; /* ピクセルから％に変換 */
 }
 
 nav ul li a {
@@ -69,7 +68,7 @@ h1 {
 }
 
 .member {
-    border: 1px solid #ddd; /* 枠の設定 */
+    border: 0.5% solid #ddd; /* 枠の設定 */
     background-color: #fff; /* 背景色 */
     border-radius: 2%; /* ピクセルから％に変換 */
     box-shadow: 0 2% 5% rgba(0, 0, 0, 0.1); /* 影のサイズを相対指定に変換 */
@@ -114,7 +113,7 @@ h1 {
 }
 
 .blogPosts {
-    border: 1px solid #ccc;
+    border: 0.5% solid #ccc;
     padding: 2%; /* ピクセルから％に変換 */
     margin-bottom: 5%; /* ピクセルから％に変換 */
     border-radius: 2%; /* ピクセルから％に変換 */
@@ -151,7 +150,7 @@ h1 {
 
 /* 個々のリポジトリボックスのスタイル */
 .repo {
-    border: 1px solid #ddd; /* 枠線 */
+    border: 0.5% solid #ddd; /* 枠線 */
     background-color: #fff; /* 背景色 */
     border-radius: 2%; /* ピクセルから％に変換 */
     box-shadow: 0 2% 5% rgba(0, 0, 0, 0.1); /* 影 */

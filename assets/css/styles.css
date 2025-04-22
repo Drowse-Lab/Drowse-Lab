@@ -46,7 +46,7 @@ h1 {
 .member nav ul li {
     display: inline;
     margin: 0;
-    padding: 2%; /* ピクセルから％に変換 */
+    padding: 2% 5%; /* ピクセルから％に変換 */
 }
 
 .member nav ul li a {

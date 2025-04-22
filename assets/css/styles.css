@@ -19,10 +19,11 @@ nav ul {
     padding: 0;
     display: flex;
     justify-content: center;
+    align-items: center; /* 垂直方向の中央揃え */
 }
 
 nav ul li {
-    margin: 0 2%; /* ピクセルから％に変換 */
+    margin: 0 10px; /* 左右の余白をコンパクトに */
 }
 
 nav ul li a {

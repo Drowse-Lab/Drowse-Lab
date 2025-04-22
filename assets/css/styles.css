@@ -8,26 +8,30 @@ body {
 }
 
 nav {
-    background-color: #333;
-    color: white;
-    padding: 2%; /* ピクセルから％に変換 */
+    background-color: #333; /* 背景色（黒） */
+    color: white; /* テキストの色 */
+    padding: 0.5%; /* 内側の余白を小さく */
+    margin: 0 auto; /* 外側の余白を中央揃え */
+    box-sizing: border-box; /* パディングを含めたサイズ計算 */
 }
 
 nav ul {
-    list-style-type: none;
+    list-style-type: none; /* リストの点を非表示 */
     margin: 0;
     padding: 0;
     display: flex;
-    justify-content: center;
+    justify-content: center; /* ナビゲーション項目を中央揃え */
 }
 
 nav ul li {
-    margin: 0 2%; /* ピクセルから％に変換 */
+    margin: 0 1%; /* 各項目の間隔を調整 */
 }
 
 nav ul li a {
-    color: white;
-    text-decoration: none;
+    color: white; /* リンクの文字色 */
+    text-decoration: none; /* 下線を非表示 */
+    padding: 0.5% 1%; /* リンク内のパディングを小さく */
+    font-size: 1rem; /* フォントサイズの調整 */
 }
 
 h1 {

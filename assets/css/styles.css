@@ -10,7 +10,7 @@ body {
 nav {
     background-color: #333;
     color: white;
-    padding: 10px;
+    padding: 2%; /* ピクセルから％に変換 */
 }
 
 nav ul {
@@ -22,7 +22,7 @@ nav ul {
 }
 
 nav ul li {
-    margin: 0 15px;
+    margin: 0 2%; /* ピクセルから％に変換 */
 }
 
 nav ul li a {
@@ -32,9 +32,8 @@ nav ul li a {
 
 h1 {
     text-align: center;
-    margin-top: 20px;
+    margin-top: 5%; /* ピクセルから％に変換 */
 }
-
 
 .member nav ul {
     list-style: none;
@@ -47,7 +46,7 @@ h1 {
 .member nav ul li {
     display: inline;
     margin: 0;
-    padding: 10px 20px;
+    padding: 2%; /* ピクセルから％に変換 */
 }
 
 .member nav ul li a {
@@ -58,26 +57,26 @@ h1 {
 .member h1 {
     text-align: center;
     color: #333;
-    margin-top: 20px;
+    margin-top: 5%; /* ピクセルから％に変換 */
 }
 
 .members-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    margin: 20px;
+    margin: 5%; /* ピクセルから％に変換 */
 }
 
 .member {
     border: 1px solid #ddd; /* 枠の設定 */
     background-color: #fff; /* 背景色 */
-    border-radius: 8px; /* 角の丸み */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 枠の影 */
-    padding: 15px; /* 内側の余白 */
-    margin: 10px; /* 外側の余白 */
+    border-radius: 2%; /* ピクセルから％に変換 */
+    box-shadow: 0 2% 5% rgba(0, 0, 0, 0.1); /* 影のサイズを相対指定に変換 */
+    padding: 3%; /* ピクセルから％に変換 */
+    margin: 2%; /* ピクセルから％に変換 */
     text-align: center; /* 中央揃え */
-    width: 250px; /* 横幅 */
-    transition: transform 0.2s; /* ホバー時のアニメーション */
+    width: 20%; /* ピクセルから％に変換 */
+    transition: transform 0.2s; /* ホバー時のアニメーションはそのまま */
 }
 
 .member:hover {
@@ -85,21 +84,21 @@ h1 {
 }
 
 .member img {
-    width: 100px;
-    height: 100px;
+    width: 40%; /* ピクセルから％に変換 */
+    height: auto; /* 高さを自動調整 */
     border-radius: 50%;
-    margin-bottom: 10px;
+    margin-bottom: 2%; /* ピクセルから％に変換 */
 }
 
 .member h2 {
-    font-size: 18px;
+    font-size: 120%; /* 相対フォントサイズ */
     color: #333;
-    margin: 10px 0;
+    margin: 5% 0; /* ピクセルから％に変換 */
 }
 
 .member a {
     display: inline-block;
-    margin-top: 10px;
+    margin-top: 5%; /* ピクセルから％に変換 */
     text-decoration: none;
     color: #007bff;
 }
@@ -110,40 +109,40 @@ h1 {
 
 /* 投稿一覧のスタイル */
 #blogPosts {
-    margin-top: 20px;
-  }
-  
-  .blogPosts {
+    margin-top: 5%; /* ピクセルから％に変換 */
+}
+
+.blogPosts {
     border: 1px solid #ccc;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
+    padding: 2%; /* ピクセルから％に変換 */
+    margin-bottom: 5%; /* ピクセルから％に変換 */
+    border-radius: 2%; /* ピクセルから％に変換 */
     background-color: #f9f9f9;
-  }
-  
-  .blogPosts small {
+}
+
+.blogPosts small {
     display: block;
-    margin-top: 10px;
+    margin-top: 5%; /* ピクセルから％に変換 */
     color: #666;
-  }
-  
-  .blogPosts button {
-    margin-top: 10px;
+}
+
+.blogPosts button {
+    margin-top: 5%; /* ピクセルから％に変換 */
     background-color: #f44336;
     color: white;
     border: none;
-    padding: 5px 10px;
-    border-radius: 3px;
+    padding: 2% 5%; /* ピクセルから％に変換 */
+    border-radius: 2%; /* ピクセルから％に変換 */
     cursor: pointer;
-  }
-  
-  .post button:hover {
+}
+
+.post button:hover {
     background-color: #d32f2f;
-  }
+}
 
 /* リポジトリリスト全体のスタイル */
 #repo-list {
-    margin-top: 20px;
+    margin-top: 5%; /* ピクセルから％に変換 */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -153,12 +152,12 @@ h1 {
 .repo {
     border: 1px solid #ddd; /* 枠線 */
     background-color: #fff; /* 背景色 */
-    border-radius: 8px; /* 角の丸み */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 影 */
-    padding: 15px; /* 内側の余白 */
-    margin: 10px; /* 外側の余白 */
+    border-radius: 2%; /* ピクセルから％に変換 */
+    box-shadow: 0 2% 5% rgba(0, 0, 0, 0.1); /* 影 */
+    padding: 3%; /* ピクセルから％に変換 */
+    margin: 2%; /* ピクセルから％に変換 */
     width: 80%; /* 幅の調整 */
-    max-width: 600px; /* 最大幅 */
+    max-width: 90%; /* 最大幅を％に変換 */
     transition: transform 0.2s; /* ホバー時のアニメーション */
     text-align: left; /* テキストの左揃え */
 }
@@ -166,20 +165,20 @@ h1 {
 /* リポジトリボックスのホバー時の動き */
 .repo:hover {
     transform: scale(1.05); /* 少し拡大 */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* 影を強調 */
+    box-shadow: 0 4% 10% rgba(0, 0, 0, 0.2); /* 影を強調 */
 }
 
 /* リポジトリ名のスタイル */
 .repo h3 {
     margin: 0;
     color: #007bff; /* 青色 */
-    font-size: 1.5em;
+    font-size: 120%; /* 相対フォントサイズ */
     text-decoration: none;
 }
 
 /* リポジトリの説明 */
 .repo p {
-    margin: 10px 0;
+    margin: 5% 0; /* ピクセルから％に変換 */
     color: #333;
     line-height: 1.6;
 }
@@ -192,7 +191,7 @@ h1 {
 /* GitHubリンクのスタイル */
 .repo a {
     display: inline-block;
-    margin-top: 10px;
+    margin-top: 5%; /* ピクセルから％に変換 */
     text-decoration: none;
     color: #007bff;
 }

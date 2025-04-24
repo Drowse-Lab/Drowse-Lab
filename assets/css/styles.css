@@ -21,17 +21,23 @@ nav ul {
     padding: 0;
     display: flex;
     justify-content: center; /* ナビゲーション項目を中央揃え */
+    font-size: 0.9rem; /* 全体のフォントサイズを小さく */
 }
 
 nav ul li {
-    margin: 0 1%; /* 各項目の間隔を調整 */
+    margin: 0 0.5%; /* 各項目の間隔を縮小 */
 }
 
 nav ul li a {
     color: white; /* リンクの文字色 */
     text-decoration: none; /* 下線を非表示 */
-    padding: 0.5% 1%; /* リンク内のパディングを小さく */
-    font-size: 1.2rem; /* リンク文字サイズを拡大 */
+    padding: 0.3% 0.8%; /* リンク内のパディングを小さく */
+    font-size: 0.9rem; /* リンクのフォントサイズをさらに調整 */
+    transition: color 0.2s; /* 色変更のアニメーション */
+}
+
+nav ul li a:hover {
+    color: #ffeb3b; /* ホバー時の文字色変更 */
 }
 
 h1 {

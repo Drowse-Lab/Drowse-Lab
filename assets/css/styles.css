@@ -32,7 +32,7 @@ nav ul li a {
     color: white; /* リンクの文字色 */
     text-decoration: none; /* 下線を非表示 */
     padding: 0.3% 0.8%; /* リンク内のパディングを小さく */
-    font-size: 1.5rem; /* リンクのフォントサイズをさらに調整 */
+    font-size: 1.2rem; /* リンクのフォントサイズをさらに調整 */
     transition: color 0.2s; /* 色変更のアニメーション */
     white-space: nowrap;
     word-break: keep-all;
@@ -65,7 +65,7 @@ h1 {
     color: white; /* リンクの文字色 */
     text-decoration: none; /* 下線を非表示 */
     padding: 0.3% 0.8%; /* リンク内のパディングを小さく */
-    font-size: 1.5rem; /* リンクのフォントサイズをさらに調整 */
+    font-size: 1.2rem; /* リンクのフォントサイズをさらに調整 */
     transition: color 0.2s; /* 色変更のアニメーション */
     white-space: nowrap;
     word-break: keep-all;

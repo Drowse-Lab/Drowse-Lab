@@ -34,6 +34,8 @@ nav ul li a {
     padding: 0.3% 0.8%; /* リンク内のパディングを小さく */
     font-size: 0.9rem; /* リンクのフォントサイズをさらに調整 */
     transition: color 0.2s; /* 色変更のアニメーション */
+    white-space: nowrap;
+    word-break: keep-all;
 }
 
 nav ul li a:hover {

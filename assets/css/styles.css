@@ -25,7 +25,7 @@ nav ul {
 }
 
 nav ul li {
-    margin: 0 0.5%; /* 各項目の間隔を縮小 */
+    margin: 0 0.7%; /* 各項目の間隔を縮小 */
 }
 
 nav ul li a {
@@ -62,8 +62,11 @@ h1 {
 }
 
 .member nav ul li a {
-    color: white;
-    text-decoration: none;
+    color: white; /* リンクの文字色 */
+    text-decoration: none; /* 下線を非表示 */
+    padding: 0.3% 0.8%; /* リンク内のパディングを小さく */
+    font-size: 0.9rem; /* リンクのフォントサイズをさらに調整 */
+    transition: color 0.2s; /* 色変更のアニメーション */
     white-space: nowrap;
     word-break: keep-all;
 }

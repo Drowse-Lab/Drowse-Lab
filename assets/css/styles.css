@@ -64,6 +64,8 @@ h1 {
 .member nav ul li a {
     color: white;
     text-decoration: none;
+    white-space: nowrap;
+    word-break: keep-all;
 }
 
 .member h1 {

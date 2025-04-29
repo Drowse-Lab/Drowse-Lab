@@ -1,14 +1,8 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const membersDiv = document.getElementById('members');
 
-    // GitHub Personal Access Token (必要に応じて設定)
-    const GITHUB_TOKEN = 'your_actual_personal_access_token'; // トークンを設定
-    // const headers = GITHUB_TOKEN
-    //     ? { Authorization: `token ${GITHUB_TOKEN}` }
-    //     : {};
-
     try {
-        const response = await fetch('https://api.github.com/orgs/Drowse-Lab/members', { headers });
+        const response = await fetch('https://api.github.com/orgs/Drowse-Lab/members');
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);

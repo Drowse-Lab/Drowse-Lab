@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const membersDiv = document.getElementById('members');
 
     // GitHub Personal Access Token (必要に応じて設定)
-    const GITHUB_TOKEN = 'your_github_personal_access_token'; // トークンを入力してください
+    const GITHUB_TOKEN = 'your_github_personal_access_token'; // トークンを設定してください
 
     try {
         const headers = GITHUB_TOKEN
@@ -20,7 +20,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
-        members.forEach(member => {
+        // メンバー情報を順番に処理
+        for (const member of members) {
             const memberElement = document.createElement('div');
             memberElement.classList.add('member');
 
@@ -35,9 +36,20 @@ document.addEventListener('DOMContentLoaded', async () => {
             const id = document.createElement('p');
             id.textContent = `ID: ${member.id}`;
 
+            // 詳細情報を取得
+            const detailsResponse = await fetch(member.url, { headers });
+            const details = await detailsResponse.json();
+
             const profileLink = document.createElement('a');
             profileLink.href = member.html_url;
             profileLink.textContent = 'GitHub Profile';
+
+            // 例: 詳細情報から「名前」を追加
+            if (details.name) {
+                const realName = document.createElement('p');
+                realName.textContent = `名前: ${details.name}`;
+                memberElement.appendChild(realName);
+            }
 
             memberElement.appendChild(avatar);
             memberElement.appendChild(name);
@@ -45,7 +57,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             memberElement.appendChild(profileLink);
 
             membersDiv.appendChild(memberElement);
-        });
+        }
     } catch (error) {
         console.error('Error fetching members:', error);
         membersDiv.textContent = 'メンバー情報の読み込み中にエラーが発生しました。';

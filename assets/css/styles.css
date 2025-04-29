@@ -40,11 +40,14 @@ nav ul li a {
 
 nav ul li a:hover {
     color: #ffeb3b; /* ホバー時の文字色変更 */
+    
 }
 
 h1 {
     text-align: center;
     margin-top: 5%; /* ピクセルから％に変換 */
+    padding-left: 5px; /* 左に余白を */
+
 }
 
 .member nav ul {
@@ -74,7 +77,6 @@ h1 {
 .member h1 {
     text-align: center;
     color: #333;
-    margin-top: 5%; /* ピクセルから％に変換 */
 }
 
 .members-container {
@@ -151,19 +153,23 @@ h1 {
 /* メンバー枠内の文字サイズ調整 */
 .member h2 {
     font-size: 1.2rem; /* タイトルの文字サイズを拡大 */
+    
 }
 
 .member a {
     font-size: 1rem; /* リンク文字のサイズを拡大 */
+    
 }
 
 /* リポジトリ内の文字サイズ調整 */
 .repo h3 {
     font-size: 1.4rem; /* タイトルの文字サイズを拡大 */
+    
 }
 
 .repo p {
     font-size: 1rem; /* 説明文の文字サイズを拡大 */
+    
 }
 
 .member img {

@@ -26,15 +26,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             avatar.alt = `${member.login}'s avatar`;
             avatar.classList.add('avatar');
 
-            const id = document.createElement('h2');
+            const id = document.createElement('p');
             id.textContent = `ID: ${member.login}`;
 
             // 詳細情報をAPIから取得
             const detailsResponse = await fetch(member.url);
             const details = await detailsResponse.json();
 
-            const name = document.createElement('p');
-            name.textContent = `name: ${details.name || '不明'}`; // 名前が公開されていない場合は「不明」を表示
+            const username = document.createElement('p');
+            username.textContent = `username: ${details.name || '不明'}`; // 名前が公開されていない場合は「不明」を表示
 
             const profileLink = document.createElement('a');
             profileLink.href = member.html_url;
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             // DOMに要素を追加
             memberElement.appendChild(avatar);
             memberElement.appendChild(id);
-            memberElement.appendChild(name);
+            memberElement.appendChild(username);
             memberElement.appendChild(profileLink);
 
             membersDiv.appendChild(memberElement);

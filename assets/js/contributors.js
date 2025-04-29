@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const details = await detailsResponse.json();
 
             const name = document.createElement('p');
-            name.textContent = `ユーザーネーム: ${details.name || '不明'}`; // 名前が公開されていない場合は「不明」を表示
+            name.textContent = `username: ${details.name || '不明'}`; // 名前が公開されていない場合は「不明」を表示
 
             const profileLink = document.createElement('a');
             profileLink.href = member.html_url;

@@ -1,14 +1,15 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const membersDiv = document.getElementById('members');
 
-    // GitHub Personal Access Token (必要に応じて設定)
-    const GITHUB_TOKEN = 'your_github_personal_access_token'; // トークンを設定してください
+    // GitHub Personal Access Token (設定必須)
+    const GITHUB_TOKEN = 'your_actual_personal_access_token'; // トークンを設定してください
 
     try {
         const headers = GITHUB_TOKEN
             ? { Authorization: `token ${GITHUB_TOKEN}` }
             : {};
         const response = await fetch('https://api.github.com/orgs/Drowse-Lab/members', { headers });
+
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -20,7 +21,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
-        // メンバー情報を順番に処理
         for (const member of members) {
             const memberElement = document.createElement('div');
             memberElement.classList.add('member');
@@ -37,19 +37,24 @@ document.addEventListener('DOMContentLoaded', async () => {
             id.textContent = `ID: ${member.id}`;
 
             // 詳細情報を取得
-            const detailsResponse = await fetch(member.url, { headers });
-            const details = await detailsResponse.json();
+            try {
+                const detailsResponse = await fetch(member.url, { headers });
+                if (!detailsResponse.ok) {
+                    throw new Error(`Failed to fetch details for ${member.login}`);
+                }
+                const details = await detailsResponse.json();
+                if (details.name) {
+                    const realName = document.createElement('p');
+                    realName.textContent = `名前: ${details.name}`;
+                    memberElement.appendChild(realName);
+                }
+            } catch (detailsError) {
+                console.error(`Error fetching details for ${member.login}:`, detailsError);
+            }
 
             const profileLink = document.createElement('a');
             profileLink.href = member.html_url;
             profileLink.textContent = 'GitHub Profile';
-
-            // 例: 詳細情報から「名前」を追加
-            if (details.name) {
-                const realName = document.createElement('p');
-                realName.textContent = `名前: ${details.name}`;
-                memberElement.appendChild(realName);
-            }
 
             memberElement.appendChild(avatar);
             memberElement.appendChild(name);

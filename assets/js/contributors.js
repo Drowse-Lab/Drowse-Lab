@@ -1,15 +1,14 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const membersDiv = document.getElementById('members');
 
-    // GitHub Personal Access Token (設定必須)
-    const GITHUB_TOKEN = 'your_actual_personal_access_token'; // トークンを設定してください
+    // GitHub Personal Access Token (必要に応じて設定)
+    const GITHUB_TOKEN = 'your_actual_personal_access_token'; // 必要に応じてトークンを設定
+    const headers = GITHUB_TOKEN
+        ? { Authorization: `token ${GITHUB_TOKEN}` }
+        : {};
 
     try {
-        const headers = GITHUB_TOKEN
-            ? { Authorization: `token ${GITHUB_TOKEN}` }
-            : {};
         const response = await fetch('https://api.github.com/orgs/Drowse-Lab/members', { headers });
-
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -21,6 +20,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
+        // メンバー情報を順番に処理
         for (const member of members) {
             const memberElement = document.createElement('div');
             memberElement.classList.add('member');
@@ -43,6 +43,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     throw new Error(`Failed to fetch details for ${member.login}`);
                 }
                 const details = await detailsResponse.json();
+
                 if (details.name) {
                     const realName = document.createElement('p');
                     realName.textContent = `名前: ${details.name}`;
@@ -65,6 +66,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     } catch (error) {
         console.error('Error fetching members:', error);
-        membersDiv.textContent = 'メンバー情報の読み込み中にエラーが発生しました。';
+        membersDiv.textContent = `メンバー情報の読み込み中にエラーが発生しました。詳細: ${error.message}`;
     }
 });

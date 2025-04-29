@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             name.textContent = member.login;
 
             const id = document.createElement('p');
-            id.textContent = member.id;
+            id.textContent = `ID: ${member.id}`;
 
             const profileLink = document.createElement('a');
             profileLink.href = member.html_url;

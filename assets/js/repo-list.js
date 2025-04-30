@@ -23,10 +23,10 @@ function displayRepos(repos) {
     const repoElement = document.createElement("div");
     repoElement.className = "repo";
 
-    // 特定のリポジトリをハイライト
-    if (repo.name.includes("The Four Primitive and Weapons")) {
-      repoElement.classList.add("highlight");
-    }
+    // リンク情報の追加
+    const homepageLink = repo.homepage
+      ? `<p><a href="${repo.homepage}" target="_blank">Homepage</a></p>`
+      : "";
 
     // リポジトリ情報をHTMLに追加
     repoElement.innerHTML = `
@@ -34,6 +34,7 @@ function displayRepos(repos) {
       <p>${repo.description || "No description provided."}</p>
       <p><strong>Main Language:</strong> ${repo.language || "Not specified"}</p>
       <p><a href="${repo.html_url}" target="_blank">View on GitHub</a></p>
+      ${homepageLink} <!-- ホームページリンクを追加 -->
     `;
     repoListElement.appendChild(repoElement);
   });

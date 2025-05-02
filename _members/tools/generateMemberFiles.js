@@ -6,7 +6,7 @@ const membersDir = path.join(__dirname, '_members'); // _membersディレクト�
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const ORG_NAME = 'Drowse-Lab'; // 組織名
 
-// GitHub API で組織メンバーを取得
+// GitHub APIで組織メンバーを取得
 async function fetchMembers() {
     try {
         const response = await fetch(`https://api.github.com/orgs/${ORG_NAME}/members`, {
@@ -26,8 +26,8 @@ async function fetchMembers() {
     }
 }
 
-// メンバーごとのファイルを生成
-async function generateMemberFiles() {
+// メンバーの設定を確認またはデフォルト設定を適用
+async function ensureDefaultSettings() {
     try {
         // _membersディレクトリを作成（存在しない場合）
         if (!fs.existsSync(membersDir)) {
@@ -40,18 +40,19 @@ async function generateMemberFiles() {
             const filePath = path.join(membersDir, `${member.login}.md`); // メンバーID用のファイル名
 
             if (!fs.existsSync(filePath)) {
+                // ファイルがない場合、デフォルト設定を強制適用
+                console.log(`No file found for ${member.login}, applying default settings.`);
                 const content = `# ${member.login}\n\nparticles:\n  - type: default\n`;
                 fs.writeFileSync(filePath, content, 'utf8');
-                console.log(`Created file: ${filePath}`);
             } else {
-                console.log(`File already exists: ${filePath}`);
+                console.log(`File exists for ${member.login}: ${filePath}`);
             }
         });
     } catch (error) {
-        console.error('Error generating member files:', error);
+        console.error('Error ensuring default settings:', error);
         process.exit(1);
     }
 }
 
 // 実行
-generateMemberFiles();
+ensureDefaultSettings();

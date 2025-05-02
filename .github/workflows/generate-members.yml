@@ -3,31 +3,28 @@ name: Generate Member Files
 on:
   push:
     branches:
-      - main # mainブランチへのプッシュ時に実行
-  workflow_dispatch: # 手動での実行も可能
+      - main
+  workflow_dispatch:
 
 jobs:
   generate-member-files:
     runs-on: ubuntu-latest
 
     steps:
-      # リポジトリをチェックアウト
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      # Node.js をセットアップ
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 16
 
-      # 必要な依存関係をインストール（必要に応じて変更）
       - name: Install dependencies
+        working-directory: _members/tools
         run: npm install
 
-      # スクリプトを実行
       - name: Execute generateMemberFiles script
         run: node _members/tools/generateMemberFiles.js
         env:

@@ -1,4 +1,4 @@
-name: Generate Member Files
+name: Generate Member Files on Build
 
 on:
   push:
@@ -25,7 +25,7 @@ jobs:
         working-directory: _members/tools
         run: npm install
 
-      - name: Execute generateMemberFiles script
+      - name: Generate Member Files
         run: node _members/tools/generateMemberFiles.js
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

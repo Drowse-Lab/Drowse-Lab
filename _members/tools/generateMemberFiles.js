@@ -2,14 +2,10 @@ const fs = require('fs');
 const path = require('path');
 const fetch = require('node-fetch');
 
-// `_members/` ディレクトリのパス
 const membersDir = path.join(__dirname, '_members');
-
-// GitHub API トークン (GitHub Actions の GITHUB_TOKEN を使用)
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-const ORG_NAME = 'Drowse-Lab'; // 組織名
+const ORG_NAME = 'Drowse-Lab';
 
-// GitHub API からメンバー情報を取得
 async function fetchMembers() {
     const response = await fetch(`https://api.github.com/orgs/${ORG_NAME}/members`, {
         headers: {
@@ -24,7 +20,6 @@ async function fetchMembers() {
     return response.json();
 }
 
-// メンバー用のファイルを生成
 async function generateMemberFiles() {
     if (!fs.existsSync(membersDir)) {
         fs.mkdirSync(membersDir);
@@ -44,23 +39,7 @@ async function generateMemberFiles() {
         }
     });
 }
-async function fetchMembers() {
-    const response = await fetch(`https://api.github.com/orgs/${ORG_NAME}/members`, {
-        headers: {
-            Authorization: `token ${GITHUB_TOKEN}`
-        }
-    });
 
-    if (!response.ok) {
-        throw new Error(`Failed to fetch members: ${response.statusText}`);
-    }
-
-    const members = await response.json();
-    console.log('Fetched Members:', members); // デバッグ用
-    return members;
-}
-
-// 実行
 generateMemberFiles().catch((error) => {
     console.error('Error generating member files:', error);
     process.exit(1);

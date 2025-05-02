@@ -48,44 +48,6 @@ function displayRepos(repos) {
 
 // リポジトリをクリックしたときの処理
 async function handleRepoClick(repo, extraInfoElement) {
-  if (extraInfoElement.style.display === "block") {
-    extraInfoElement.style.display = "none"; // 閉じる
-    return;
-  }
-
-  // 表示をリセット
-  extraInfoElement.style.display = "block";
-  extraInfoElement.innerHTML = `<p>Loading additional info...</p>`;
-
-  try {
-    // 全ての言語を取得
-    const languagesResponse = await fetch(repo.languages_url);
-    const languages = await languagesResponse.json();
-
-    // Issuesを取得
-    const issuesResponse = await fetch(repo.issues_url.replace("{/number}", ""));
-    const issues = await issuesResponse.json();
-
-    // 表示内容を更新
-    extraInfoElement.innerHTML = `
-      <h4>Languages:</h4>
-      <ul>
-        ${Object.entries(languages).map(([lang, count]) => `<li>${lang}: ${count} bytes</li>`).join("")}
-      </ul>
-      <h4>Issues:</h4>
-      <ul>
-        ${issues.length > 0
-          ? issues.map(issue => `<li><a href="${issue.html_url}" target="_blank">${issue.title}</a></li>`).join("")
-          : "<li>No issues found.</li>"}
-      </ul>
-    `;
-  } catch (error) {
-    console.error("Error fetching additional info:", error);
-    extraInfoElement.innerHTML = `<p>Error loading additional info.</p>`;
-  }
-}
-// リポジトリをクリックしたときの処理
-async function handleRepoClick(repo, extraInfoElement) {
   const repoElement = extraInfoElement.parentElement;
 
   // 他のリポジトリを閉じる
@@ -131,5 +93,6 @@ async function handleRepoClick(repo, extraInfoElement) {
     }
   }
 }
+
 // 実行
 fetchRepos();

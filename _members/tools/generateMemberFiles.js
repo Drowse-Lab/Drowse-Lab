@@ -44,6 +44,21 @@ async function generateMemberFiles() {
         }
     });
 }
+async function fetchMembers() {
+    const response = await fetch(`https://api.github.com/orgs/${ORG_NAME}/members`, {
+        headers: {
+            Authorization: `token ${GITHUB_TOKEN}`
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch members: ${response.statusText}`);
+    }
+
+    const members = await response.json();
+    console.log('Fetched Members:', members); // デバッグ用
+    return members;
+}
 
 // 実行
 generateMemberFiles().catch((error) => {

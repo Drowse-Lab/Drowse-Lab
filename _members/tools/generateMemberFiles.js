@@ -29,21 +29,16 @@ async function fetchMembers() {
 // メンバーの設定を確認またはデフォルト設定を適用
 async function ensureDefaultSettings() {
     try {
-        // _membersディレクトリを作成（存在しない場合）
-        if (!fs.existsSync(membersDir)) {
-            fs.mkdirSync(membersDir, { recursive: true });
-        }
-
         const members = await fetchMembers();
 
         members.forEach((member) => {
             const filePath = path.join(membersDir, `${member.login}.md`); // メンバーID用のファイル名
 
             if (!fs.existsSync(filePath)) {
-                // ファイルがない場合、デフォルト設定を強制適用
-                console.log(`No file found for ${member.login}, applying default settings.`);
-                const content = `# ${member.login}\n\nparticles:\n  - type: default\n`;
-                fs.writeFileSync(filePath, content, 'utf8');
+                // ファイルがない場合、デフォルト設定を適用（ファイル生成はしない）
+                console.log(`No file found for ${member.login}, using default settings.`);
+                const defaultContent = `# ${member.login}\n\nparticles:\n  - type: default\n`;
+                // 必要に応じて、defaultContent を他の処理に渡す
             } else {
                 console.log(`File exists for ${member.login}: ${filePath}`);
             }

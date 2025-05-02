@@ -40,6 +40,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             profileLink.href = member.html_url;
             profileLink.textContent = 'GitHub Profile';
 
+            // パーティクル情報を取得
+            const particlesResponse = await fetch(`_members/${member.login}.md`);
+            if (particlesResponse.ok) {
+                const particleText = await particlesResponse.text();
+
+                // Markdownを解析してパーティクルを表示
+                const particleElement = document.createElement('pre');
+                particleElement.textContent = `Particles: \n${particleText}`;
+                memberElement.appendChild(particleElement);
+            } else {
+                console.warn(`No particle file found for user: ${member.login}`);
+            }
+
             // DOMに要素を追加
             memberElement.appendChild(avatar);
             memberElement.appendChild(id);

@@ -191,6 +191,7 @@ h1 {
     max-width: 400px; /* 最大幅を小さく */
     transition: transform 0.2s; /* ホバー時のアニメーション */
     text-align: left; /* テキストの左揃え */
+    cursor: pointer;
 }
 
 
@@ -223,4 +224,17 @@ h1 {
 
 .repo a:hover {
     text-decoration: underline;
+}
+
+
+.repo:hover {
+  background-color: #f9f9f9; /* 背景色はそのまま */
+}
+
+.extra-info {
+  margin-top: 2%; /* 10px を 2% に変更 */
+  padding: 2%; /* 10px を 2% に変更 */
+  background-color: #f4f4f4; /* 背景色はそのまま */
+  border: 0.3% solid #ddd; /* 1px を 0.3% に変更 */
+  border-radius: 1%; /* 5px を 1% に変更 */
 }

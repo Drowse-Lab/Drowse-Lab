@@ -1,0 +1,9 @@
+{
+  "name": "generate-member-files",
+  "version": "1.0.0",
+  "description": "Script to generate member files",
+  "main": "generateMemberFiles.js",
+  "dependencies": {
+    "node-fetch": "^2.6.1"
+  }
+}

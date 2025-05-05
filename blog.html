@@ -3,12 +3,15 @@ layout: default
 title: ブログ一覧
 permalink: /blog.html
 ---
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ page.title }}</title>
+  <link rel="stylesheet" href="{{ '/assets/css/styles.css' | relative_url }}">
+  <link rel="icon" href="{{ '/assets/image/DrowseLabIcon.jpg' | relative_url }}" type="image/jpeg" />
+</head>
 
 <header class="site-header">
-  <div class="nav-container">
-    <a href="{{ '/index.html' | relative_url }}">
-      <img src="{{ '/assets/image/DrowseLabIcon.jpg' | relative_url }}" alt="Drowse Lab ロゴ" class="logo">
-    </a>
     <nav class="main-nav">
       <ul>
         <li><a href="{{ '/index.html' | relative_url }}">ホーム</a></li>

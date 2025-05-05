@@ -1,43 +1,14 @@
-
-  ---
+---
 layout: default
 title: ブログ一覧
 permalink: /blog.html
 ---
-
-<div class="home">
-  <h1>ブログ一覧</h1>
-
-  <ul class="post-list">
-    {% for post in paginator.posts %}
-    <li>
-      <h2><a class="post-link" href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
-      <p>{{ post.excerpt }}</p>
-      <div class="post-meta">
-        <span class="post-date">{{ post.date | date: "%Y年%-m月%-d日" }}</span><br>
-        カテゴリ:
-        {% for cat in post.categories %}
-          {{ cat }}{% if forloop.last == false %}, {% endif %}
-        {% endfor %}
-        <br>
-        タグ:
-        {% for tag in post.tags %}
-          {{ tag }}{% if forloop.last == false %}, {% endif %}
-        {% endfor %}
-      </div>
-    </li>
-    {% if forloop.last == false %}
-    <hr>
-    {% endif %}
-    {% endfor %}
-  </ul>
 
 <header class="site-header">
   <div class="nav-container">
     <a href="{{ '/index.html' | relative_url }}">
       <img src="{{ '/assets/image/DrowseLabIcon.jpg' | relative_url }}" alt="Drowse Lab ロゴ" class="logo">
     </a>
-
     <nav class="main-nav">
       <ul>
         <li><a href="{{ '/index.html' | relative_url }}">ホーム</a></li>
@@ -48,6 +19,29 @@ permalink: /blog.html
     </nav>
   </div>
 </header>
+
+<main class="blog-main">
+  <h1>ブログ一覧</h1>
+
+  <ul class="post-list">
+    {% for post in paginator.posts %}
+      <li class="post-item">
+        <h2><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
+        <p>{{ post.excerpt }}</p>
+        <div class="post-meta">
+          <span>{{ post.date | date: "%Y年%-m月%-d日" }}</span><br>
+          カテゴリ:
+          {% for cat in post.categories %}
+            {{ cat }}{% if forloop.last == false %}, {% endif %}
+          {% endfor %}<br>
+          タグ:
+          {% for tag in post.tags %}
+            {{ tag }}{% if forloop.last == false %}, {% endif %}
+          {% endfor %}
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
 
   <div class="pagination">
     {% if paginator.previous_page %}
@@ -60,4 +54,4 @@ permalink: /blog.html
       <a href="{{ paginator.next_page_path | relative_url }}">次のページ →</a>
     {% endif %}
   </div>
-</div>
+</main>

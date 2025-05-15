@@ -1,6 +1,6 @@
 # hrmcngs
 particles:
-  - type: star
-    color: blue
-  - type: circle
-    color: red
+  - type: "star"
+    color: "blue"
+  - type: "circle"
+    color: "red"

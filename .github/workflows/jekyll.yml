@@ -51,7 +51,15 @@ jobs:
       - name: Upload artifact
         # Automatically uploads an artifact from the './_site' directory by default
         uses: actions/upload-pages-artifact@v3
-
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+         with:
+          ruby-version: '3.1'
+          bundler-cache: true
+      - name: Disable bundler frozen
+          run: bundle config set frozen false
+      - name: Install Dependencies
+          run: bundle install
   # Deployment job
   deploy:
     environment:

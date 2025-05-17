@@ -14,12 +14,15 @@ collections:
 # ブログ記事の並びとページネーション
 paginate: 5
 paginate_path: "/blog/page:num"
+# plugins:
+#   - jekyll-paginate
 plugins:
-  - jekyll-paginate
+  - jekyll-feed
+
 
 # カスタム変数（必要に応じて）
-author: れい
-subtitle: "刀とコードの研究室"
+author: 零鮫
+subtitle: "mod更新など"
 
 # ソーシャルリンクなど（オプション）
 social_links:

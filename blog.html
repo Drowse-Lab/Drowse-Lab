@@ -29,11 +29,11 @@ permalink: /blog.html
       {% for post in site.posts %}
         <li>
         <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-        <span>{{ post.date | date: "%Y-%m-%d" }}</span>
+        <!-- <span>{{ post.date | date: "%Y-%m-%d" }}</span> -->
     </li>
       {% endfor %}
         <div class="post-meta">
-          <!-- <span>{{ post.date | date: "%Y年%-m月%-d日" }}</span><br> -->
+          <span>{{ post.date | date: "%Y年%-m月%-d日" }}</span><br>
           カテゴリ:
           {% for cat in post.categories %}
             {{ cat }}{% if forloop.last == false %}, {% endif %}

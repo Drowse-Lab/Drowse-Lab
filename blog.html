@@ -26,12 +26,14 @@ permalink: /blog.html
   <h1>ブログ一覧</h1>
 
   <ul class="post-list">
-    {% for post in paginator.posts %}
-      <li class="post-item">
-        <h2><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
-        <p>{{ post.excerpt }}</p>
+      {% for post in site.posts %}
+        <li>
+        <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+        <span>{{ post.date | date: "%Y-%m-%d" }}</span>
+    </li>
+      {% endfor %}
         <div class="post-meta">
-          <span>{{ post.date | date: "%Y年%-m月%-d日" }}</span><br>
+          <!-- <span>{{ post.date | date: "%Y年%-m月%-d日" }}</span><br> -->
           カテゴリ:
           {% for cat in post.categories %}
             {{ cat }}{% if forloop.last == false %}, {% endif %}

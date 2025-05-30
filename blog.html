@@ -10,8 +10,13 @@ permalink: /blog.html
   <title>{{ page.title }}</title>
   <link rel="stylesheet" href="/assets/css/styles.css">
   <link rel="icon" href="/assets/image/DrowseLabIcon.jpg" type="image/jpeg" />
+  <!-- marked.js CDN（必須）-->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <!-- blog.js（必須）-->
+  <script src="/assets/js/blog.js" defer></script>
 </head>
 
+<body>
 <header class="site-header">
   <nav>
     <ul>
@@ -26,23 +31,17 @@ permalink: /blog.html
 <main class="blog-main">
   <h1>ブログ一覧</h1>
 
-  <ul class="post-list">
-    {% assign sorted_posts = site.posts.docs | sort: 'date' | reverse %}
-    {% for post in sorted_posts %}
-      <li>
-        <a href="{{ post.url | relative_url }}">{{ post.data.title }}</a>
-        <div class="post-meta">
-          <span>{{ post.data.date | date: "%Y年%-m月%-d日" }}</span><br>
-          カテゴリ:
-          {% for cat in post.data.categories %}
-            {{ cat }}{% if forloop.last == false %}, {% endif %}
-          {% endfor %}<br>
-          タグ:
-          {% for tag in post.data.tags %}
-            {{ tag }}{% if forloop.last == false %}, {% endif %}
-          {% endfor %}
-        </div>
-      </li>
-    {% endfor %}
-  </ul>
+  <!-- フィルタUI -->
+  <div style="margin-bottom:1em;">
+    <label>タグ:</label>
+    <select id="tagFilter"><option value="">すべて</option></select>
+    <label>ユーザー:</label>
+    <select id="authorFilter"><option value="">すべて</option></select>
+  </div>
+
+  <!-- 記事一覧の出力先 -->
+  <div id="blogPosts">
+    <!-- JavaScriptにより、ここに記事が描画されます -->
+  </div>
 </main>
+</body>

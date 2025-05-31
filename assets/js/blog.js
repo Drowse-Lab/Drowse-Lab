@@ -94,3 +94,20 @@ const loadBlogPosts = async () => {
     const filterHandler = () => {
       const tag = tagFilter ? tagFilter.value : "";
       const author = authorFilter ? authorFilter.value : "";
+      renderPosts(posts, tag, author);
+    };
+    if (tagFilter) tagFilter.onchange = filterHandler;
+    if (authorFilter) authorFilter.onchange = filterHandler;
+
+    // 初期表示
+    renderPosts(posts);
+
+  } catch (error) {
+    postsDiv.innerHTML = `記事の読み込み中にエラーが発生しました: ${error.message}`;
+    console.error('Error:', error);
+  }
+};
+
+window.onload = async () => {
+  await loadBlogPosts();
+};

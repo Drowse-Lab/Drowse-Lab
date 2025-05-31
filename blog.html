@@ -15,33 +15,33 @@ permalink: /blog.html
 </head>
 
 <body>
-<header class="site-header">
-  <nav>
-    <ul>
-      <li><a href="{{ '/index.html' | relative_url }}">ホーム</a></li>
-      <li><a href="{{ '/blog.html' | relative_url }}">ブログ</a></li>
-      <li><a href="{{ '/contributors.html' | relative_url }}">メンバー紹介</a></li>
-      <li><a href="{{ '/repo-list.html' | relative_url }}">リポジトリ紹介</a></li>
-    </ul>
-  </nav>
-</header>
+  <header class="site-header">
+    <nav>
+      <ul>
+        <li><a href="{{ '/index.html' | relative_url }}">ホーム</a></li>
+        <li><a href="{{ '/blog.html' | relative_url }}">ブログ</a></li>
+        <li><a href="{{ '/contributors.html' | relative_url }}">メンバー紹介</a></li>
+        <li><a href="{{ '/repo-list.html' | relative_url }}">リポジトリ紹介</a></li>
+      </ul>
+    </nav>
+  </header>
 
-<main class="blog-main">
-  <h1>ブログ一覧</h1>
+  <main class="blog-main">
+    <h1>ブログ一覧</h1>
 
-  <div style="margin-bottom:1em;">
-    <label>タグ:</label>
-    <select id="tagFilter"><option value="">すべて</option></select>
-    <label>ユーザー:</label>
-    <select id="authorFilter"><option value="">すべて</option></select>
-  </div>
+    <div style="margin-bottom:1em;">
+      <label>タグ:</label>
+      <select id="tagFilter"><option value="">すべて</option></select>
+      <label>ユーザー:</label>
+      <select id="authorFilter"><option value="">すべて</option></select>
+    </div>
 
-  <div id="blogPosts">
-    <!-- JavaScriptでmarkdownファイルを読み込んで表示 -->
-  </div>
+    <div id="blogPosts">
+      <!-- JavaScriptでmarkdownファイルを読み込んで表示 -->
+    </div>
 
-  <div class="pagination" id="pagination">
-    <!-- JavaScriptでページ番号を追加 -->
-  </div>
-</main>
+    <div class="pagination" id="pagination">
+      <!-- JavaScriptでページ番号を追加 -->
+    </div>
+  </main>
 </body>

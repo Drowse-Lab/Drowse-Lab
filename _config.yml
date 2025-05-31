@@ -1,38 +1,3 @@
-# title: Drowse Lab
-# description: "れいのブログと開発記録"
-# baseurl: "/Drowse-Lab"
-
-# url: "https://drowse-lab.github.io/Drowse-Lab"
-# markdown: kramdown
-# theme: minima
-
-# # 各ページのナビゲーションリンクに使用
-# collections:
-#   posts:
-#     output: true
-
-# # ブログ記事の並びとページネーション
-# paginate: 5
-# paginate_path: "/blog/page:num"
-# # plugins:
-# #   - jekyll-paginate
-# plugins:
-#   - jekyll-feed
-
-
-# # カスタム変数（必要に応じて）
-# author: 零鮫
-# subtitle: "mod更新など"
-
-# # ソーシャルリンクなど（オプション）
-# social_links:
-#   github: https://github.com/Drowse-Lab
-
-# # 表示形式の設定（任意）
-# permalink: /:categories/:year/:month/:day/:title/
-
-# # Google Analytics など（オプション）
-# # google_analytics: UA-XXXXXXXXX-X
 
 title: Drowse Lab
 description: "れいのブログと開発記録"
@@ -45,12 +10,12 @@ collections:
   posts:
     output: true
 
+paginate: 5
+paginate_path: "/blog/page:num"
+
 plugins:
   - jekyll-feed
   - jekyll-paginate
-
-paginate: 5
-paginate_path: "/blog/page:num"
 
 permalink: /:categories/:year/:month/:day/:title/
 

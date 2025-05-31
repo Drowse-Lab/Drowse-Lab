@@ -8,12 +8,10 @@ permalink: /blog.html
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{{ page.title }}</title>
-  <link rel="stylesheet" href="/assets/css/styles.css">
   <link rel="icon" href="/assets/image/DrowseLabIcon.jpg" type="image/jpeg" />
-  <!-- marked.js CDN（必須）-->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <!-- blog.js（必須）-->
-  <script src="/assets/js/blog.js" defer></script>
+  <link rel="stylesheet" href="/assets/css/styles.css">
+<script src="/assets/js/blog.js" defer></script>
 </head>
 
 <body>
@@ -31,7 +29,6 @@ permalink: /blog.html
 <main class="blog-main">
   <h1>ブログ一覧</h1>
 
-  <!-- フィルタUI -->
   <div style="margin-bottom:1em;">
     <label>タグ:</label>
     <select id="tagFilter"><option value="">すべて</option></select>
@@ -39,9 +36,7 @@ permalink: /blog.html
     <select id="authorFilter"><option value="">すべて</option></select>
   </div>
 
-  <!-- 記事一覧の出力先 -->
   <div id="blogPosts">
-    <!-- JavaScriptにより、ここに記事が描画されます -->
   </div>
 </main>
 </body>

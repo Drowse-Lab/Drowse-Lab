@@ -9,6 +9,13 @@ theme: minima
 collections:
   posts:
     output: true
+defaults:
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: post
+      permalink: /blog/:year/:month/:day/:title/
 
 paginate: 5
 paginate_path: "/blog/page:num"
@@ -17,7 +24,6 @@ plugins:
   - jekyll-feed
   - jekyll-paginate
 
-permalink: /:categories/:year/:month/:day/:title/
 
 author: 零鮫
 subtitle: "mod更新など"

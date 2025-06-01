@@ -28,7 +28,13 @@ permalink: /blog.html
 
   <main class="blog-main">
     <h1>ブログ一覧</h1>
-
+ <ul>
+    {% for post in site.posts %}
+      <li>
+        <a href="{{ post.url | relative_url }}">{{ post.title }}</a> - {{ post.date | date: "%Y-%m-%d" }}
+      </li>
+    {% endfor %}
+  </ul>
     <div style="margin-bottom:1em;">
       <label>タグ:</label>
       <select id="tagFilter"><option value="">すべて</option></select>

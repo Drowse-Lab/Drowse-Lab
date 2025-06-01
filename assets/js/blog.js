@@ -1,7 +1,7 @@
 // 必要: marked.js CDN等で読み込むこと
 
 const fetchMarkdownPosts = async () => {
-  const response = await fetch('https://api.github.com/repos/Drowse-Lab/Drowse-Lab/contents/posts');
+  const response = await fetch('https://api.github.com/repos/Drowse-Lab/Drowse-Lab/contents/_posts');
   if (!response.ok) throw new Error(`HTTPエラー: ${response.status}`);
   return await response.json();
 };
@@ -19,7 +19,6 @@ function parseFrontMatter(mdText) {
     const [key, ...rest] = line.split(':');
     if (key && rest.length) {
       let value = rest.join(':').trim();
-      // tags, categories など配列ならパース
       if (value.startsWith('[') && value.endsWith(']')) {
         value = value.slice(1, -1).split(',').map(s => s.trim().replace(/^["']|["']$/g, ''));
       }
@@ -63,7 +62,6 @@ const loadBlogPosts = async () => {
     const files = await fetchMarkdownPosts();
     const markdownFiles = files.filter(file => file.name.endsWith(".md"));
 
-    // すべての記事データを取得
     const posts = [];
     for (const file of markdownFiles) {
       const fileResponse = await fetch(file.download_url);
@@ -72,7 +70,6 @@ const loadBlogPosts = async () => {
       posts.push(parsed);
     }
 
-    // タグとユーザーを抽出してセレクトボックスにセット
     const tagSet = new Set(), authorSet = new Set();
     posts.forEach(post => {
       (post.data.tags || []).forEach(tag => tagSet.add(tag));
@@ -90,7 +87,6 @@ const loadBlogPosts = async () => {
         [...authorSet].sort().map(author => `<option value="${author}">${author}</option>`).join('');
     }
 
-    // イベントハンドラ
     const filterHandler = () => {
       const tag = tagFilter ? tagFilter.value : "";
       const author = authorFilter ? authorFilter.value : "";
@@ -99,9 +95,7 @@ const loadBlogPosts = async () => {
     if (tagFilter) tagFilter.onchange = filterHandler;
     if (authorFilter) authorFilter.onchange = filterHandler;
 
-    // 初期表示
     renderPosts(posts);
-
   } catch (error) {
     postsDiv.innerHTML = `記事の読み込み中にエラーが発生しました: ${error.message}`;
     console.error('Error:', error);

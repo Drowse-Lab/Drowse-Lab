@@ -1,4 +1,4 @@
-/* body */
+
 body {
     font-family: Arial, sans-serif;
     line-height: 1.6;
@@ -45,7 +45,7 @@ nav ul li a:hover {
 
 h1 {
     text-align: center;
-    margin-top: 5%; /* ピクセルから％に変換 */
+    margin-top: 5%; 
     padding-left: 5px; /* 左に余白を */
 
 }
@@ -61,7 +61,7 @@ h1 {
 .member nav ul li {
     display: inline;
     margin: 0;
-    padding: 2% 5%; /* ピクセルから％に変換 */
+    padding: 2% 5%; 
 }
 
 .member nav ul li a {
@@ -83,7 +83,7 @@ h1 {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    margin: 5%; /* ピクセルから％に変換 */
+    margin: 5%; 
 }
 
 .member:hover {
@@ -98,30 +98,30 @@ h1 {
 
 /* 投稿一覧のスタイル */
 #blogPosts {
-    margin-top: 5%; /* ピクセルから％に変換 */
+    margin-top: 5%; 
 }
 
 .blogPosts {
     border: 0.5% solid #ccc;
-    padding: 2%; /* ピクセルから％に変換 */
-    margin-bottom: 5%; /* ピクセルから％に変換 */
-    border-radius: 2%; /* ピクセルから％に変換 */
+    padding: 2%; 
+    margin-bottom: 5%; 
+    border-radius: 2%; 
     background-color: #f9f9f9;
 }
 
 .blogPosts small {
     display: block;
-    margin-top: 5%; /* ピクセルから％に変換 */
+    margin-top: 5%;
     color: #666;
 }
 
 .blogPosts button {
-    margin-top: 5%; /* ピクセルから％に変換 */
+    margin-top: 5%; 
     background-color: #f44336;
     color: white;
     border: none;
-    padding: 2% 5%; /* ピクセルから％に変換 */
-    border-radius: 2%; /* ピクセルから％に変換 */
+    padding: 2% 5%;
+    border-radius: 2%; 
     cursor: pointer;
 }
 
@@ -131,7 +131,7 @@ h1 {
 
 /* リポジトリリスト全体のスタイル */
 #repo-list {
-    margin-top: 5%; /* ピクセルから％に変換 */
+    margin-top: 5%; 
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -205,19 +205,19 @@ h1 {
 .repo h3 {
     margin: 0;
     color: #007bff; /* 青色 */
-    font-size: 120%; /* 相対フォントサイズ */
+    font-size: 120%; 
     text-decoration: none;
 }
 
 /* 特定リポジトリをハイライト */
 .repo.highlight {
-    background-color: #ffeb3b; /* 黄色背景 */
+    background-color: #ffeb3b; 
 }
 
 /* GitHubリンクのスタイル */
 .repo a {
     display: inline-block;
-    margin-top: 5%; /* ピクセルから％に変換 */
+    margin-top: 5%; 
     text-decoration: none;
     color: #007bff;
 }
@@ -232,9 +232,9 @@ h1 {
 }
 
 .extra-info {
-  margin-top: 2%; /* 10px を 2% に変更 */
-  padding: 2%; /* 10px を 2% に変更 */
-  background-color: #f4f4f4; /* 背景色はそのまま */
-  border: 0.3% solid #ddd; /* 1px を 0.3% に変更 */
-  border-radius: 1%; /* 5px を 1% に変更 */
+  margin-top: 2%; 
+  padding: 2%; 
+  background-color: #f4f4f4; 
+  border: 0.3% solid #ddd;
+  border-radius: 1%; 
 }

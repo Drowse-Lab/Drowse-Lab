@@ -34,14 +34,23 @@ main_nav: true
 
   <main class="blog-main">
     <h1>ブログ一覧</h1>
- <ul>
+<!--  <ul>
     {% for post in site.posts %}
       <li>
         <a href="{{ post.url | relative_url }}">{{ post.title }}</a> - {{ post.date | date: "%Y-%m-%d" }}
       <p>タグ: {{ post.tags | join: ", " }}</p>
       </li>
     {% endfor %}
-  </ul>
+  </ul> -->
+    <ul>
+  {% for post in site.posts %}
+    <li>
+      <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+      <p>{{ post.date | date: "%Y-%m-%d" }} - {{ post.author }}</p>
+      <p>タグ: {{ post.tags | join: ", " }}</p>
+    </li>
+  {% endfor %}
+</ul>
 <div class="filters">
   <label for="tagFilter">タグで絞り込み:</label>
   <select id="tagFilter">

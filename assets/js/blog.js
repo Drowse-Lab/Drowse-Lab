@@ -108,3 +108,6 @@ const loadBlogPosts = async () => {
 window.onload = async () => {
   await loadBlogPosts();
 };
+document.getElementById("tagFilter").addEventListener("change", renderPosts);
+document.getElementById("authorFilter").addEventListener("change", renderPosts);
+

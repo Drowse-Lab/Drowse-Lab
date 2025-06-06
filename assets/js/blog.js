@@ -1,7 +1,7 @@
 // 必要: marked.js CDN等で読み込むこと
 
 const fetchMarkdownPosts = async () => {
-  const response = await fetch('https://api.github.com/repos/Drowse-Lab/Drowse-Lab/contents/posts');
+  const response = await fetch('https://api.github.com/repos/Drowse-Lab/Drowse-Lab/contents/_posts');
   if (!response.ok) throw new Error(`HTTPエラー: ${response.status}`);
   return await response.json();
 };

@@ -41,12 +41,18 @@ main_nav: true
       </li>
     {% endfor %}
   </ul>
-    <div style="margin-bottom:1em;">
-      <label>タグ:</label>
-      <select id="tagFilter"><option value="">すべて</option></select>
-      <label>ユーザー:</label>
-      <select id="authorFilter"><option value="">すべて</option></select>
-    </div>
+<div class="filters">
+  <label for="tagFilter">タグで絞り込み:</label>
+  <select id="tagFilter">
+    <option value="">すべて</option>
+  </select>
+
+  <label for="authorFilter">ユーザーで絞り込み:</label>
+  <select id="authorFilter">
+    <option value="">すべて</option>
+  </select>
+</div>
+
 
      <div id="blogPosts"></div>
 

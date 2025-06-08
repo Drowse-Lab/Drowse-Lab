@@ -400,10 +400,11 @@ h1 {
 
 .filter-close {
   position: absolute;
-  top: 3%;
-  right: 3%;
+  top: 1rem; 
+  right: 1rem;
   background: none;
   font-size: 2rem;
   border: none;
   cursor: pointer;
 }
+

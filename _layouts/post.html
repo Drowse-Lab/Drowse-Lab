@@ -140,16 +140,16 @@ layout: default
   <script type="text/javascript">
   function copyShareUrl() {
     const input = document.getElementById("shareUrl");
-    input.select();
-    document.execCommand("copy");
-    alert("URLをコピーしました！");
+    navigator.clipboard.writeText(input.value)
+      .then(() => alert("URLをコピーしました！"))
+      .catch(() => alert("コピーに失敗しました"));
   }
 
   function copyEmbedCode() {
-    const textarea = document.getElementById("embedCode");
-    textarea.select();
-    document.execCommand("copy");
-    alert("埋め込みコードをコピーしました！");
+    const code = document.getElementById("embedCode").value;
+    navigator.clipboard.writeText(code)
+      .then(() => alert("埋め込みコードをコピーしました！"))
+      .catch(() => alert("コピーに失敗しました"));
   }
 
   function toggleEmbed() {

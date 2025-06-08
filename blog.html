@@ -40,14 +40,18 @@ main_nav: true
   </div>
 </div> -->
     <!-- フィルターセクション -->
-<div id="filters" class="filters">
+<!-- ハンバーガーアイコン -->
+<button id="filterToggle" class="hamburger-button" aria-label="フィルター切り替え">
+  &#9776; フィルター
+</button>
+
+<!-- フィルターセクション（最初は非表示） -->
+<div id="filters" class="filters hidden">
   <div id="tag-buttons" class="filter-group">
     <p>タグで絞り込み:</p>
-    <!-- JSでタグボタンが追加される -->
   </div>
   <div id="author-buttons" class="filter-group">
     <p>投稿者で絞り込み:</p>
-    <!-- JSで著者ボタンが追加される -->
   </div>
 </div>
 

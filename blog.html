@@ -31,25 +31,21 @@ main_nav: true
   <main class="blog-main">
     <h1>ブログ一覧</h1>
 
-<div class="filters">
-  <div>
-    <label for="tagFilter">タグ</label>
-    <select id="tagFilter">
-      <option value="">すべて</option>
-    </select>
-  </div>
-  <div>
-    <label for="authorFilter">ユーザー</label>
-    <select id="authorFilter">
-      <option value="">すべて</option>
-    </select>
-  </div>
-</div>
-
+    <!-- フィルターセレクト -->
+    <div class="filters">
+      <label for="tagFilter">タグで絞り込み:</label>
+      <select id="tagFilter">
+        <option value="">すべて</option>
+      </select>Add commentMore actions
+      <label for="authorFilter">ユーザーで絞り込み:</label>
+      <select id="authorFilter">
+        <option value="">すべて</option>
+      </select>
+    </div>
 
     <!-- 投稿一覧 -->
     <div id="posts"></div>
-      <p>読み込み中...</p>
+<!--       <p>読み込み中...</p> -->
     </div>
     <script>
   window.allPosts = [

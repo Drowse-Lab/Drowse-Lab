@@ -31,30 +31,27 @@ main_nav: true
   <main class="blog-main">
     <h1>ブログ一覧</h1>
 
-<div class="filters">
+<!-- <div class="filters">
   <div class="filter-group" id="tagFilterGroup">
     <strong>タグ:</strong>
-    <!-- タグフィルターボタンがここに入る -->
   </div>
   <div class="filter-group" id="authorFilterGroup">
     <strong>ユーザー:</strong>
-    <!-- ユーザーフィルターボタンがここに入る -->
+  </div>
+</div> -->
+    <!-- フィルターセクション -->
+<div id="filters" class="filters">
+  <div id="tag-buttons" class="filter-group">
+    <p>タグで絞り込み:</p>
+    <!-- JSでタグボタンが追加される -->
+  </div>
+  <div id="author-buttons" class="filter-group">
+    <p>投稿者で絞り込み:</p>
+    <!-- JSで著者ボタンが追加される -->
   </div>
 </div>
 
 
-<!--     <div class="filters">
-      <label for="tagFilter">タグで絞り込み:</label>
-      <select id="tagFilter">
-        <option value="">すべて</option>
-      </select>
-      
-      <label for="authorFilter">ユーザーで絞り込み:</label>
-      <select id="authorFilter">
-        <option value="">すべて</option>
-      </select>
-    </div> -->
-    <!-- 投稿一覧 -->
     <div id="posts"></div>
 <!--       <p>読み込み中...</p> -->
     </div>

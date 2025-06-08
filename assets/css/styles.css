@@ -129,61 +129,6 @@ h1 {
     background-color: #d32f2f;
 }
 
-.post-card {
-  background-color: #fff;
-  padding: 2em;
-  margin: 2% auto;
-  border-radius: 0.5em;
-  box-shadow: 0 0.5em 1em rgba(0, 0, 0, 0.05);
-  width: 90%;
-  max-width: 90%;
-  transition: box-shadow 0.3s;
-}
-
-@media (min-width: 768px) {
-  .post-card {
-    width: 80%;
-  }
-}
-
-@media (min-width: 1024px) {
-  .post-card {
-    width: 60%;
-  }
-}
-
-.post-card h2 {
-  font-size: 1.5em;
-  margin: 0 0 0.5em;
-  color: #009688;
-  font-weight: bold;
-}
-
-.post-card h2 a {
-  text-decoration: none;
-  color: inherit;
-}
-
-.post-card .excerpt {
-  font-size: 1em;
-  color: #333;
-  margin-bottom: 1.2em;
-  line-height: 1.6;
-}
-
-.post-meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.9em;
-  color: #888;
-  flex-wrap: wrap;
-}
-
-.post-meta .category a {
-  color: #009688;
-  text-decoration: none;
-}
 
 
 /* リポジトリリスト全体のスタイル */
@@ -295,3 +240,65 @@ h1 {
   border: 0.3% solid #ddd;
   border-radius: 1%; 
 }
+/* ==== ブログカードの表示（画像参考スタイル） ==== */
+.post-card {
+  width: 90%;
+  max-width: 600px;
+  margin: 3% auto;
+  padding: 2em;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease;
+}
+
+.post-card:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.post-card h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #26a69a; /* 緑系 */
+  margin-bottom: 0.3em;
+}
+
+.post-card h2 a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.post-card .excerpt {
+  font-size: 1em;
+  color: #333;
+  margin-bottom: 1.2em;
+  line-height: 1.6;
+}
+
+.post-meta {
+  font-size: 0.85em;
+  color: #888;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-top: 1em;
+}
+
+.post-meta .post-date,
+.post-meta .category {
+  margin-right: 1em;
+}
+
+/* レスポンシブ調整 */
+@media (min-width: 768px) {
+  .post-card {
+    width: 70%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .post-card {
+    width: 50%;
+  }
+}
+

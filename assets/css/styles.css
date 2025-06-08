@@ -385,10 +385,10 @@ h1 {
 
 .filter-close {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
+  top: 0.5rem;
+  right: 0.5rem;
   background: none;
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   border: none;
   cursor: pointer;
   z-index: 12;

@@ -387,7 +387,7 @@ h1 {
   position: absolute;
 /*   top: clamp(0.5rem, 2vw, 0.5rem);
   right: clamp(0.5rem, 2vw, 0.5rem); */
-  top: 0.75rem;
+  top: 1.2rem;
   right: 1.2rem;
   background: #eee;
   font-size: 1.5rem;

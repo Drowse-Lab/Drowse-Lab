@@ -67,8 +67,8 @@ layout: default
         onclick="window.open(this.href, '{{ social.icon }}-share', 'width=550,height=255');return false;">
         <i class="fa fa-{{ social.icon | remove_first: '-square' }}-square fa-lg"></i>
       </a>
-    <!--{% endif %}
-    {% if social.name == "Facebook" and social.share == true %}
+{% endif %}
+<!--     {% if social.name == "Facebook" and social.share == true %}
       <a href="//www.facebook.com/sharer.php?t={{ page.title | cgi_escape }}&u={{ full_url | cgi_escape}}"
         onclick="window.open(this.href, '{{ social.icon }}-share', 'width=550,height=255');return false;">
         <i class="fa fa-{{ social.icon | remove_first: '-square' }}-square fa-lg"></i>
@@ -102,7 +102,7 @@ layout: default
         <i class="fa fa-{{ social.icon | remove_first: '-square' }} fa-lg"></i>
       </a>
     {% endif %}
-  {% endfor %}-->
+  {% endfor %} -->
 	
 </section>
 {% if site.inter_post_navigation == true %}

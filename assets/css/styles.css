@@ -302,3 +302,40 @@ h1 {
   }
 }
 
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
+  padding: 1em 2em;
+  margin: 2em auto;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 0.5em;
+  box-shadow: 0 0.3em 0.8em rgba(0, 0, 0, 0.05);
+  max-width: 80%;
+}
+
+.filters label {
+  font-weight: bold;
+  margin-right: 0.5em;
+  color: #333;
+}
+
+.filters select {
+  padding: 0.5em 1em;
+  border: 1px solid #ccc;
+  border-radius: 0.3em;
+  background-color: #f9f9f9;
+  font-size: 1em;
+  color: #333;
+  cursor: pointer;
+  transition: border 0.3s, box-shadow 0.3s;
+}
+
+.filters select:hover {
+  border-color: #009688;
+  box-shadow: 0 0 0.3em rgba(0, 150, 136, 0.2);
+}
+

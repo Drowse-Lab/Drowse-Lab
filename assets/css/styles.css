@@ -306,6 +306,37 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  gap: 1em;
+  margin: 2em 0;
+  font-size: 0.95rem;
+}
+
+.filters label {
+  margin-right: 0.5em;
+  font-weight: 500;
+  color: #333;
+}
+
+.filters select {
+  padding: 0.4em 0.8em;
+  font-size: 0.95rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: white;
+  color: #333;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.filters select:focus {
+  border-color: #007aff;
+  box-shadow: 0 0 0 2px rgba(0,122,255,0.2);
+}
+
+/* .filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 1.5rem;
   padding: 1.5rem 2rem;
   margin: 2rem auto;
@@ -338,10 +369,10 @@ h1 {
 
 .filters select:focus {
   outline: none;
-  border-color: #007aff; /* Apple Blue */
+  border-color: #007aff;
   box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.2);
 }
 
 .filters select:hover {
   border-color: #aaa;
-}
+} */

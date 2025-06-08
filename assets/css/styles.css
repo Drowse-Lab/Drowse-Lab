@@ -385,9 +385,7 @@ h1 {
 
 .filter-close {
   position: absolute;
-/*   top: clamp(0.5rem, 2vw, 0.5rem);
-  right: clamp(0.5rem, 2vw, 0.5rem); */
-  top: clamp(0.5rem, 2vw, 0.5rem);
+  top: 0.5rem;
   right: 2.5rem;
   background: #eee;
   font-size: 1.5rem;
@@ -396,7 +394,8 @@ h1 {
   cursor: pointer;
   z-index: 12;
   width: 2rem;
-  height: 2rem;
+  height: 0.5rem;
+/* 上のを少しここも試しに */
   line-height: 2rem;
   text-align: center;
   transition: background 0.2s;

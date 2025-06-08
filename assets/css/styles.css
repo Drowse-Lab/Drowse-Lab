@@ -355,9 +355,9 @@ h1 {
 
 .hamburger-button {
   position: fixed;
-  top: 5vh;          /* 画面の高さの5% */
-  left: 3vw;         /* 画面の幅の3% */
-  z-index: 5;
+  top: 5%;
+  left: 3%;
+  z-index: 11;
   font-size: 2rem;
   background: transparent;
   border: none;
@@ -367,44 +367,63 @@ h1 {
 .filter-sidebar {
   position: fixed;
   top: 0;
-  right: -80vw;       /* 初期は画面外へ（幅の80%分） */
-  width: 75vw;        /* 幅は画面の75% */
-  max-width: 300px;   /* 最大300pxまで */
+  right: -100%;
+  width: 80%;
+  max-width: 320px;
   height: 100vh;
-  background: white;
-  padding: 5%;
+  background: #ffffff;
+  padding: 1.5rem;
   transition: right 0.3s ease;
-  z-index: 5;
+  z-index: 10;
   box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+  overflow-y: auto;
 }
 
 .filter-sidebar.open {
   right: 0;
 }
 
+.filter-close {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: none;
+  font-size: 1.8rem;
+  border: none;
+  cursor: pointer;
+  z-index: 12;
+}
+
+.filter-section {
+  margin-bottom: 1.5rem;
+}
+
+.filter-sidebar h3 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 0.3rem;
+  color: #333;
+}
+
 .filter-button {
-  margin: 1% 2%;
-  padding: 0.5rem 1rem;
+  display: inline-block;
+  margin: 0.3rem 0.4rem;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.85rem;
   border: 1px solid #ccc;
   background: #f5f5f5;
   cursor: pointer;
-  border-radius: 0.5rem;
-  font-size: 1rem;
+  border-radius: 9999px;
+  transition: all 0.2s ease;
+}
+
+.filter-button:hover {
+  background: #e0e0e0;
 }
 
 .filter-button.active {
   background: #007aff;
-  color: white;
+  color: #fff;
   border-color: #007aff;
 }
-
-.filter-close {
-  position: absolute;
-  top: 1rem; 
-  right: 1rem;
-  background: none;
-  font-size: 2rem;
-  border: none;
-  cursor: pointer;
-}
-

@@ -345,5 +345,22 @@ h1 {
     border-bottom: 1px solid #ddd;
     padding-bottom: 1em;
   }
+.hamburger-button {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 0.6em 1em;
+  font-size: 1em;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.hamburger-button:hover {
+  background-color: #f0f0f0;
+}
+
+.filters.hidden {
+  display: none;
+}
 
 

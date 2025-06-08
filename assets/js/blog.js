@@ -94,55 +94,56 @@ const allPosts = window.allPosts || [];
 const selectedTags = new Set();
 const selectedAuthors = new Set();
 
+function createFilterButtons(filterId, items, selectedSet, onClickCallback) {
+  const container = document.getElementById(filterId);
+  container.querySelectorAll("button").forEach(btn => btn.remove());
+
+  items.forEach(item => {
+    const btn = document.createElement("button");
+    btn.className = "filter-button";
+    btn.textContent = item;
+    btn.addEventListener("click", () => {
+      if (selectedSet.has(item)) {
+        selectedSet.delete(item);
+        btn.classList.remove("active");
+      } else {
+        selectedSet.add(item);
+        btn.classList.add("active");
+      }
+      onClickCallback(); // フィルター再描画
+    });
+    container.appendChild(btn);
+  });
+}
+
 function renderPosts() {
   const postsContainer = document.getElementById("posts");
   postsContainer.innerHTML = "";
 
-  const filteredPosts = allPosts.filter(post => {
+  const filtered = allPosts.filter(post => {
     const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
     const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
     return tagMatch && authorMatch;
   });
 
-  if (filteredPosts.length === 0) {
+  if (filtered.length === 0) {
     postsContainer.innerHTML = "<p>該当する記事がありません。</p>";
     return;
   }
 
-  filteredPosts.forEach(post => {
-    const postElement = document.createElement("div");
-    postElement.className = "post-card";
-    postElement.innerHTML = `
+  filtered.forEach(post => {
+    const div = document.createElement("div");
+    div.className = "post-card";
+    div.innerHTML = `
       <h2><a href="${post.url}">${post.title}</a></h2>
-      <p class="excerpt">この記事は ${post.date} に投稿されました。</p>
-      <div class="post-meta">
-        <span class="post-date">${post.date}</span>
-        <span class="category">タグ: ${post.tags.join(", ")}</span>
-        <span class="author">投稿者: ${post.author}</span>
-      </div>
+      <p>${post.date} - ${post.author}</p>
+      <p>タグ: ${post.tags.join(", ")}</p>
     `;
-    postsContainer.appendChild(postElement);
+    postsContainer.appendChild(div);
   });
 }
 
-function createFilterButton(name, set, container) {
-  const button = document.createElement("button");
-  button.textContent = name;
-  button.className = "filter-button";
-  button.addEventListener("click", () => {
-    if (set.has(name)) {
-      set.delete(name);
-      button.classList.remove("active");
-    } else {
-      set.add(name);
-      button.classList.add("active");
-    }
-    renderPosts();
-  });
-  container.appendChild(button);
-}
-
-function populateFilters() {
+function setupFilters() {
   const tagSet = new Set();
   const authorSet = new Set();
 
@@ -151,14 +152,11 @@ function populateFilters() {
     authorSet.add(post.author);
   });
 
-  const tagGroup = document.getElementById("tagFilterGroup");
-  const authorGroup = document.getElementById("authorFilterGroup");
-
-  tagSet.forEach(tag => createFilterButton(tag, selectedTags, tagGroup));
-  authorSet.forEach(author => createFilterButton(author, selectedAuthors, authorGroup));
+  createFilterButtons("filter-tags", Array.from(tagSet).sort(), selectedTags, renderPosts);
+  createFilterButtons("filter-authors", Array.from(authorSet).sort(), selectedAuthors, renderPosts);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  populateFilters();
+  setupFilters();
   renderPosts();
 });

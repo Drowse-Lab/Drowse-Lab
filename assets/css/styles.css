@@ -386,7 +386,7 @@ h1 {
 .filter-close {
   position: absolute;
   top: 1rem;
-  right: 1rem;
+  right: 5rem;
   background: #eee;
   font-size: 1.5rem;
   border: none;

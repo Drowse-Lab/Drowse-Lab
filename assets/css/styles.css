@@ -129,6 +129,63 @@ h1 {
     background-color: #d32f2f;
 }
 
+.post-card {
+  background-color: #fff;
+  padding: 2em;
+  margin: 2% auto;
+  border-radius: 0.5em;
+  box-shadow: 0 0.5em 1em rgba(0, 0, 0, 0.05);
+  width: 90%;
+  max-width: 90%;
+  transition: box-shadow 0.3s;
+}
+
+@media (min-width: 768px) {
+  .post-card {
+    width: 80%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .post-card {
+    width: 60%;
+  }
+}
+
+.post-card h2 {
+  font-size: 1.5em;
+  margin: 0 0 0.5em;
+  color: #009688;
+  font-weight: bold;
+}
+
+.post-card h2 a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.post-card .excerpt {
+  font-size: 1em;
+  color: #333;
+  margin-bottom: 1.2em;
+  line-height: 1.6;
+}
+
+.post-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9em;
+  color: #888;
+  flex-wrap: wrap;
+}
+
+.post-meta .category a {
+  color: #009688;
+  text-decoration: none;
+}
+
+
 /* リポジトリリスト全体のスタイル */
 #repo-list {
     margin-top: 5%; 

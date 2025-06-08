@@ -160,4 +160,15 @@ function populateFilters() {
 document.addEventListener("DOMContentLoaded", () => {
   populateFilters();
   renderPosts();
+
+  // ハンバーガーアイコンでフィルター表示切り替え
+  const toggleButton = document.getElementById("filterToggle");
+  const filters = document.getElementById("filters");
+
+  if (toggleButton && filters) {
+    toggleButton.addEventListener("click", () => {
+      filters.classList.toggle("hidden");
+    });
+  }
 });
+

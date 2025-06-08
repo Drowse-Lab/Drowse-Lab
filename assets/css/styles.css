@@ -343,7 +343,7 @@ h1 {
 }
 
 /* 閉じるボタン */
-.close-button {
+/* .close-button {
   font-size: 1.2rem;
   border: none;
   background: none;
@@ -351,7 +351,7 @@ h1 {
   position: absolute;
   top: 1rem;
   right: 1rem;
-}
+} */
 
 .hamburger-button {
   position: fixed;

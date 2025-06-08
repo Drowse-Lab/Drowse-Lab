@@ -91,11 +91,9 @@
 // });
 const allPosts = window.allPosts || [];
 
-// 選択されたタグ・著者を保持（複数選択）
 const selectedTags = new Set();
 const selectedAuthors = new Set();
 
-// 投稿を表示
 function renderPosts() {
   const postsContainer = document.getElementById("posts");
   postsContainer.innerHTML = "";
@@ -127,7 +125,6 @@ function renderPosts() {
   });
 }
 
-// ボタン型フィルターの作成
 function createFilterButton(name, set, container) {
   const button = document.createElement("button");
   button.textContent = name;
@@ -145,7 +142,6 @@ function createFilterButton(name, set, container) {
   container.appendChild(button);
 }
 
-// フィルター用のボタンを配置
 function populateFilters() {
   const tagSet = new Set();
   const authorSet = new Set();
@@ -166,4 +162,3 @@ document.addEventListener("DOMContentLoaded", () => {
   populateFilters();
   renderPosts();
 });
-

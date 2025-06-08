@@ -355,8 +355,8 @@ h1 {
 
 .hamburger-button {
   position: fixed;
-  top: 5rem;
-  left: 1rem;
+  top: 5vh;          /* 画面の高さの5% */
+  left: 3vw;         /* 画面の幅の3% */
   z-index: 5;
   font-size: 2rem;
   background: transparent;
@@ -367,11 +367,12 @@ h1 {
 .filter-sidebar {
   position: fixed;
   top: 0;
-  right: -320px;
-  width: 300px;
+  right: -80vw;       /* 初期は画面外へ（幅の80%分） */
+  width: 75vw;        /* 幅は画面の75% */
+  max-width: 300px;   /* 最大300pxまで */
   height: 100vh;
   background: white;
-  padding: 1rem;
+  padding: 5%;
   transition: right 0.3s ease;
   z-index: 5;
   box-shadow: -2px 0 10px rgba(0,0,0,0.1);
@@ -382,12 +383,13 @@ h1 {
 }
 
 .filter-button {
-  margin: 0.2rem;
-  padding: 0.4rem 0.8rem;
+  margin: 1% 2%;
+  padding: 0.5rem 1rem;
   border: 1px solid #ccc;
   background: #f5f5f5;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 0.5rem;
+  font-size: 1rem;
 }
 
 .filter-button.active {
@@ -398,10 +400,10 @@ h1 {
 
 .filter-close {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
+  top: 3%;
+  right: 3%;
   background: none;
-  font-size: 1.5rem;
+  font-size: 2rem;
   border: none;
   cursor: pointer;
 }

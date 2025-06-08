@@ -148,7 +148,8 @@ function setupFilters() {
   const authorSet = new Set();
 
   allPosts.forEach(post => {
-    post.tags.forEach(tag => tagSet.add(tag));
+    // post.tags.forEach(tag => tagSet.add(tag));
+    post.tags?.forEach(tag => tagSet.add(tag)); // ← ? をつける
     authorSet.add(post.author);
   });
 

@@ -45,8 +45,8 @@ layout: default
 <!--   <p class="rss-subscribe text"><strong>Subscribe <a href="{{ "/feed.xml" | prepend: site.baseurl }}">via RSS</a></strong></p> -->
 </section>
 
-<section class="share">
-  <h3>この記事を共有</h3>
+<!-- <section class="share">
+  <h3>この記事を共有</h3> -->
 	
 <!--   <span>Share: </span>
 <button onclick="toggleEmbed()">埋め込みを表示</button>
@@ -103,8 +103,8 @@ layout: default
       </a>
     {% endif %}
   {% endfor %} -->
-	
-</section>
+<!-- 	
+</section> -->
 {% if site.inter_post_navigation == true %}
 	<section class="post-navigation">
 		<span class="prev-post">
@@ -158,13 +158,13 @@ layout: default
 
 	  
 
-  function copyEmbedCode() {
-    const textarea = document.getElementById("embedCode");
-    textarea.select();
-    document.execCommand("copy");
-    alert("埋め込みコードをコピーしました！");
+  // function copyEmbedCode() {
+  //   const textarea = document.getElementById("embedCode");
+  //   textarea.select();
+  //   document.execCommand("copy");
+  //   alert("埋め込みコードをコピーしました！");
 
-    var disqus_shortname = '{{ site.disqus_shortname }}';
+  //   var disqus_shortname = '{{ site.disqus_shortname }}';
 
     /* * * DON'T EDIT BELOW THIS LINE * * */
     (function() {

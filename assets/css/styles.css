@@ -307,35 +307,38 @@ h1 {
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: 1em;
-  padding: 1em 2em;
+  gap: 1.5em;
   margin: 2em auto;
-  background-color: #ffffff;
-  border: 1px solid #ddd;
-  border-radius: 0.5em;
-  box-shadow: 0 0.3em 0.8em rgba(0, 0, 0, 0.05);
+  padding: 1.5em 2em;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(6px);
+  border-radius: 1em;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   max-width: 80%;
+  border: 1px solid rgba(200, 200, 200, 0.5);
 }
 
 .filters label {
-  font-weight: bold;
-  margin-right: 0.5em;
-  color: #333;
+  font-size: 0.95em;
+  font-weight: 600;
+  color: #444;
+  margin-right: 0.3em;
 }
 
 .filters select {
-  padding: 0.5em 1em;
+  padding: 0.4em 1em;
   border: 1px solid #ccc;
-  border-radius: 0.3em;
-  background-color: #f9f9f9;
-  font-size: 1em;
+  border-radius: 0.7em;
+  font-size: 0.95em;
+  background-color: white;
   color: #333;
-  cursor: pointer;
-  transition: border 0.3s, box-shadow 0.3s;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
 }
 
-.filters select:hover {
+.filters select:hover,
+.filters select:focus {
   border-color: #009688;
-  box-shadow: 0 0 0.3em rgba(0, 150, 136, 0.2);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 150, 136, 0.15);
 }
-

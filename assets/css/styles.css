@@ -306,39 +306,42 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  align-items: center;
-  gap: 1.5em;
-  margin: 2em auto;
-  padding: 1.5em 2em;
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(6px);
-  border-radius: 1em;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  gap: 1.5rem;
+  padding: 1.5rem 2rem;
+  margin: 2rem auto;
   max-width: 80%;
-  border: 1px solid rgba(200, 200, 200, 0.5);
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(200, 200, 200, 0.3);
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
 }
 
 .filters label {
-  font-size: 0.95em;
-  font-weight: 600;
-  color: #444;
-  margin-right: 0.3em;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #333;
 }
 
 .filters select {
-  padding: 0.4em 1em;
+  appearance: none;
+  padding: 0.5em 1.2em;
+  border-radius: 12px;
   border: 1px solid #ccc;
-  border-radius: 0.7em;
-  font-size: 0.95em;
-  background-color: white;
+  background-color: #fff;
   color: #333;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  font-size: 0.95rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
 }
 
-.filters select:hover,
 .filters select:focus {
-  border-color: #009688;
   outline: none;
-  box-shadow: 0 0 0 3px rgba(0, 150, 136, 0.15);
+  border-color: #007aff; /* Apple Blue */
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.2);
+}
+
+.filters select:hover {
+  border-color: #aaa;
 }

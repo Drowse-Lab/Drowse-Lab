@@ -49,7 +49,7 @@ layout: default
   <h3>この記事を共有</h3>
 	
   <span>Share: </span>
-<button onclick="toggleEmbed()">埋め込みを表示</button>
+<!-- <button onclick="toggleEmbed()">埋め込みを表示</button>
 
 <div id="embedContainer" style="display: none;">
   <input id="shareUrl" value="{{ site.url }}{{ page.url }}" readonly>
@@ -58,7 +58,7 @@ layout: default
 <iframe src="{{ site.url }}{{ page.url }}" width="100%" height="300" frameborder="0"></iframe>
   </textarea>
   <button onclick="copyEmbedCode()">埋め込みコピー</button>
-</div>
+</div> -->
 	
   {% for social in site.social %}
     {% capture full_url %}{{ site.url }}{{ site.baseurl }}{{ page.url }}{% endcapture %}
@@ -137,24 +137,24 @@ layout: default
 <section class="disqus">
   <div id="disqus_thread"></div>
   <script type="text/javascript">
-  function toggleEmbed() {
-    const embed = document.getElementById("embedContainer");
-    embed.style.display = embed.style.display === "none" ? "block" : "none";
-  }
+  // function toggleEmbed() {
+  //   const embed = document.getElementById("embedContainer");
+  //   embed.style.display = embed.style.display === "none" ? "block" : "none";
+  // }
 
-  function copyShareUrl() {
-    const input = document.getElementById("shareUrl");
-    navigator.clipboard.writeText(input.value)
-      .then(() => alert("URLをコピーしました！"))
-      .catch(() => alert("コピーに失敗しました"));
-  }
+  // function copyShareUrl() {
+  //   const input = document.getElementById("shareUrl");
+  //   navigator.clipboard.writeText(input.value)
+  //     .then(() => alert("URLをコピーしました！"))
+  //     .catch(() => alert("コピーに失敗しました"));
+  // }
 
-  function copyEmbedCode() {
-    const code = document.getElementById("embedCode").value;
-    navigator.clipboard.writeText(code)
-      .then(() => alert("埋め込みコードをコピーしました！"))
-      .catch(() => alert("コピーに失敗しました"));
-  }
+  // function copyEmbedCode() {
+  //   const code = document.getElementById("embedCode").value;
+  //   navigator.clipboard.writeText(code)
+  //     .then(() => alert("埋め込みコードをコピーしました！"))
+  //     .catch(() => alert("コピーに失敗しました"));
+  // }
 
 	  
 

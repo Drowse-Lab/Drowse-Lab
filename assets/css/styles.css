@@ -439,3 +439,46 @@ h1 {
   color: #fff;
   border-color: #007aff;
 }
+.share {
+  background: #f9f9f9;
+  padding: 1rem;
+  margin-top: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  font-size: 0.95rem;
+}
+
+.share h3 {
+  margin-bottom: 0.5em;
+  color: #333;
+}
+
+.share label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 0.3em;
+}
+
+.share input,
+.share textarea {
+  width: 100%;
+  padding: 0.5em;
+  font-size: 0.9rem;
+  margin-bottom: 0.5em;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.share button {
+  font-size: 0.85rem;
+  padding: 0.4em 0.8em;
+  border: none;
+  background-color: #007aff;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.share button:hover {
+  background-color: #005fcc;
+}

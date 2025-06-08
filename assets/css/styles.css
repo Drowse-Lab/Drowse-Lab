@@ -385,8 +385,10 @@ h1 {
 
 .filter-close {
   position: absolute;
-  top: clamp(0.5rem, 2vw, 0.5rem);
-  right: clamp(0.5rem, 2vw, 0.5rem);
+/*   top: clamp(0.5rem, 2vw, 0.5rem);
+  right: clamp(0.5rem, 2vw, 0.5rem); */
+  top: 0.5rem;
+  right: 0.5rem;
   background: #eee;
   font-size: 1.5rem;
   border: none;

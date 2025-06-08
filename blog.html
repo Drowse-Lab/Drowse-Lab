@@ -41,19 +41,23 @@ main_nav: true
 </div> -->
     <!-- フィルターセクション -->
 <!-- ハンバーガーアイコン -->
-<button id="filterToggle" class="hamburger-button" aria-label="フィルター切り替え">
-  &#9776; フィルター
-</button>
+<!-- ハンバーガーアイコン -->
+<button id="filterToggle" class="hamburger-button" aria-label="フィルターを開く">☰</button>
 
-<!-- フィルターセクション（最初は非表示） -->
-<div id="filters" class="filters hidden">
+<!-- サイドバー本体 -->
+<div id="filterSidebar" class="filter-sidebar hidden">
+  <button id="filterClose" class="close-button">✕</button>
+  <h2>フィルター</h2>
   <div id="tag-buttons" class="filter-group">
     <p>タグで絞り込み:</p>
+    <!-- JavaScriptでボタン追加 -->
   </div>
   <div id="author-buttons" class="filter-group">
     <p>投稿者で絞り込み:</p>
+    <!-- JavaScriptでボタン追加 -->
   </div>
 </div>
+
 
 
     <div id="posts"></div>

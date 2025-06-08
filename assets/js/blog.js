@@ -74,7 +74,6 @@
 //     });
 //   }
 // }
-
 // document.addEventListener("DOMContentLoaded", function () {
 //   populateFilters(); // フィルター項目を初期化
 //   renderPosts();     // 初期表示
@@ -91,34 +90,12 @@
 // });
 const allPosts = window.allPosts || [];
 
-const selectedTags = new Set();
-const selectedAuthors = new Set();
-
-function createFilterButtons(filterId, items, selectedSet, onClickCallback) {
-  const container = document.getElementById(filterId);
-  container.querySelectorAll("button").forEach(btn => btn.remove());
-
-  items.forEach(item => {
-    const btn = document.createElement("button");
-    btn.className = "filter-button";
-    btn.textContent = item;
-    btn.addEventListener("click", () => {
-      if (selectedSet.has(item)) {
-        selectedSet.delete(item);
-        btn.classList.remove("active");
-      } else {
-        selectedSet.add(item);
-        btn.classList.add("active");
-      }
-      onClickCallback(); // フィルター再描画
-    });
-    container.appendChild(btn);
-  });
-}
+let selectedTags = new Set();
+let selectedAuthors = new Set();
 
 function renderPosts() {
   const postsContainer = document.getElementById("posts");
-  postsContainer.innerHTML = "";
+  postsContainer.innerHTML = ""; // 投稿リセット
 
   const filtered = allPosts.filter(post => {
     const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
@@ -132,32 +109,55 @@ function renderPosts() {
   }
 
   filtered.forEach(post => {
-    const div = document.createElement("div");
-    div.className = "post-card";
-    div.innerHTML = `
+    const postElement = document.createElement("div");
+    postElement.className = "post-card";
+    postElement.innerHTML = `
       <h2><a href="${post.url}">${post.title}</a></h2>
-      <p>${post.date} - ${post.author}</p>
-      <p>タグ: ${post.tags.join(", ")}</p>
+      <p class="excerpt">${post.date} に投稿</p>
+      <div class="post-meta">
+        <span>タグ: ${post.tags.join(", ")}</span>
+        <span>投稿者: ${post.author}</span>
+      </div>
     `;
-    postsContainer.appendChild(div);
+    postsContainer.appendChild(postElement);
   });
 }
 
-function setupFilters() {
+function createFilterButtons(set, containerId, type) {
+  const container = document.getElementById(containerId);
+  set.forEach(item => {
+    const button = document.createElement("button");
+    button.textContent = item;
+    button.className = "filter-button";
+    button.addEventListener("click", () => {
+      const active = type === "tag" ? selectedTags : selectedAuthors;
+      if (active.has(item)) {
+        active.delete(item);
+        button.classList.remove("active");
+      } else {
+        active.add(item);
+        button.classList.add("active");
+      }
+      renderPosts();
+    });
+    container.appendChild(button);
+  });
+}
+
+function populateFilters() {
   const tagSet = new Set();
   const authorSet = new Set();
 
   allPosts.forEach(post => {
-    // post.tags.forEach(tag => tagSet.add(tag));
-    post.tags?.forEach(tag => tagSet.add(tag)); // ← ? をつける
+    post.tags.forEach(tag => tagSet.add(tag));
     authorSet.add(post.author);
   });
 
-  createFilterButtons("filter-tags", Array.from(tagSet).sort(), selectedTags, renderPosts);
-  createFilterButtons("filter-authors", Array.from(authorSet).sort(), selectedAuthors, renderPosts);
+  createFilterButtons(tagSet, "tag-buttons", "tag");
+  createFilterButtons(authorSet, "author-buttons", "author");
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  setupFilters();
+  populateFilters();
   renderPosts();
 });

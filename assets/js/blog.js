@@ -35,17 +35,19 @@ function renderPosts() {
 
 function createFilterButtons(set, containerId, type) {
   const container = document.getElementById(containerId);
+  container.innerHTML = ""; // 一度リセット
+
   set.forEach(item => {
     const button = document.createElement("button");
     button.textContent = item;
     button.className = "filter-button";
     button.addEventListener("click", () => {
-      const active = type === "tag" ? selectedTags : selectedAuthors;
-      if (active.has(item)) {
-        active.delete(item);
+      const activeSet = type === "tag" ? selectedTags : selectedAuthors;
+      if (activeSet.has(item)) {
+        activeSet.delete(item);
         button.classList.remove("active");
       } else {
-        active.add(item);
+        activeSet.add(item);
         button.classList.add("active");
       }
       renderPosts();
@@ -75,17 +77,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const toggleBtn = document.getElementById("filterToggle");
   const closeBtn = document.getElementById("filterClose");
 
-  toggleBtn.addEventListener("click", () => {
-    filterSidebar.classList.toggle("open");
-  });
+  if (toggleBtn && filterSidebar) {
+    toggleBtn.addEventListener("click", () => {
+      filterSidebar.classList.toggle("open");
+    });
+  }
 
-  closeBtn.addEventListener("click", () => {
-    filterSidebar.classList.remove("open");
-  });
+  if (closeBtn && filterSidebar) {
+    closeBtn.addEventListener("click", () => {
+      filterSidebar.classList.remove("open");
+    });
+  }
 
-  // サイドバー外クリックで閉じる（任意）
   document.addEventListener("click", (event) => {
     if (
+      filterSidebar.classList.contains("open") &&
       !filterSidebar.contains(event.target) &&
       !toggleBtn.contains(event.target)
     ) {
@@ -93,4 +99,3 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
-

@@ -342,17 +342,6 @@ h1 {
   transform: translateX(100%);
 }
 
-/* 閉じるボタン */
-/* .close-button {
-  font-size: 1.2rem;
-  border: none;
-  background: none;
-  cursor: pointer;
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-} */
-
 .hamburger-button {
   position: fixed;
   top: 5%;
@@ -438,11 +427,12 @@ h1 {
   color: #fff;
   border-color: #007aff;
 }
-#dateFilter {
+#date-filter {
   width: 100%;
-  padding: 0.4rem;
-  margin-bottom: 1rem;
-  font-size: 1rem;
+  padding: 3%;
+  font-size: 90%;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 10%;
+  box-sizing: border-box;
 }
+

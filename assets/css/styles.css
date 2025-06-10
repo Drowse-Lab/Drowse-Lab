@@ -342,16 +342,6 @@ h1 {
   transform: translateX(100%);
 }
 
-.hamburger-button {
-  position: fixed;
-  top: 5%;
-  left: 3%;
-  z-index: 11;
-  font-size: 2rem;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-}
 
 .filter-sidebar {
   position: fixed;
@@ -434,5 +424,61 @@ h1 {
   border: 1px solid #ccc;
   border-radius: 10%;
   box-sizing: border-box;
+}
+
+.hamburger-button {
+  position: fixed;
+  top: 5%;
+  left: 3%;
+  z-index: 11;
+  font-size: 2rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: box-shadow 0.3s, filter 0.3s;
+}
+.hamburger-button.broken {
+  color: #333;
+  text-shadow: 0 0 8px #000, 2px 2px 15px #000;
+  filter: blur(2px) grayscale(1);
+  pointer-events: none;
+  opacity: 0.5;
+  animation: shake 0.5s;
+}
+@keyframes shake {
+  0% { transform: rotate(-8deg);}
+  15% { transform: rotate(8deg);}
+  30% { transform: rotate(-8deg);}
+  45% { transform: rotate(8deg);}
+  60% { transform: rotate(-4deg);}
+  75% { transform: rotate(4deg);}
+  100% { transform: rotate(0);}
+}
+.hamburger-button.moss1 { box-shadow: 0 0 12px 3px #4b8f29; }
+.hamburger-button.moss2 { box-shadow: 0 0 18px 6px #4b8f29, 3px 3px 0 8px #88c070; background: radial-gradient(circle at 60% 20%, #4b8f29 30%, transparent 70%); }
+.hamburger-button.moss3 { box-shadow: 0 0 24px 12px #4b8f29, 4px 4px 0 16px #88c070; background: radial-gradient(circle at 40% 80%, #4b8f29 35%, transparent 70%), radial-gradient(circle at 80% 50%, #88c070 20%, transparent 60%); }
+.hamburger-button.moss4 { box-shadow: 0 0 32px 24px #4b8f29, 6px 6px 0 20px #88c070; background: radial-gradient(circle at 10% 10%, #4b8f29 40%, transparent 80%), radial-gradient(circle at 80% 80%, #88c070 25%, transparent 60%); }
+
+.extra-btn {
+  position: fixed;
+  top: 11%;
+  left: 3%;
+  z-index: 12;
+  font-size: 1rem;
+  margin-left: 50px;
+  padding: 0.3em 0.8em;
+}
+#resetButton { left: 120px; }
+
+.shard {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #111;
+  border-radius: 1px;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.8;
+  transition: transform 0.7s cubic-bezier(.62,1.52,.53,.93), opacity 0.8s;
 }
 

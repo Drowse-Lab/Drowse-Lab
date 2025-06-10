@@ -47,6 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
       alreadyCollided = true;
       navCollisions++;
       const rect = filterBtn.getBoundingClientRect();
+      // 破片はnavにぶつかった時だけ
       if (navCollisions <= MAX_COLLISION) {
         spawnShards(rect.left + rect.width / 2, rect.top + rect.height / 2, 8);
       }
@@ -70,12 +71,11 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       mossStage++;
       filterBtn.className = 'hamburger-button moss' + mossStage;
-      const rect = filterBtn.getBoundingClientRect();
-      spawnShards(rect.left + rect.width / 2, rect.top + rect.height / 2, 4);
+      // 破片は出さない（苔エフェクトのみ）
       if (mossStage > MAX_MOSS) {
         filterBtn.className = 'hamburger-button broken';
         filterBtn.textContent = '💥';
-        spawnShards(rect.left + rect.width / 2, rect.top + rect.height / 2, 18);
+        // 破片は出さない
       }
     }
   });

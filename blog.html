@@ -13,6 +13,7 @@ main_nav: true
   <link rel="icon" href="{{ '/assets/image/DrowseLabIcon.jpg' | relative_url }}" type="image/jpeg" />
   <link rel="stylesheet" href="{{ '/assets/css/styles.css' | relative_url }}">
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="{{ '/assets/js/filterButtonEffects.js' | relative_url }}"></script>
   <script src="{{ '/assets/js/blog.js' | relative_url }}" defer></script>
 </head>
 
@@ -40,7 +41,9 @@ main_nav: true
   </div>
 </div> -->
 <button id="filterToggle" class="hamburger-button">☰</button>
-    
+<button id="fastForwardButton" class="extra-btn">早送り</button>
+<button id="resetButton" class="extra-btn">reset</button>
+    <!-- ...既存のaside, postsなど -->
 <aside id="filterSidebar" class="filter-sidebar">
   <button id="filterClose" class="filter-close">×</button>
   <h3>日付で絞り込み</h3>
@@ -70,8 +73,6 @@ main_nav: true
     {% endfor %}
   ];
 </script>
-
-
   </main>
 </body>
 </html>

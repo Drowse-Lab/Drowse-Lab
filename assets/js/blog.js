@@ -2,26 +2,21 @@ const allPosts = window.allPosts || [];
 
 let selectedTags = new Set();
 let selectedAuthors = new Set();
+let selectedYearMonth = ""; // 年月選択フィルター
 
-function renderPosts() {
-  const postsContainer = document.getElementById("posts");
-  postsContainer.innerHTML = ""; // 投稿リセット
+function renderFilteredPosts(posts) {
+  const container = document.getElementById("posts");
+  container.innerHTML = "";
 
-  const filtered = allPosts.filter(post => {
-    const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
-    const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
-    return tagMatch && authorMatch;
-  });
-
-  if (filtered.length === 0) {
-    postsContainer.innerHTML = "<p>該当する記事がありません。</p>";
+  if (posts.length === 0) {
+    container.innerHTML = "<p>該当する記事がありません。</p>";
     return;
   }
 
-  filtered.forEach(post => {
-    const postElement = document.createElement("div");
-    postElement.className = "post-card";
-    postElement.innerHTML = `
+  posts.forEach(post => {
+    const div = document.createElement("div");
+    div.className = "post-card";
+    div.innerHTML = `
       <h2><a href="${post.url}">${post.title}</a></h2>
       <p class="excerpt">${post.date} に投稿</p>
       <div class="post-meta">
@@ -29,25 +24,36 @@ function renderPosts() {
         <span>投稿者: ${post.author}</span>
       </div>
     `;
-    postsContainer.appendChild(postElement);
+    container.appendChild(div);
   });
+}
+
+function renderPosts() {
+  const filtered = allPosts.filter(post => {
+    const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
+    const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
+    const dateMatch = selectedYearMonth === "" || post.date.startsWith(selectedYearMonth);
+    return tagMatch && authorMatch && dateMatch;
+  });
+
+  renderFilteredPosts(filtered);
 }
 
 function createFilterButtons(set, containerId, type) {
   const container = document.getElementById(containerId);
-  container.innerHTML = ""; // 一度リセット
+  container.innerHTML = "";
 
   set.forEach(item => {
     const button = document.createElement("button");
     button.textContent = item;
     button.className = "filter-button";
     button.addEventListener("click", () => {
-      const activeSet = type === "tag" ? selectedTags : selectedAuthors;
-      if (activeSet.has(item)) {
-        activeSet.delete(item);
+      const targetSet = type === "tag" ? selectedTags : selectedAuthors;
+      if (targetSet.has(item)) {
+        targetSet.delete(item);
         button.classList.remove("active");
       } else {
-        activeSet.add(item);
+        targetSet.add(item);
         button.classList.add("active");
       }
       renderPosts();
@@ -100,30 +106,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 日付フィルターのイベント
   if (dateInput) {
     dateInput.addEventListener("change", () => {
-      const selectedDate = dateInput.value;
-      const filtered = window.allPosts.filter(post => post.date === selectedDate);
-      renderFilteredPosts(filtered);
+      selectedYearMonth = dateInput.value; // "2025-06" の形式
+      renderPosts();
     });
   }
 });
-
-// 投稿一覧を描画する関数（通常表示用）
-function renderPosts() {
-  renderFilteredPosts(window.allPosts);
-}
-
-// フィルター適用時用
-function renderFilteredPosts(posts) {
-  const container = document.getElementById("posts");
-  container.innerHTML = "";
-
-  posts.forEach(post => {
-    const div = document.createElement("div");
-    div.className = "post-card";
-    div.innerHTML = `<a href="${post.url}"><h2>${post.title}</h2></a><p>${post.date}</p>`;
-    container.appendChild(div);
-  });
-}

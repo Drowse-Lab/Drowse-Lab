@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const MAX_COLLISION = 5;
   let mossStage = 0;
   const MAX_MOSS = 4;
+  let alreadyCollided = false; // 連続判定防止
 
   function spawnShards(x, y, count = 12) {
     for(let i=0; i<count; i++) {
@@ -30,25 +31,33 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // navの下端座標（スクロール位置の基準）
+  function getNavBottomY() {
+    const navRect = nav.getBoundingClientRect();
+    return navRect.bottom + window.scrollY;
+  }
+
   window.addEventListener('scroll', () => {
     if (!filterBtn || filterBtn.classList.contains('broken')) return;
-    const navRect = nav.getBoundingClientRect();
-    const btnRect = filterBtn.getBoundingClientRect();
-    if (
-      btnRect.top <= navRect.bottom &&
-      btnRect.bottom >= navRect.top
-    ) {
+
+    const navBottomY = getNavBottomY();
+
+    // スクロール位置がnavの下端に到達した瞬間だけ判定
+    if (window.scrollY >= navBottomY && !alreadyCollided) {
+      alreadyCollided = true;
       navCollisions++;
+      const rect = filterBtn.getBoundingClientRect();
       if (navCollisions <= MAX_COLLISION) {
-        const rect = filterBtn.getBoundingClientRect();
         spawnShards(rect.left + rect.width / 2, rect.top + rect.height / 2, 8);
       }
       if (navCollisions >= MAX_COLLISION) {
         filterBtn.className = 'hamburger-button broken';
         filterBtn.textContent = '💥';
-        const rect = filterBtn.getBoundingClientRect();
         spawnShards(rect.left + rect.width / 2, rect.top + rect.height / 2, 16);
       }
+    }
+    if (window.scrollY < navBottomY) {
+      alreadyCollided = false;
     }
   });
 
@@ -66,7 +75,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (mossStage > MAX_MOSS) {
         filterBtn.className = 'hamburger-button broken';
         filterBtn.textContent = '💥';
-        const rect = filterBtn.getBoundingClientRect();
         spawnShards(rect.left + rect.width / 2, rect.top + rect.height / 2, 18);
       }
     }
@@ -77,5 +85,6 @@ document.addEventListener("DOMContentLoaded", () => {
     filterBtn.textContent = '☰';
     navCollisions = 0;
     mossStage = 0;
+    alreadyCollided = false;
   });
 });

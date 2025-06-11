@@ -61,12 +61,11 @@ main_nav: true
   </div> -->
 <h3>日付で絞り込み</h3>
 <div class="date-filter">
-  <select id="yearFilter">
-    <option value="">年を選択</option>
-  </select>
+  <label for="yearMonthSelect">年月:</label>
+  <input type="month" id="yearMonthSelect">
 
-  <div id="monthGrid" class="month-grid"></div>
-  <div id="dayGrid" class="day-grid"></div>
+  <button id="toggleDayGrid">日付を選択</button>
+  <div id="dayGrid" class="day-grid hidden"></div>
 </div>
 
 

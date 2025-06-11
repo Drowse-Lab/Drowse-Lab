@@ -101,6 +101,10 @@ function populateYearFilter() {
 
   yearSelect.addEventListener("change", () => {
     selectedYear = yearSelect.value;
+    selectedMonth = "";
+    selectedDay = "";
+    document.querySelectorAll(".month-button").forEach(b => b.classList.remove("active"));
+    document.getElementById("dayGrid").innerHTML = "";
     renderPosts();
   });
 }
@@ -149,7 +153,7 @@ function populateDayButtons(year, month) {
   for (let d = 1; d <= daysInMonth; d++) {
     const dayStr = d.toString().padStart(2, "0");
     const btn = document.createElement("button");
-    btn.textContent = `${d}日`;
+    btn.textContent = `${d}`;
     btn.className = "day-button";
     btn.dataset.value = dayStr;
     btn.addEventListener("click", () => {

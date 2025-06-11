@@ -83,99 +83,39 @@ function populateFilters() {
   createFilterButtons(authorSet, "author-buttons", "author");
 }
 
-// 年フィルター生成
-function populateYearFilter() {
-  const yearSelect = document.getElementById("yearFilter");
-  const years = new Set();
+// 年・月・日をまとめた日付フィルター
+function populateDateDropdown() {
+  const dateInput = document.getElementById("date-filter");
+  if (!dateInput) return;
 
-  allPosts.forEach(post => {
-    years.add(post.date.slice(0, 4));
-  });
+  const dates = [...new Set(allPosts.map(post => post.date))].sort().reverse();
 
-  Array.from(years).sort().reverse().forEach(year => {
+  dates.forEach(date => {
     const option = document.createElement("option");
-    option.value = year;
-    option.textContent = `${year}年`;
-    yearSelect.appendChild(option);
+    option.value = date;
+    option.textContent = date;
+    dateInput.appendChild(option);
   });
 
-  yearSelect.addEventListener("change", () => {
-    selectedYear = yearSelect.value;
-    selectedMonth = "";
-    selectedDay = "";
-    document.querySelectorAll(".month-button").forEach(b => b.classList.remove("active"));
-    document.getElementById("dayGrid").innerHTML = "";
+  dateInput.addEventListener("change", () => {
+    const selected = dateInput.value;
+    if (selected === "") {
+      selectedYear = selectedMonth = selectedDay = "";
+      renderPosts();
+      return;
+    }
+
+    selectedYear = selected.slice(0, 4);
+    selectedMonth = selected.slice(5, 7);
+    selectedDay = selected.slice(8, 10);
     renderPosts();
   });
-}
-
-// 月ボタン作成
-function populateMonthButtons() {
-  const monthGrid = document.getElementById("monthGrid");
-  const months = [
-    "01", "02", "03", "04", "05", "06",
-    "07", "08", "09", "10", "11", "12"
-  ];
-
-  months.forEach(month => {
-    const button = document.createElement("button");
-    button.textContent = `${parseInt(month)}月`;
-    button.className = "month-button";
-    button.dataset.value = month;
-    button.addEventListener("click", () => {
-      if (selectedMonth === month) {
-        selectedMonth = "";
-        selectedDay = "";
-        button.classList.remove("active");
-        document.getElementById("dayGrid").innerHTML = "";
-      } else {
-        selectedMonth = month;
-        selectedDay = "";
-        document.querySelectorAll(".month-button").forEach(b => b.classList.remove("active"));
-        button.classList.add("active");
-        populateDayButtons(selectedYear, month);
-      }
-      renderPosts();
-    });
-    monthGrid.appendChild(button);
-  });
-}
-
-// 日ボタン作成
-function populateDayButtons(year, month) {
-  const dayGrid = document.getElementById("dayGrid");
-  dayGrid.innerHTML = "";
-
-  if (!year || !month) return;
-
-  const daysInMonth = new Date(year, parseInt(month), 0).getDate();
-
-  for (let d = 1; d <= daysInMonth; d++) {
-    const dayStr = d.toString().padStart(2, "0");
-    const btn = document.createElement("button");
-    btn.textContent = `${d}`;
-    btn.className = "day-button";
-    btn.dataset.value = dayStr;
-    btn.addEventListener("click", () => {
-      if (selectedDay === dayStr) {
-        selectedDay = "";
-        btn.classList.remove("active");
-      } else {
-        selectedDay = dayStr;
-        document.querySelectorAll(".day-button").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-      }
-      renderPosts();
-    });
-    dayGrid.appendChild(btn);
-  }
 }
 
 // 初期化処理
 document.addEventListener("DOMContentLoaded", () => {
   populateFilters();
-  populateYearFilter();
-  populateMonthButtons();
+  populateDateDropdown();
   renderPosts();
 
   const filterSidebar = document.getElementById("filterSidebar");

@@ -417,14 +417,6 @@ h1 {
   color: #fff;
   border-color: #007aff;
 }
-#date-filter {
-  width: 100%;
-  padding: 3%;
-  font-size: 90%;
-  border: 1px solid #ccc;
-  border-radius: 10%;
-  box-sizing: border-box;
-}
 
 .hamburger-button {
   position: fixed;
@@ -480,5 +472,37 @@ h1 {
   z-index: 9999;
   opacity: 0.8;
   transition: transform 0.7s cubic-bezier(.62,1.52,.53,.93), opacity 0.8s;
+}
+.date-filter {
+  margin-bottom: 1em;
+  width: 100%;
+  padding: 3%;
+  font-size: 90%;
+  border: 1px solid #ccc;
+  border-radius: 10%;
+  box-sizing: border-box;
+}
+
+
+.month-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.month-button {
+  padding: 6px;
+  border: 1px solid #ccc;
+  background-color: white;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 0.9em;
+}
+
+.month-button.active {
+  background-color: #3f51b5;
+  color: white;
+  font-weight: bold;
 }
 

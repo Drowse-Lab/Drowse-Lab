@@ -62,13 +62,13 @@ main_nav: true
 <h3>日付で絞り込み</h3>
 <div class="date-filter">
   <select id="yearFilter">
-    <!-- JSで動的に年を追加 -->
+    <option value="">年を選択</option>
   </select>
 
-  <div id="monthGrid" class="month-grid">
-    <!-- JSで動的に月ボタンを生成 -->
-  </div>
+  <div id="monthGrid" class="month-grid"></div>
+  <div id="dayGrid" class="day-grid"></div>
 </div>
+
 
   <h3>タグで絞り込み</h3>
   <div id="tag-buttons"></div>

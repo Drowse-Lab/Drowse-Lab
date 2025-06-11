@@ -483,14 +483,14 @@ h1 {
   box-sizing: border-box;
 }
 
-.month-grid, .day-grid {
+.month-grid, {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 6px;
   margin-top: 6px;
 }
 
-.month-button, .day-button {
+.month-button, {
   padding: 6px;
   border: 1px solid #ccc;
   background-color: white;
@@ -499,10 +499,41 @@ h1 {
   font-size: 0.9em;
 }
 
-.month-button.active, .day-button.active {
+.month-button.active, {
   background-color: #3f51b5;
   color: white;
   font-weight: bold;
 }
 
+.day-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-top: 10px;
+  padding: 5px 0;
+  transition: max-height 0.3s ease;
+}
+
+.day-grid.hidden {
+  display: none;
+}
+
+.day-button {
+  padding: 8px 0;
+  border: 1px solid #ccc;
+  background-color: #fafafa;
+  text-align: center;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.day-button:hover {
+  background-color: #e0e0e0;
+}
+
+.day-button.active {
+  background-color: #3f51b5;
+  color: white;
+}
 

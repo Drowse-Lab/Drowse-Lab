@@ -4,8 +4,9 @@ let selectedTags = new Set();
 let selectedAuthors = new Set();
 let selectedYear = "";
 let selectedMonth = "";
+let selectedDay = "";
 
-// 投稿カード描画
+// 投稿表示処理
 function renderFilteredPosts(posts) {
   const container = document.getElementById("posts");
   container.innerHTML = "";
@@ -30,20 +31,21 @@ function renderFilteredPosts(posts) {
   });
 }
 
-// 投稿フィルター処理
+// 絞り込み処理
 function renderPosts() {
   const filtered = allPosts.filter(post => {
     const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
     const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
     const yearMatch = selectedYear === "" || post.date.startsWith(selectedYear);
     const monthMatch = selectedMonth === "" || post.date.slice(5, 7) === selectedMonth;
-    return tagMatch && authorMatch && yearMatch && monthMatch;
+    const dayMatch = selectedDay === "" || post.date.slice(8, 10) === selectedDay;
+    return tagMatch && authorMatch && yearMatch && monthMatch && dayMatch;
   });
 
   renderFilteredPosts(filtered);
 }
 
-// タグ・投稿者フィルターUI
+// タグ・投稿者ボタン作成
 function createFilterButtons(set, containerId, type) {
   const container = document.getElementById(containerId);
   container.innerHTML = "";
@@ -67,7 +69,7 @@ function createFilterButtons(set, containerId, type) {
   });
 }
 
-// タグ・投稿者の初期化
+// タグ・投稿者初期化
 function populateFilters() {
   const tagSet = new Set();
   const authorSet = new Set();
@@ -81,18 +83,16 @@ function populateFilters() {
   createFilterButtons(authorSet, "author-buttons", "author");
 }
 
-// 年セレクト生成
+// 年フィルター生成
 function populateYearFilter() {
   const yearSelect = document.getElementById("yearFilter");
   const years = new Set();
 
   allPosts.forEach(post => {
-    const year = post.date.slice(0, 4);
-    years.add(year);
+    years.add(post.date.slice(0, 4));
   });
 
-  const sortedYears = Array.from(years).sort().reverse();
-  sortedYears.forEach(year => {
+  Array.from(years).sort().reverse().forEach(year => {
     const option = document.createElement("option");
     option.value = year;
     option.textContent = `${year}年`;
@@ -105,7 +105,7 @@ function populateYearFilter() {
   });
 }
 
-// 月ボタン生成（カレンダー風）
+// 月ボタン作成
 function populateMonthButtons() {
   const monthGrid = document.getElementById("monthGrid");
   const months = [
@@ -119,14 +119,17 @@ function populateMonthButtons() {
     button.className = "month-button";
     button.dataset.value = month;
     button.addEventListener("click", () => {
-      // 選択状態トグル
       if (selectedMonth === month) {
         selectedMonth = "";
+        selectedDay = "";
         button.classList.remove("active");
+        document.getElementById("dayGrid").innerHTML = "";
       } else {
         selectedMonth = month;
-        document.querySelectorAll(".month-button").forEach(btn => btn.classList.remove("active"));
+        selectedDay = "";
+        document.querySelectorAll(".month-button").forEach(b => b.classList.remove("active"));
         button.classList.add("active");
+        populateDayButtons(selectedYear, month);
       }
       renderPosts();
     });
@@ -134,7 +137,37 @@ function populateMonthButtons() {
   });
 }
 
-// DOM準備完了後の初期化
+// 日ボタン作成
+function populateDayButtons(year, month) {
+  const dayGrid = document.getElementById("dayGrid");
+  dayGrid.innerHTML = "";
+
+  if (!year || !month) return;
+
+  const daysInMonth = new Date(year, parseInt(month), 0).getDate();
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dayStr = d.toString().padStart(2, "0");
+    const btn = document.createElement("button");
+    btn.textContent = `${d}日`;
+    btn.className = "day-button";
+    btn.dataset.value = dayStr;
+    btn.addEventListener("click", () => {
+      if (selectedDay === dayStr) {
+        selectedDay = "";
+        btn.classList.remove("active");
+      } else {
+        selectedDay = dayStr;
+        document.querySelectorAll(".day-button").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+      }
+      renderPosts();
+    });
+    dayGrid.appendChild(btn);
+  }
+}
+
+// 初期化処理
 document.addEventListener("DOMContentLoaded", () => {
   populateFilters();
   populateYearFilter();

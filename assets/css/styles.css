@@ -483,15 +483,14 @@ h1 {
   box-sizing: border-box;
 }
 
-
-.month-grid {
+.month-grid, .day-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 6px;
-  margin-top: 8px;
+  margin-top: 6px;
 }
 
-.month-button {
+.month-button, .day-button {
   padding: 6px;
   border: 1px solid #ccc;
   background-color: white;
@@ -500,9 +499,10 @@ h1 {
   font-size: 0.9em;
 }
 
-.month-button.active {
+.month-button.active, .day-button.active {
   background-color: #3f51b5;
   color: white;
   font-weight: bold;
 }
+
 

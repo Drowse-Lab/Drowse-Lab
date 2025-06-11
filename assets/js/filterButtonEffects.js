@@ -1,14 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
   const filterBtn = document.getElementById('filterToggle');
-  const fastForwardBtn = document.getElementById('fastForwardButton');
-  const resetBtn = document.getElementById('resetButton');
-  const nav = document.querySelector('nav');
+  const navLinks = document.querySelectorAll('nav ul li a');
 
   let navCollisions = 0;
   const MAX_COLLISION = 5;
-  let mossStage = 0;
-  const MAX_MOSS = 4;
-  let alreadyCollided = false; // 連続判定防止
+  let alreadyCollided = Array.from({ length: navLinks.length }, () => false);
 
   function spawnShards(x, y, count = 12) {
     for(let i=0; i<count; i++) {
@@ -31,60 +27,28 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // navの下端座標（スクロール位置の基準）
-  function getNavBottomY() {
-    const navRect = nav.getBoundingClientRect();
-    return navRect.bottom + window.scrollY;
-  }
-
   window.addEventListener('scroll', () => {
-    if (!filterBtn || filterBtn.classList.contains('broken')) return;
+    if (!filterBtn) return;
 
-    const navBottomY = getNavBottomY();
-
-    // スクロール位置がnavの下端に到達した瞬間だけ判定
-    if (window.scrollY >= navBottomY && !alreadyCollided) {
-      alreadyCollided = true;
-      navCollisions++;
-      const rect = filterBtn.getBoundingClientRect();
-      // 破片はnavにぶつかった時だけ
-      if (navCollisions <= MAX_COLLISION) {
-        spawnShards(rect.left + rect.width / 2, rect.top + rect.height / 2, 8);
+    const btnRect = filterBtn.getBoundingClientRect();
+    navLinks.forEach((link, idx) => {
+      const linkRect = link.getBoundingClientRect();
+      // 枠（リンク）の上下左右どこかがフィルターボタンと重なったら"ぶつかった"
+      const isOverlap = !(
+        btnRect.right < linkRect.left ||
+        btnRect.left > linkRect.right ||
+        btnRect.bottom < linkRect.top ||
+        btnRect.top > linkRect.bottom
+      );
+      if(isOverlap && !alreadyCollided[idx]) {
+        alreadyCollided[idx] = true;
+        navCollisions++;
+        const rect = filterBtn.getBoundingClientRect();
+        spawnShards(rect.left + rect.width / 2, rect.top + rect.height / 2, 10);
       }
-      if (navCollisions >= MAX_COLLISION) {
-        filterBtn.className = 'hamburger-button broken';
-        filterBtn.textContent = '💥';
-        spawnShards(rect.left + rect.width / 2, rect.top + rect.height / 2, 16);
+      if(!isOverlap) {
+        alreadyCollided[idx] = false;
       }
-    }
-    if (window.scrollY < navBottomY) {
-      alreadyCollided = false;
-    }
-  });
-
-  fastForwardBtn.addEventListener('click', () => {
-    if (filterBtn.classList.contains('broken')) {
-      filterBtn.className = 'hamburger-button';
-      filterBtn.textContent = '☰';
-      navCollisions = 0;
-      mossStage = 0;
-    } else {
-      mossStage++;
-      filterBtn.className = 'hamburger-button moss' + mossStage;
-      // 破片は出さない（苔エフェクトのみ）
-      if (mossStage > MAX_MOSS) {
-        filterBtn.className = 'hamburger-button broken';
-        filterBtn.textContent = '💥';
-        // 破片は出さない
-      }
-    }
-  });
-
-  resetBtn.addEventListener('click', () => {
-    filterBtn.className = 'hamburger-button';
-    filterBtn.textContent = '☰';
-    navCollisions = 0;
-    mossStage = 0;
-    alreadyCollided = false;
+    });
   });
 });

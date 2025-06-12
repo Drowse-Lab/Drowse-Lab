@@ -2,24 +2,26 @@ const allPosts = window.allPosts || [];
 
 let selectedTags = new Set();
 let selectedAuthors = new Set();
-let selectedYear = "";
-let selectedMonth = "";
-let selectedDay = "";
 
-// 投稿表示処理
-function renderFilteredPosts(posts) {
-  const container = document.getElementById("posts");
-  container.innerHTML = "";
+function renderPosts() {
+  const postsContainer = document.getElementById("posts");
+  postsContainer.innerHTML = ""; // 投稿リセット
 
-  if (posts.length === 0) {
-    container.innerHTML = "<p>該当する記事がありません。</p>";
+  const filtered = allPosts.filter(post => {
+    const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
+    const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
+    return tagMatch && authorMatch;
+  });
+
+  if (filtered.length === 0) {
+    postsContainer.innerHTML = "<p>該当する記事がありません。</p>";
     return;
   }
 
-  posts.forEach(post => {
-    const div = document.createElement("div");
-    div.className = "post-card";
-    div.innerHTML = `
+  filtered.forEach(post => {
+    const postElement = document.createElement("div");
+    postElement.className = "post-card";
+    postElement.innerHTML = `
       <h2><a href="${post.url}">${post.title}</a></h2>
       <p class="excerpt">${post.date} に投稿</p>
       <div class="post-meta">
@@ -27,40 +29,25 @@ function renderFilteredPosts(posts) {
         <span>投稿者: ${post.author}</span>
       </div>
     `;
-    container.appendChild(div);
+    postsContainer.appendChild(postElement);
   });
 }
 
-// 絞り込み処理
-function renderPosts() {
-  const filtered = allPosts.filter(post => {
-    const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
-    const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
-    const yearMatch = selectedYear === "" || post.date.startsWith(selectedYear);
-    const monthMatch = selectedMonth === "" || post.date.slice(5, 7) === selectedMonth;
-    const dayMatch = selectedDay === "" || post.date.slice(8, 10) === selectedDay;
-    return tagMatch && authorMatch && yearMatch && monthMatch && dayMatch;
-  });
-
-  renderFilteredPosts(filtered);
-}
-
-// タグ・投稿者ボタン作成
 function createFilterButtons(set, containerId, type) {
   const container = document.getElementById(containerId);
-  container.innerHTML = "";
+  container.innerHTML = ""; // 一度リセット
 
   set.forEach(item => {
     const button = document.createElement("button");
     button.textContent = item;
     button.className = "filter-button";
     button.addEventListener("click", () => {
-      const targetSet = type === "tag" ? selectedTags : selectedAuthors;
-      if (targetSet.has(item)) {
-        targetSet.delete(item);
+      const activeSet = type === "tag" ? selectedTags : selectedAuthors;
+      if (activeSet.has(item)) {
+        activeSet.delete(item);
         button.classList.remove("active");
       } else {
-        targetSet.add(item);
+        activeSet.add(item);
         button.classList.add("active");
       }
       renderPosts();
@@ -69,7 +56,6 @@ function createFilterButtons(set, containerId, type) {
   });
 }
 
-// タグ・投稿者初期化
 function populateFilters() {
   const tagSet = new Set();
   const authorSet = new Set();
@@ -83,36 +69,6 @@ function populateFilters() {
   createFilterButtons(authorSet, "author-buttons", "author");
 }
 
-// 年・月・日をまとめた日付フィルター
-function populateDateDropdown() {
-  const dateInput = document.getElementById("date-filter");
-  if (!dateInput) return;
-
-  const dates = [...new Set(allPosts.map(post => post.date))].sort().reverse();
-
-  dates.forEach(date => {
-    const option = document.createElement("option");
-    option.value = date;
-    option.textContent = date;
-    dateInput.appendChild(option);
-  });
-
-  dateInput.addEventListener("change", () => {
-    const selected = dateInput.value;
-    if (selected === "") {
-      selectedYear = selectedMonth = selectedDay = "";
-      renderPosts();
-      return;
-    }
-
-    selectedYear = selected.slice(0, 4);
-    selectedMonth = selected.slice(5, 7);
-    selectedDay = selected.slice(8, 10);
-    renderPosts();
-  });
-}
-
-// 初期化処理
 document.addEventListener("DOMContentLoaded", () => {
   populateFilters();
   renderPosts();
@@ -167,7 +123,7 @@ function renderFilteredPosts(posts) {
   posts.forEach(post => {
     const div = document.createElement("div");
     div.className = "post-card";
-    div.innerHTML = <a href="${post.url}"><h2>${post.title}</h2></a><p>${post.date}</p>;
+    div.innerHTML = `<a href="${post.url}"><h2>${post.title}</h2></a><p>${post.date}</p>`;
     container.appendChild(div);
   });
 }

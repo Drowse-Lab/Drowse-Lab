@@ -115,12 +115,12 @@ function populateDateDropdown() {
 // 初期化処理
 document.addEventListener("DOMContentLoaded", () => {
   populateFilters();
-  populateDateDropdown();
   renderPosts();
 
   const filterSidebar = document.getElementById("filterSidebar");
   const toggleBtn = document.getElementById("filterToggle");
   const closeBtn = document.getElementById("filterClose");
+  const dateInput = document.getElementById("date-filter");
 
   if (toggleBtn && filterSidebar) {
     toggleBtn.addEventListener("click", () => {
@@ -143,4 +143,31 @@ document.addEventListener("DOMContentLoaded", () => {
       filterSidebar.classList.remove("open");
     }
   });
+
+  // 日付フィルターのイベント
+  if (dateInput) {
+    dateInput.addEventListener("change", () => {
+      const selectedDate = dateInput.value;
+      const filtered = window.allPosts.filter(post => post.date === selectedDate);
+      renderFilteredPosts(filtered);
+    });
+  }
 });
+
+// 投稿一覧を描画する関数（通常表示用）
+function renderPosts() {
+  renderFilteredPosts(window.allPosts);
+}
+
+// フィルター適用時用
+function renderFilteredPosts(posts) {
+  const container = document.getElementById("posts");
+  container.innerHTML = "";
+
+  posts.forEach(post => {
+    const div = document.createElement("div");
+    div.className = "post-card";
+    div.innerHTML = <a href="${post.url}"><h2>${post.title}</h2></a><p>${post.date}</p>;
+    container.appendChild(div);
+  });
+}

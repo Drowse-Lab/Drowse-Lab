@@ -10,12 +10,13 @@ main_nav: true
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{{ page.title }}</title>
-  <link rel="icon" href="{{ '/assets/image/DrowseLabIcon.jpg' | relative_url }}" type="image/jpeg" />
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
   <script src="{{ '/assets/js/filterButtonEffects.js' | relative_url }}"></script>
-  <script src="{{ '/assets/js/blog.js' | relative_url }}"></script>
-<link href="{{ 'assets/css/styles.css' | relative_url }}" rel="stylesheet" />
 
+<link href="{{ 'assets/css/styles.css' | relative_url }}" rel="stylesheet" />
+  <link rel="icon" href="{{ '/assets/image/DrowseLabIcon.jpg' | relative_url }}" type="image/jpeg" />
+  <link rel="stylesheet" href="{{ '/assets/css/styles.css' | relative_url }}">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="{{ '/assets/js/blog.js' | relative_url }}" defer></script>
 </head>
 
 <body>
@@ -41,6 +42,7 @@ main_nav: true
     <strong>ユーザー:</strong>
   </div>
 </div> -->
+    <button id="filterToggle" class="hamburger-button">☰</button>
 <aside id="filterSidebar" class="filter-sidebar">
   <button id="filterClose" class="filter-close">×</button>
   <h3>日付で絞り込み</h3>

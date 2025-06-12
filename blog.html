@@ -42,24 +42,24 @@ main_nav: true
   </div>
 </div> -->
 <button id="filterToggle" class="hamburger-button">☰</button>
+
 <aside id="filterSidebar" class="filter-sidebar">
   <button id="filterClose" class="filter-close">×</button>
-
+  
   <h3>日付で絞り込み</h3>
-<div class="filter-section">
-  <input type="date" id="date-filter" />
-</div>
+  <select id="yearFilter"><option value="">年選択</option></select>
+  <div id="monthGrid"></div>
+  <div id="dayGrid"></div>
 
   <h3>タグで絞り込み</h3>
   <div id="tag-buttons"></div>
+
   <h3>投稿者で絞り込み</h3>
   <div id="author-buttons"></div>
 </aside>
 
-<!-- 投稿一覧 -->
 <div id="posts"></div>
-<!--       <p>読み込み中...</p> -->
-    </div>
+
 <script>
   window.allPosts = [
     {% for post in site.posts %}

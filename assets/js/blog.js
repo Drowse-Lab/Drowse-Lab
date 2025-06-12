@@ -84,33 +84,33 @@ function populateFilters() {
 }
 
 // 年・月・日をまとめた日付フィルター
-// function populateDateDropdown() {
-//   const dateInput = document.getElementById("date-filter");
-//   if (!dateInput) return;
+function populateDateDropdown() {
+  const dateInput = document.getElementById("date-filter");
+  if (!dateInput) return;
 
-//   const dates = [...new Set(allPosts.map(post => post.date))].sort().reverse();
+  const dates = [...new Set(allPosts.map(post => post.date))].sort().reverse();
 
-//   dates.forEach(date => {
-//     const option = document.createElement("option");
-//     option.value = date;
-//     option.textContent = date;
-//     dateInput.appendChild(option);
-//   });
+  dates.forEach(date => {
+    const option = document.createElement("option");
+    option.value = date;
+    option.textContent = date;
+    dateInput.appendChild(option);
+  });
 
-//   dateInput.addEventListener("change", () => {
-//     const selected = dateInput.value;
-//     if (selected === "") {
-//       selectedYear = selectedMonth = selectedDay = "";
-//       renderPosts();
-//       return;
-//     }
+  dateInput.addEventListener("change", () => {
+    const selected = dateInput.value;
+    if (selected === "") {
+      selectedYear = selectedMonth = selectedDay = "";
+      renderPosts();
+      return;
+    }
 
-//     selectedYear = selected.slice(0, 4);
-//     selectedMonth = selected.slice(5, 7);
-//     selectedDay = selected.slice(8, 10);
-//     renderPosts();
-//   });
-// }
+    selectedYear = selected.slice(0, 4);
+    selectedMonth = selected.slice(5, 7);
+    selectedDay = selected.slice(8, 10);
+    renderPosts();
+  });
+}
 
 // 初期化処理
 document.addEventListener("DOMContentLoaded", () => {

@@ -539,15 +539,18 @@ h1 {
 
 .post-content img {
   display: block;
-  margin: 1.5rem auto;
-  max-width: 600px;
-  width: 100%;
+  margin: 2rem auto;
+  width: 70%;
+  max-width: 100%;
   height: auto;
-  border-radius: 6px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e0e0e0;
+  background: #f9f9f9;
+  padding: 0.3rem;
 }
 
+
 .post-content img:hover {
-  transform: scale(1.015);
+  transform: scale(1.02);
 }

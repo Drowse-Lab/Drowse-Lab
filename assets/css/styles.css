@@ -537,7 +537,7 @@ h1 {
   color: white;
 }
 .post-card img {
-  max-width: 50%;
+  max-width: 120%;
   height: auto;
   display: block;
   margin: 1em auto;

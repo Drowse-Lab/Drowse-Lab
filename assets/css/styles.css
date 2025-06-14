@@ -536,4 +536,10 @@ h1 {
   background-color: #3f51b5;
   color: white;
 }
+.post-content img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1em auto; /* ←中央寄せ＆少し余白（お好み） */
+}
 

@@ -536,8 +536,8 @@ h1 {
   background-color: #3f51b5;
   color: white;
 }
-.post-card img {
-  max-width: 120%;
+.post-content img {
+  max-width: 80%;
   height: auto;
   display: block;
   margin: 1em auto;

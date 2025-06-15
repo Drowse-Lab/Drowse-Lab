@@ -1,4 +1,4 @@
-
+/* 定義されないもののUI */
 body {
     font-family: Arial, sans-serif;
     line-height: 1.6;
@@ -49,7 +49,9 @@ h1 {
     padding-left: 5px; /* 左に余白を */
 
 }
+/* ここまで定義されないもののUI */
 
+/* comntributorsの見た目 */
 .member nav ul {
     list-style: none;
     padding: 0;
@@ -93,7 +95,7 @@ h1 {
 .member a:hover {
     text-decoration: underline;
 }
-
+/* ここまでcomntributorsの見た目 */
 
 
 /* 投稿一覧のスタイル */
@@ -336,12 +338,12 @@ h1 {
   transform: translateX(0);
 }
 
+/* フィルターの枠について */
 /* 非表示状態 */
 .filter-sidebar.hidden {
   display: block;
   transform: translateX(100%);
 }
-
 
 .filter-sidebar {
   position: fixed;
@@ -417,6 +419,7 @@ h1 {
   color: #fff;
   border-color: #007aff;
 }
+/* 一応フィルター枠内の（この後もだけど） */
 
 .hamburger-button {
   position: fixed;
@@ -429,6 +432,7 @@ h1 {
   cursor: pointer;
   transition: box-shadow 0.3s, filter 0.3s;
 }
+
 .hamburger-button.broken {
   color: #333;
   text-shadow: 0 0 8px #000, 2px 2px 15px #000;
@@ -437,6 +441,7 @@ h1 {
   opacity: 0.5;
   animation: shake 0.5s;
 }
+
 @keyframes shake {
   0% { transform: rotate(-8deg);}
   15% { transform: rotate(8deg);}
@@ -446,6 +451,7 @@ h1 {
   75% { transform: rotate(4deg);}
   100% { transform: rotate(0);}
 }
+
 .hamburger-button.moss1 { box-shadow: 0 0 12px 3px #4b8f29; }
 .hamburger-button.moss2 { box-shadow: 0 0 18px 6px #4b8f29, 3px 3px 0 8px #88c070; background: radial-gradient(circle at 60% 20%, #4b8f29 30%, transparent 70%); }
 .hamburger-button.moss3 { box-shadow: 0 0 24px 12px #4b8f29, 4px 4px 0 16px #88c070; background: radial-gradient(circle at 40% 80%, #4b8f29 35%, transparent 70%), radial-gradient(circle at 80% 50%, #88c070 20%, transparent 60%); }
@@ -473,6 +479,8 @@ h1 {
   opacity: 0.8;
   transition: transform 0.7s cubic-bezier(.62,1.52,.53,.93), opacity 0.8s;
 }
+
+/* 日付やでー */
 .date-filter {
   margin-bottom: 1em;
   width: 100%;
@@ -536,7 +544,10 @@ h1 {
   background-color: #3f51b5;
   color: white;
 }
+/* ここまで日付やで〜 */
 
+
+/* postのイメージやでー */
 .post-content img {
   display: block;
   margin: 2rem auto;
@@ -550,7 +561,7 @@ h1 {
   padding: 0.3rem;
 }
 
-
 .post-content img:hover {
   transform: scale(1.02);
 }
+/* ここまでpostイメージやでー */

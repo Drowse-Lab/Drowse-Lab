@@ -95,10 +95,32 @@ h1 {
 .member a:hover {
     text-decoration: underline;
 }
+
+/* メンバー枠のスタイル調整 */
+.member {
+    border: 1px solid #ddd; /* 枠の設定 */
+    background-color: #fff; /* 背景色 */
+    border-radius: 10px; /* 角をさらに丸く */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 影 */
+    padding: 2%; /* 内側の余白を少なく */
+    margin: 1%; /* 外側の余白を少なく */
+    text-align: center; /* 中央揃え */
+    width: 180px; /* 幅を少し小さく */
+    transition: transform 0.2s; /* ホバー時のアニメーション */
+}
+
+/* メンバー枠内の文字サイズ調整 */
+.member h2 {
+    font-size: 1.2rem; /* タイトルの文字サイズを拡大 */
+    }
+
+.member a {
+    font-size: 1rem; /* リンク文字のサイズを拡大 */
+    }
 /* ここまでcomntributorsの見た目 */
 
 
-/* 投稿一覧のスタイル */
+/* 多分使ってないけど前までのblogのUI */
 #blogPosts {
     margin-top: 5%; 
 }
@@ -130,7 +152,7 @@ h1 {
 .post button:hover {
     background-color: #d32f2f;
 }
-
+/* ここまで多分使ってないけど前までのblogのUI */
 
 
 /* リポジトリリスト全体のスタイル */
@@ -141,29 +163,6 @@ h1 {
     align-items: center;
 }
 
-/* メンバー枠のスタイル調整 */
-.member {
-    border: 1px solid #ddd; /* 枠の設定 */
-    background-color: #fff; /* 背景色 */
-    border-radius: 10px; /* 角をさらに丸く */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 影 */
-    padding: 2%; /* 内側の余白を少なく */
-    margin: 1%; /* 外側の余白を少なく */
-    text-align: center; /* 中央揃え */
-    width: 180px; /* 幅を少し小さく */
-    transition: transform 0.2s; /* ホバー時のアニメーション */
-}
-
-/* メンバー枠内の文字サイズ調整 */
-.member h2 {
-    font-size: 1.2rem; /* タイトルの文字サイズを拡大 */
-    
-}
-
-.member a {
-    font-size: 1rem; /* リンク文字のサイズを拡大 */
-    
-}
 
 /* リポジトリ内の文字サイズ調整 */
 .repo h3 {

@@ -49,6 +49,14 @@ h1 {
     padding-left: 5px; /* 左に余白を */
 
 }
+
+p {
+  padding-left: 4%;
+}
+
+a {
+  padding-left: 4%;
+}
 /* ここまで定義されないもののUI */
 
 /* comntributorsの見た目 */

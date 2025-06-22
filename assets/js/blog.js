@@ -70,8 +70,8 @@ function populateFilters() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  populateFilters();
-  renderPosts();
+  populateFilters?.();
+  renderPosts?.();
 
   const filterSidebar = document.getElementById("filterSidebar");
   const toggleBtn = document.getElementById("filterToggle");
@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.addEventListener("click", (event) => {
     if (
-      filterSidebar.classList.contains("open") &&
+      filterSidebar?.classList.contains("open") &&
       !filterSidebar.contains(event.target) &&
       !toggleBtn.contains(event.target)
     ) {
@@ -103,26 +103,27 @@ document.addEventListener("DOMContentLoaded", () => {
   if (dateInput) {
     dateInput.addEventListener("change", () => {
       const selectedDate = dateInput.value;
-      const filtered = window.allPosts.filter(post => post.date === selectedDate);
+      const filtered = window.allPosts?.filter(post => post.date === selectedDate) || [];
       renderFilteredPosts(filtered);
     });
   }
 
   // --- コードブロック装飾処理ここから ---
   document.querySelectorAll("pre code").forEach((codeBlock) => {
-    const language = codeBlock.className.replace("language-", "").trim();
-    const wrapper = document.createElement("div");
-    wrapper.className = "code-embed";
+    const language = codeBlock.className.replace("language-", "").trim() || "txt";
 
-    const header = document.createElement("div");
-    header.className = "code-header";
+    const wrapper = document.createElement("div");
+    wrapper.className = "code-box";
+
+    const top = document.createElement("div");
+    top.className = "code-box-top";
 
     const ext = document.createElement("span");
-    ext.className = "extension";
-    ext.textContent = "." + (language || "txt");
+    ext.className = "ext";
+    ext.textContent = `.${language}`;
 
     const button = document.createElement("button");
-    button.className = "copy-button";
+    button.className = "copy-btn";
     button.textContent = "コピー";
     button.addEventListener("click", () => {
       navigator.clipboard.writeText(codeBlock.textContent).then(() => {
@@ -133,20 +134,30 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    header.appendChild(ext);
-    header.appendChild(button);
+    top.appendChild(ext);
+    top.appendChild(button);
+
+    const mid = document.createElement("div");
+    mid.className = "code-box-middle";
+    const preClone = codeBlock.parentElement.cloneNode(true);
+    mid.appendChild(preClone);
+
+    const bottom = document.createElement("div");
+    bottom.className = "code-box-bottom";
+
+    wrapper.appendChild(top);
+    wrapper.appendChild(mid);
+    wrapper.appendChild(bottom);
 
     const pre = codeBlock.parentElement;
-    pre.parentElement.insertBefore(wrapper, pre);
-    wrapper.appendChild(header);
-    wrapper.appendChild(pre);
+    pre.parentElement.replaceChild(wrapper, pre);
   });
-  // --- コードブロック装飾ここまで ---
+  // --- コードブロック装飾処理ここまで ---
 });
 
 // 投稿一覧を描画する関数（通常表示用）
 function renderPosts() {
-  renderFilteredPosts(window.allPosts);
+  renderFilteredPosts(window.allPosts || []);
 }
 
 // フィルター適用時用

@@ -626,51 +626,62 @@ pre {
   word-break: break-word;
 }
 .code-box {
-  width: 100%;
-  border: 2px solid #888;
-  border-radius: 5px;
-  overflow: hidden;
-  margin: 1em 0;
   font-family: monospace;
-  background-color: #f9f9f9;
-}
-
-.code-box-top {
-  background-color: #eee;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.4em 0.8em;
-  font-weight: bold;
-  border-bottom: 1px solid #ccc;
-}
-
-.code-box-middle {
-  padding: 0.5em;
-  background-color: #fff;
+  font-size: 0.95rem;
+  max-width: 100%;
+  background: #1e1e1e;
+  color: #ddd;
+  margin: 1.5em 0;
+  line-height: 1.4;
+  border: 1px solid #444;
+  border-radius: 6px;
   overflow-x: auto;
 }
 
-.code-box-middle pre {
-  margin: 0;
-  white-space: pre-wrap;
-  word-wrap: break-word;
+.code-box-top,
+.code-box-bottom {
+  display: flex;
+  justify-content: space-between;
+  background-color: #2d2d2d;
+  padding: 0.3em 0.5em;
+  color: #ccc;
 }
 
-.code-box-bottom {
-  background-color: #eee;
-  height: 0.5em;
-  border-top: 1px solid #ccc;
+.code-box-top .label {
+  flex-grow: 1;
+  text-align: left;
+  padding-left: 0.5em;
+}
+
+.code-box-middle {
+  background-color: #1e1e1e;
+  padding: 0.5em 0.7em;
+}
+
+.code-line {
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .copy-btn {
-  background: #ddd;
+  background: none;
   border: none;
-  padding: 0.2em 0.6em;
+  color: #66f;
   cursor: pointer;
   font-size: 0.9em;
-  border-radius: 4px;
 }
+
+.filler {
+  flex-grow: 1;
+  border-top: 1px solid #666;
+  margin: 0 0.5em;
+}
+
+.corner {
+  font-weight: bold;
+  color: #aaa;
+}
+
 
 .copy-btn:hover {
   background: #bbb;

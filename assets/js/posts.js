@@ -3,43 +3,49 @@ const allPosts = window.allPosts || [];
 document.addEventListener("DOMContentLoaded", () => {
   populateFilters?.();
   renderPosts?.();
+
   // --- コードブロック装飾処理ここから ---
   document.querySelectorAll("pre code").forEach((codeBlock) => {
     const language = codeBlock.className.replace("language-", "").trim() || "txt";
 
+    // ラッパー
     const wrapper = document.createElement("div");
     wrapper.className = "code-box";
 
+    // ┌───────
     const top = document.createElement("div");
     top.className = "code-box-top";
+    top.innerHTML = `<span class="corner">┌</span><span class="label">.${language}</span><button class="copy-btn">[コピー]</button><span class="corner">┐</span>`;
 
-    const ext = document.createElement("span");
-    ext.className = "ext";
-    ext.textContent = `.${language}`;
+    // │ 中身
+    const mid = document.createElement("div");
+    mid.className = "code-box-middle";
 
-    const button = document.createElement("button");
-    button.className = "copy-btn";
-    button.textContent = "コピー";
-    button.addEventListener("click", () => {
+    const lines = codeBlock.textContent.split("\n");
+    lines.forEach(line => {
+      const lineEl = document.createElement("div");
+      lineEl.className = "code-line";
+      lineEl.textContent = `│ ${line}`;
+      mid.appendChild(lineEl);
+    });
+
+    // └───────
+    const bottom = document.createElement("div");
+    bottom.className = "code-box-bottom";
+    bottom.innerHTML = `<span class="corner">└</span><span class="filler">─</span><span class="corner">┘</span>`;
+
+    // イベント処理（コピー）
+    const copyBtn = top.querySelector(".copy-btn");
+    copyBtn.addEventListener("click", () => {
       navigator.clipboard.writeText(codeBlock.textContent).then(() => {
-        button.textContent = "コピー済み！";
+        copyBtn.textContent = "[コピー済み！]";
         setTimeout(() => {
-          button.textContent = "コピー";
+          copyBtn.textContent = "[コピー]";
         }, 1500);
       });
     });
 
-    top.appendChild(ext);
-    top.appendChild(button);
-
-    const mid = document.createElement("div");
-    mid.className = "code-box-middle";
-    const preClone = codeBlock.parentElement.cloneNode(true);
-    mid.appendChild(preClone);
-
-    const bottom = document.createElement("div");
-    bottom.className = "code-box-bottom";
-
+    // 結合
     wrapper.appendChild(top);
     wrapper.appendChild(mid);
     wrapper.appendChild(bottom);
@@ -49,4 +55,3 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   // --- コードブロック装飾処理ここまで ---
 });
-

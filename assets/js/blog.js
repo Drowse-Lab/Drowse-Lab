@@ -100,7 +100,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 日付フィルターのイベント
   if (dateInput) {
     dateInput.addEventListener("change", () => {
       const selectedDate = dateInput.value;
@@ -162,4 +161,3 @@ function renderFilteredPosts(posts) {
     container.appendChild(div);
   });
 }
-

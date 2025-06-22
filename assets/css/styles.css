@@ -627,14 +627,16 @@ pre {
 }
 
 .code-box {
-  border: 2px solid #444;
-  border-radius: 5px;
+  width: 100%;
+  max-width: 90%;
+  margin: 2em auto;
+  border: 0.2em solid #444;
+  border-radius: 0.5em;
   background-color: #1e1e1e;
   color: #f8f8f2;
   font-family: Consolas, Monaco, 'Courier New', monospace;
-  margin: 2em 0;
+  box-shadow: 0 0 0.5em #00000055;
   overflow: hidden;
-  box-shadow: 0 0 5px #00000055;
 }
 
 .code-box-top {
@@ -642,37 +644,41 @@ pre {
   justify-content: space-between;
   align-items: center;
   background-color: #2c2c2c;
-  padding: 0.3em 0.8em;
+  padding: 0.5em 1em;
   font-size: 0.9em;
   color: #ccc;
-  font-family: monospace;
-  border-bottom: 1px solid #444;
+  border-bottom: 0.1em solid #444;
 }
 
 .code-box-top .ext {
   font-weight: bold;
 }
 
-.code-box-top .copy-btn {
+.copy-btn {
   background: none;
   border: none;
   color: #87cefa;
-  cursor: pointer;
   font-family: inherit;
+  cursor: pointer;
+  font-size: 0.9em;
+  padding: 0;
 }
 
 .code-box-middle pre {
   margin: 0;
-  padding: 1em;
+  padding: 1.5em;
   overflow-x: auto;
   background-color: inherit;
   color: inherit;
+  font-size: 0.95em;
+  line-height: 1.6em;
 }
 
 .code-box-bottom {
-  height: 5px;
+  height: 0.4em;
   background: #2c2c2c;
-  border-top: 1px solid #444;
+  border-top: 0.1em solid #444;
 }
+
 
 /* posts cpode */

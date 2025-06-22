@@ -108,6 +108,41 @@ document.addEventListener("DOMContentLoaded", () => {
       renderFilteredPosts(filtered);
     });
   }
+
+  // --- コードブロック装飾処理ここから ---
+  document.querySelectorAll("pre code").forEach((codeBlock) => {
+    const language = codeBlock.className.replace("language-", "").trim();
+    const wrapper = document.createElement("div");
+    wrapper.className = "code-embed";
+
+    const header = document.createElement("div");
+    header.className = "code-header";
+
+    const ext = document.createElement("span");
+    ext.className = "extension";
+    ext.textContent = "." + (language || "txt");
+
+    const button = document.createElement("button");
+    button.className = "copy-button";
+    button.textContent = "コピー";
+    button.addEventListener("click", () => {
+      navigator.clipboard.writeText(codeBlock.textContent).then(() => {
+        button.textContent = "コピー済み！";
+        setTimeout(() => {
+          button.textContent = "コピー";
+        }, 1500);
+      });
+    });
+
+    header.appendChild(ext);
+    header.appendChild(button);
+
+    const pre = codeBlock.parentElement;
+    pre.parentElement.insertBefore(wrapper, pre);
+    wrapper.appendChild(header);
+    wrapper.appendChild(pre);
+  });
+  // --- コードブロック装飾ここまで ---
 });
 
 // 投稿一覧を描画する関数（通常表示用）
@@ -127,3 +162,4 @@ function renderFilteredPosts(posts) {
     container.appendChild(div);
   });
 }
+

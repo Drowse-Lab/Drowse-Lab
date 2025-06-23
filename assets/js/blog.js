@@ -156,19 +156,19 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // 投稿一覧を描画する関数（通常表示用）
-function renderPosts() {
-  renderFilteredPosts(window.allPosts || []);
-}
+// function renderPosts() {
+//   renderFilteredPosts(window.allPosts || []);
+// }
 
-// フィルター適用時用
-function renderFilteredPosts(posts) {
-  const container = document.getElementById("posts");
-  container.innerHTML = "";
+// // フィルター適用時用
+// function renderFilteredPosts(posts) {
+//   const container = document.getElementById("posts");
+//   container.innerHTML = "";
 
-  posts.forEach(post => {
-    const div = document.createElement("div");
-    div.className = "post-card";
-    div.innerHTML = `<a href="${post.url}"><h2>${post.title}</h2></a><p>${post.date}</p>`;
-    container.appendChild(div);
-  });
-}
+//   posts.forEach(post => {
+//     const div = document.createElement("div");
+//     div.className = "post-card";
+//     div.innerHTML = `<a href="${post.url}"><h2>${post.title}</h2></a><p>${post.date}</p>`;
+//     container.appendChild(div);
+//   });
+// }

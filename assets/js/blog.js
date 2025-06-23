@@ -2,6 +2,7 @@ const allPosts = window.allPosts || [];
 
 let selectedTags = new Set();
 let selectedAuthors = new Set();
+let selectedDate = null; // 日付フィルター用
 
 function renderPosts() {
   const postsContainer = document.getElementById("posts");
@@ -10,7 +11,8 @@ function renderPosts() {
   const filtered = allPosts.filter(post => {
     const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
     const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
-    return tagMatch && authorMatch;
+    const dateMatch = !selectedDate || post.date === selectedDate;
+    return tagMatch && authorMatch && dateMatch;
   });
 
   if (filtered.length === 0) {
@@ -102,9 +104,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (dateInput) {
     dateInput.addEventListener("change", () => {
-      const selectedDate = dateInput.value;
-      const filtered = window.allPosts?.filter(post => post.date === selectedDate) || [];
-      renderFilteredPosts(filtered);
+      selectedDate = dateInput.value || null; // ここで選択日付を保存
+      renderPosts();
     });
   }
 
@@ -154,7 +155,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   // --- コードブロック装飾処理ここまで ---
 });
-
 // 投稿一覧を描画する関数（通常表示用）
 // function renderPosts() {
 //   renderFilteredPosts(window.allPosts || []);

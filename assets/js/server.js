@@ -26,7 +26,14 @@ passport.use(new GitHubStrategy({
 
 const app = express();
 
-app.use(session({ secret: 'your_secret_key', resave: false, saveUninitialized: true }));
+app.use(session({
+    secret: 'your_secret_key',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production'
+    }
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 

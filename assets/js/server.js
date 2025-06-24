@@ -69,10 +69,20 @@ var limiter = RateLimit({
 // apply rate limiter to all requests
 app.use(limiter);
 
+const path = require('path');
+const ROOT_DIR = path.resolve(__dirname, 'public'); // Define a safe root directory
+
 app.get('/:path', function(req, res) {
-  let path = req.params.path;
-  if (isValidPath(path))
-    res.sendFile(path);
+  let userPath = req.params.path;
+  let resolvedPath = path.resolve(ROOT_DIR, userPath); // Normalize the path
+
+  // Ensure the resolved path is within the root directory
+  if (!resolvedPath.startsWith(ROOT_DIR)) {
+    res.status(403).send('Access denied');
+    return;
+  }
+
+  res.sendFile(resolvedPath);
 });
 
 app.listen(3000, () => {

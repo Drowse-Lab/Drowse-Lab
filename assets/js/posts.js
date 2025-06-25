@@ -6,9 +6,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- コードブロック装飾処理ここから ---
   document.querySelectorAll("pre code").forEach((codeBlock) => {
-    const className = codeBlock.className || "";
-    const match = className.match(/language-([\w\d]+)/);
-    const language = match ? match[1] : "txt";
+  const classList = codeBlock.className.split(" ");
+  const langClass = classList.find(cls => cls.startsWith("language-"));
+  const language = langClass ? langClass.replace("language-", "").trim() : "txt";
 
     // ラッパー
     const wrapper = document.createElement("div");

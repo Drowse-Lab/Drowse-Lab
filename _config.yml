@@ -6,6 +6,7 @@ baseurl: "/Drowse-Lab"
 
 markdown: kramdown
 theme: minima
+highlighter: rouge
 
 collections:
   posts:
@@ -25,9 +26,9 @@ plugins:
   - jekyll-feed
   - jekyll-paginate
 
-
 author: 零鮫
 subtitle: "mod更新など"
 
 include:
   - blog.html
+

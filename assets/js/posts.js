@@ -5,10 +5,9 @@ document.addEventListener("DOMContentLoaded", () => {
   try { renderPosts(); } catch (e) {}
 
   // --- コードブロック装飾処理ここから ---
-  document.querySelectorAll("pre code").forEach((codeBlock) => {
+ document.querySelectorAll("pre code").forEach((codeBlock) => {
+  // 正確に language-XXX を取得する（複数クラス対応）
   let language = "txt";
-
-  // class="language-java highlight" のような複数クラス対応
   codeBlock.classList.forEach(cls => {
     if (cls.startsWith("language-")) {
       language = cls.replace("language-", "").trim();
@@ -18,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const wrapper = document.createElement("div");
   wrapper.className = "code-box";
 
+  // ┌ .ext [コピー] ┐
   const top = document.createElement("div");
   top.className = "code-box-top";
   top.innerHTML = `
@@ -27,9 +27,9 @@ document.addEventListener("DOMContentLoaded", () => {
     <span class="corner">┐</span>
   `;
 
+  // │ 1行ずつ │
   const mid = document.createElement("div");
   mid.className = "code-box-middle";
-
   const lines = codeBlock.textContent.split("\n");
   lines.forEach(line => {
     const lineEl = document.createElement("div");
@@ -38,6 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
     mid.appendChild(lineEl);
   });
 
+  // └────────────┘
   const bottom = document.createElement("div");
   bottom.className = "code-box-bottom";
   bottom.innerHTML = `
@@ -46,6 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <span class="corner">┘</span>
   `;
 
+  // コピーボタン
   const copyBtn = top.querySelector(".copy-btn");
   copyBtn.addEventListener("click", () => {
     navigator.clipboard.writeText(codeBlock.textContent).then(() => {
@@ -62,4 +64,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const pre = codeBlock.parentElement;
   pre.parentElement.replaceChild(wrapper, pre);
+});
 });

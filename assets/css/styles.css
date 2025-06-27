@@ -46,16 +46,16 @@ nav ul li a:hover {
 h1 {
     text-align: center;
     margin-top: 5%; 
-    padding-left: 5px; /* 左に余白を */
+    padding-left: 2%; /* 左に余白を */
 
 }
 
 p {
-  padding-left: 4%;
+  padding-left: 2%;
 }
 
 a {
-  padding-left: 4%;
+  padding-left: 2%;
 }
 /* ここまで定義されないもののUI */
 

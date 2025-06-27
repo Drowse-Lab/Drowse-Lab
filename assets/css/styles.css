@@ -50,6 +50,14 @@ h1 {
 
 }
 
+h2 {
+    padding-left: 2%; /* 左に余白を */
+}
+
+h3 {
+    padding-left: 2%; /* 左に余白を */
+}
+
 p {
   padding-left: 2%;
 }

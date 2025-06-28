@@ -319,12 +319,13 @@ a {
   }
 }
 
-.footer .post-author-footer {
+.post-author-footer {
   color: #888;
   font-size: 0.9em;
-  margin-top: 4px;
+  margin-top: 1%;
   letter-spacing: 0.05em;
 }
+
 
 .filters {
   display: flex;

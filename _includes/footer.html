@@ -24,15 +24,9 @@
         </li> -->
 <div class="footer">
   Drowse Lab
-  <div class="post-authors">
-    {% assign authors = "" | split: "" %}
-    {% for post in site.posts limit:5 %}
-      {% unless authors contains post.author %}
-        <div>{{ post.author }}</div>
-        {% assign authors = authors | push: post.author %}
-      {% endunless %}
-    {% endfor %}
-  </div>
+  {% if page.author %}
+    <div class="post-author">{{ page.author }}</div>
+  {% endif %}
 </div>
         {% for social in site.social %}
           {% if social.url != "" %}

@@ -22,7 +22,14 @@
             <span class="username">{{ site.email }}</span>
           </a>
         </li> -->
-
+<div class="footer">
+  Drowse Lab
+  <div class="post-authors">
+    {% for post in site.posts limit:5 %}
+      <div>{{ post.author }}</div>
+    {% endfor %}
+  </div>
+</div>
         {% for social in site.social %}
           {% if social.url != "" %}
           <li>

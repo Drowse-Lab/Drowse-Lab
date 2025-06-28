@@ -1,4 +1,3 @@
-
 /* 定義されないもののUI */
 body {
     font-family: Arial, sans-serif;
@@ -564,6 +563,26 @@ pre {
   border-color: #007aff;
 }
 /* 一応フィルター枠内の（この後もだけど） */
+
+/* フィルターボタン */
+.hamburger-button {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: #333;
+  cursor: pointer;
+  z-index: 1000;
+  padding: 0.3rem;
+  line-height: 1;
+}
+
+.hamburger-button:hover {
+  color: #555;
+}
+/* フィルターボタン */
 /* フィルターについて */
 
 .extra-btn {

@@ -16,7 +16,7 @@ function renderPosts() {
   });
 
   if (filtered.length === 0) {
-    postsContainer.innerHTML = '<h2 style="text-align:center; margin:2em 0; color:#888;">該当する記事がありません。</h2>';
+    postsContainer.innerHTML = '<h2 style="text-align:center; margin:2em 0; color:#000;">該当する記事がありません</h2>';
     return;
   }
 

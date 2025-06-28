@@ -136,41 +136,6 @@ a {
 /* ここまでcomntributorsの見た目 */
 
 
-/* 多分使ってないけど前までのblogのUI */
-#blogPosts {
-    margin-top: 5%; 
-}
-
-.blogPosts {
-    border: 0.5% solid #ccc;
-    padding: 2%; 
-    margin-bottom: 5%; 
-    border-radius: 2%; 
-    background-color: #f9f9f9;
-}
-
-.blogPosts small {
-    display: block;
-    margin-top: 5%;
-    color: #666;
-}
-
-.blogPosts button {
-    margin-top: 5%; 
-    background-color: #f44336;
-    color: white;
-    border: none;
-    padding: 2% 5%;
-    border-radius: 2%; 
-    cursor: pointer;
-}
-
-.post button:hover {
-    background-color: #d32f2f;
-}
-/* ここまで多分使ってないけど前までのblogのUI */
-
-
 /* リポジトリリスト全体のスタイル */
 #repo-list {
     margin-top: 5%; 
@@ -257,6 +222,7 @@ a {
   border: 0.3% solid #ddd;
   border-radius: 1%; 
 }
+
 /* ==== ブログカードの表示（画像参考スタイル） ==== */
 .post-card {
   width: 90%;
@@ -326,28 +292,8 @@ a {
   letter-spacing: 0.05em;
 }
 
-
-.filters {
-  display: flex;
-  flex-direction: column;
-  gap: 1em;
-  margin: 2em auto;
-  padding: 1em;
-  max-width: 800px;
-  background-color: #f0f0f5;
-  border-radius: 8px;
-}
-
-.filter-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5em;
-  align-items: center;
-}
-
-.filter-group p {
-  margin-right: 0.5em;
-  font-weight: bold;
+.post-date {
+  padding-left: 2%;
 }
 
 .post-card {
@@ -356,238 +302,6 @@ a {
     padding-bottom: 1em;
   }
 
-
-.filter-sidebar.active {
-  transform: translateX(0);
-}
-
-/* フィルターの枠について */
-/* 非表示状態 */
-.filter-sidebar.hidden {
-  display: block;
-  transform: translateX(100%);
-}
-
-.filter-sidebar {
-  position: fixed;
-  top: 0;
-  right: -100%;
-  width: 60%;
-  max-width: 260px;
-  height: 100vh;
-  background: #ffffff;
-  padding: 1rem 1.2rem;
-  transition: right 0.3s ease;
-  z-index: 10;
-  box-shadow: -2px 0 10px rgba(0,0,0,0.1);
-  overflow-y: auto;
-}
-
-.filter-sidebar.open {
-  right: 0;
-}
-
-.filter-close {
-  position: absolute;
-  top: 0.5rem;
-  right: 2.5rem;
-  background: #eee;
-  font-size: 1.5rem;
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-  z-index: 12;
-  width: 2rem;
-  height: 2rem;
-  line-height: 2rem;
-  text-align: center;
-  transition: background 0.2s;
-}
-
-.filter-close:hover {
-  background: #ccc;
-}
-
-
-.filter-section {
-  margin-bottom: 1rem;
-}
-
-.filter-sidebar h3 {
-  font-size: 0.95rem;
-  margin-bottom: 0.4rem;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 0.3rem;
-  color: #333;
-}
-
-.filter-button {
-  display: inline-block;
-  margin: 0.2rem 0.3rem;
-  padding: 0.35rem 0.7rem;
-  font-size: 0.8rem;
-  border: 1px solid #ccc;
-  background: #f5f5f5;
-  cursor: pointer;
-  border-radius: 9999px;
-  transition: all 0.2s ease;
-}
-
-.filter-button:hover {
-  background: #e0e0e0;
-}
-
-.filter-button.active {
-  background: #007aff;
-  color: #fff;
-  border-color: #007aff;
-}
-/* 一応フィルター枠内の（この後もだけど） */
-
-.hamburger-button {
-  position: fixed;
-  top: 5%;
-  left: 3%;
-  z-index: 11;
-  font-size: 2rem;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  transition: box-shadow 0.3s, filter 0.3s;
-}
-
-.hamburger-button.broken {
-  color: #333;
-  text-shadow: 0 0 8px #000, 2px 2px 15px #000;
-  filter: blur(2px) grayscale(1);
-  pointer-events: none;
-  opacity: 0.5;
-  animation: shake 0.5s;
-}
-
-@keyframes shake {
-  0% { transform: rotate(-8deg);}
-  15% { transform: rotate(8deg);}
-  30% { transform: rotate(-8deg);}
-  45% { transform: rotate(8deg);}
-  60% { transform: rotate(-4deg);}
-  75% { transform: rotate(4deg);}
-  100% { transform: rotate(0);}
-}
-
-.hamburger-button.moss1 { box-shadow: 0 0 12px 3px #4b8f29; }
-.hamburger-button.moss2 { box-shadow: 0 0 18px 6px #4b8f29, 3px 3px 0 8px #88c070; background: radial-gradient(circle at 60% 20%, #4b8f29 30%, transparent 70%); }
-.hamburger-button.moss3 { box-shadow: 0 0 24px 12px #4b8f29, 4px 4px 0 16px #88c070; background: radial-gradient(circle at 40% 80%, #4b8f29 35%, transparent 70%), radial-gradient(circle at 80% 50%, #88c070 20%, transparent 60%); }
-.hamburger-button.moss4 { box-shadow: 0 0 32px 24px #4b8f29, 6px 6px 0 20px #88c070; background: radial-gradient(circle at 10% 10%, #4b8f29 40%, transparent 80%), radial-gradient(circle at 80% 80%, #88c070 25%, transparent 60%); }
-
-.extra-btn {
-  position: fixed;
-  top: 11%;
-  left: 3%;
-  z-index: 12;
-  font-size: 1rem;
-  margin-left: 50px;
-  padding: 0.3em 0.8em;
-}
-#resetButton { left: 120px; }
-
-.shard {
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  background: #111;
-  border-radius: 1px;
-  pointer-events: none;
-  z-index: 9999;
-  opacity: 0.8;
-  transition: transform 0.7s cubic-bezier(.62,1.52,.53,.93), opacity 0.8s;
-}
-
-/* 日付やでー */
-.date-filter {
-  margin-bottom: 1em;
-  width: 100%;
-  padding: 3%;
-  font-size: 90%;
-  border: 1px solid #ccc;
-  border-radius: 10%;
-  box-sizing: border-box;
-}
-
-.month-grid, {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 6px;
-  margin-top: 6px;
-}
-
-.month-button, {
-  padding: 6px;
-  border: 1px solid #ccc;
-  background-color: white;
-  cursor: pointer;
-  border-radius: 6px;
-  font-size: 0.9em;
-}
-
-.month-button.active, {
-  background-color: #3f51b5;
-  color: white;
-  font-weight: bold;
-}
-
-.day-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
-  margin-top: 10px;
-  padding: 5px 0;
-  transition: max-height 0.3s ease;
-}
-
-.day-grid.hidden {
-  display: none;
-}
-
-.day-button {
-  padding: 8px 0;
-  border: 1px solid #ccc;
-  background-color: #fafafa;
-  text-align: center;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.85rem;
-}
-
-.day-button:hover {
-  background-color: #e0e0e0;
-}
-
-.day-button.active {
-  background-color: #3f51b5;
-  color: white;
-}
-/* ここまで日付やで〜 */
-
-
-/* postのイメージやでー */
-.post-content img {
-  display: block;
-  margin: 2rem auto;
-  width: 70%;
-  max-width: 100%;
-  height: auto;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-  border: 1px solid #e0e0e0;
-  background: #f9f9f9;
-  padding: 0.3rem;
-}
-
-.post-content img:hover {
-  transform: scale(1.02);
-}
-/* ここまでpostイメージやでー */
 
 /* posts cpode */
 .code-embed {
@@ -716,6 +430,227 @@ pre {
   background: #2c2c2c;
   border-top: 0.1em solid #444;
 }
-
-
 /* posts cpode */
+
+/* postのイメージやでー */
+.post-content img {
+  display: block;
+  margin: 2rem auto;
+  width: 70%;
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e0e0e0;
+  background: #f9f9f9;
+  padding: 0.3rem;
+}
+
+.post-content img:hover {
+  transform: scale(1.02);
+}
+/* ここまでpostイメージやでー */
+/* ==== ブログカードの表示（画像参考スタイル） ==== */
+
+
+/* フィルターについて */
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  margin: 2em auto;
+  padding: 1em;
+  max-width: 800px;
+  background-color: #f0f0f5;
+  border-radius: 8px;
+}
+
+.filter-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  align-items: center;
+}
+
+.filter-group p {
+  margin-right: 0.5em;
+  font-weight: bold;
+}
+
+.filter-sidebar.active {
+  transform: translateX(0);
+}
+
+/* フィルターの枠について */
+/* 非表示状態 */
+.filter-sidebar.hidden {
+  display: block;
+  transform: translateX(100%);
+}
+
+.filter-sidebar {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 60%;
+  max-width: 260px;
+  height: 100vh;
+  background: #ffffff;
+  padding: 1rem 1.2rem;
+  transition: right 0.3s ease;
+  z-index: 10;
+  box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+  overflow-y: auto;
+}
+
+.filter-sidebar.open {
+  right: 0;
+}
+
+.filter-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 2.5rem;
+  background: #eee;
+  font-size: 1.5rem;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 12;
+  width: 2rem;
+  height: 2rem;
+  line-height: 2rem;
+  text-align: center;
+  transition: background 0.2s;
+}
+
+.filter-close:hover {
+  background: #ccc;
+}
+
+
+.filter-section {
+  margin-bottom: 1rem;
+}
+
+.filter-sidebar h3 {
+  font-size: 0.95rem;
+  margin-bottom: 0.4rem;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 0.3rem;
+  color: #333;
+}
+
+.filter-button {
+  display: inline-block;
+  margin: 0.2rem 0.3rem;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.8rem;
+  border: 1px solid #ccc;
+  background: #f5f5f5;
+  cursor: pointer;
+  border-radius: 9999px;
+  transition: all 0.2s ease;
+}
+
+.filter-button:hover {
+  background: #e0e0e0;
+}
+
+.filter-button.active {
+  background: #007aff;
+  color: #fff;
+  border-color: #007aff;
+}
+/* 一応フィルター枠内の（この後もだけど） */
+/* フィルターについて */
+
+.extra-btn {
+  position: fixed;
+  top: 11%;
+  left: 3%;
+  z-index: 12;
+  font-size: 1rem;
+  margin-left: 50px;
+  padding: 0.3em 0.8em;
+}
+
+.shard {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #111;
+  border-radius: 1px;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.8;
+  transition: transform 0.7s cubic-bezier(.62,1.52,.53,.93), opacity 0.8s;
+}
+
+/* 日付やでー */
+.date-filter {
+  margin-bottom: 1em;
+  width: 100%;
+  padding: 3%;
+  font-size: 90%;
+  border: 1px solid #ccc;
+  border-radius: 10%;
+  box-sizing: border-box;
+}
+
+.month-grid, {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.month-button, {
+  padding: 6px;
+  border: 1px solid #ccc;
+  background-color: white;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 0.9em;
+}
+
+.month-button.active, {
+  background-color: #3f51b5;
+  color: white;
+  font-weight: bold;
+}
+
+.day-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-top: 10px;
+  padding: 5px 0;
+  transition: max-height 0.3s ease;
+}
+
+.day-grid.hidden {
+  display: none;
+}
+
+.day-button {
+  padding: 8px 0;
+  border: 1px solid #ccc;
+  background-color: #fafafa;
+  text-align: center;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.day-button:hover {
+  background-color: #e0e0e0;
+}
+
+.day-button.active {
+  background-color: #3f51b5;
+  color: white;
+}
+/* ここまで日付やで〜 */
+
+

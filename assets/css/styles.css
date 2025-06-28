@@ -567,21 +567,20 @@ pre {
 /* フィルターボタン */
 .hamburger-button {
   position: fixed;
-  top: 1rem;
-  left: 1rem;
-  background: none;
+  top: 5%;
+  left: 3%;
+  z-index: 11;
+  font-size: 2rem;
+  background: transparent;
   border: none;
-  font-size: 1.8rem;
-  color: #333;
   cursor: pointer;
-  z-index: 1000;
-  padding: 0.3rem;
-  line-height: 1;
+  transition: box-shadow 0.3s, filter 0.3s;
 }
 
 .hamburger-button:hover {
-  color: #555;
+  color: #000000;
 }
+
 /* フィルターボタン */
 /* フィルターについて */
 

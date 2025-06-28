@@ -23,6 +23,9 @@ function displayRepos(repos) {
     const repoElement = document.createElement("div");
     repoElement.className = "repo";
 
+    // Social Preview画像のURL
+    const socialPreviewUrl = `https://opengraph.githubassets.com/latest/${orgName}/${repo.name}`;
+
     // リンク情報の追加
     const homepageLink = repo.homepage
       ? `<p><a href="${repo.homepage}" target="_blank">Homepage</a></p>`
@@ -31,6 +34,7 @@ function displayRepos(repos) {
     // リポジトリ情報をHTMLに追加
     repoElement.innerHTML = `
       <h3>${repo.name}</h3>
+      <img src="${socialPreviewUrl}" alt="Social Preview" style="max-width: 100%; margin-bottom: 10px;">
       <p>${repo.description || "No description provided."}</p>
       <p><strong>Main Language:</strong> ${repo.language || "Not specified"}</p>
       <p><a href="${repo.html_url}" target="_blank">View on GitHub</a></p>

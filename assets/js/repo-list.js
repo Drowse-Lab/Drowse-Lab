@@ -52,7 +52,12 @@ function displayRepos(repos) {
       repoElement.classList.add(themeClass);
     }
 
-    // リンク情報の追加
+    // View on GitHub リンクのURL末尾の # を除去
+    let htmlUrl = repo.html_url;
+    if (typeof htmlUrl === "string" && htmlUrl.endsWith("#")) {
+      htmlUrl = htmlUrl.slice(0, -1);
+    }
+
     const homepageLink = repo.homepage
       ? `<p><a href="${repo.homepage}" target="_blank">Homepage</a></p>`
       : "";
@@ -63,7 +68,7 @@ function displayRepos(repos) {
       <img src="${socialPreviewUrl}" alt="Social Preview" style="max-width: 100%; margin-bottom: 10px;">
       <p>${repo.description || "No description provided."}</p>
       <p><strong>Main Language:</strong> ${repo.language || "Not specified"}</p>
-      <p><a href="${repo.html_url}" target="_blank">View on GitHub</a></p>
+      <p><a href="${htmlUrl}" target="_blank">View on GitHub</a></p>
       ${homepageLink}
       <div class="extra-info" style="display: none;">
         <p>Loading additional info...</p>

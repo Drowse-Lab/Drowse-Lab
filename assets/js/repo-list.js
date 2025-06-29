@@ -76,11 +76,8 @@ function displayRepos(repos) {
     `;
     repoListElement.appendChild(repoElement);
 
-repoElement.addEventListener("click", (e) => {
-  // aタグクリック時は何もしない
-  if (e.target.tagName === "A") return;
-  handleRepoClick(repo, repoElement.querySelector(".extra-info"));
-});
+    repoElement.addEventListener("click", () => handleRepoClick(repo, repoElement.querySelector(".extra-info")));
+  });
 }
 
 // リポジトリをクリックしたときの処理（そのまま）

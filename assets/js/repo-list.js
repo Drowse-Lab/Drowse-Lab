@@ -32,7 +32,7 @@ function displayRepos(repos) {
     // theme/リポジトリ名 ファイルを取得してimg: テーマ名を取得
     try {
       // theme/リポジトリ名.md を取得する場合
-      const themeUrl = `https://api.github.com/repos/${orgName}/${repo.name}/contents/theme/${repo.name}.md`;
+      const themeUrl = `https://api.github.com/repos/${orgName}/${repo.name}/contents/theme/${repo.name}.md`; // .mdを忘れずに
       const themeRes = await fetch(themeUrl);
       if (themeRes.ok) {
         const themeJson = await themeRes.json();

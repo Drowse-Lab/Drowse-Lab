@@ -5,7 +5,8 @@ const repoListElement = document.getElementById("repo-list");
 // リポジトリ情報を取得
 async function fetchRepos() {
   try {
-    const response = await fetch(`https://api.github.com/orgs/${orgName}/repos`);
+    // APIではなくローカルのJSONファイルを読み込む
+    const response = await fetch("assets/data/repos.json");
     if (!response.ok) {
       throw new Error(`Error fetching repos: ${response.statusText}`);
     }

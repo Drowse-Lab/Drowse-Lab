@@ -29,21 +29,22 @@ function displayRepos(repos) {
     // テーマの初期値
     let themeClass = "";
 
-    // theme/リポジトリ名 ファイルを取得してimg: テーマ名を取得
+    // theme/リポジトリ名.md ファイルを取得してimg: テーマ名を取得
+    const themeUrl = `https://api.github.com/repos/${orgName}/${repo.name}/contents/theme/${repo.name}.md`;
+
     try {
-      // theme/リポジトリ名.md を取得する場合
-      const themeUrl = `https://api.github.com/repos/${orgName}/${repo.name}/contents/theme/${repo.name}.md`; // .mdを忘れずに
       const themeRes = await fetch(themeUrl);
       if (themeRes.ok) {
         const themeJson = await themeRes.json();
         const themeContent = atob(themeJson.content.replace(/\n/g, ""));
         const imgMatch = themeContent.match(/^img:\s*(\w+)/m);
         if (imgMatch) {
-          themeClass = imgMatch[1]; // 例: 'ocean'
+          themeClass = imgMatch[1];
         }
       }
+      // themeRes.okでなければ何もせず進む（エラー出さない）
     } catch (e) {
-      // ファイルがなくても問題なし
+      // ここでエラーが出ても何もしない（リストは表示する）
     }
 
     if (themeClass) {

@@ -2,7 +2,7 @@ const fetch = require("node-fetch");
 const fs = require("fs");
 
 const orgName = "Drowse-Lab";
-const repos = require("./repos.json"); // 事前に取得したrepos.json
+const repos = require("./repos.json");
 
 async function getThemeImg(repo) {
   const themeFileUrl = `https://api.github.com/repos/${orgName}/${repo.name}/contents/theme/${repo.name}.md`;

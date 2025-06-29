@@ -19,12 +19,35 @@ async function fetchRepos() {
 
 // リポジトリ情報を表示
 function displayRepos(repos) {
-  repos.forEach(repo => {
+  repos.forEach(async repo => {
     const repoElement = document.createElement("div");
     repoElement.className = "repo";
 
     // Social Preview画像のURL
     const socialPreviewUrl = `https://opengraph.githubassets.com/latest/${orgName}/${repo.name}`;
+
+    // テーマの初期値
+    let themeClass = "";
+
+    // theme/リポジトリ名 ファイルを取得してimg: テーマ名を取得
+    try {
+      const themeUrl = `https://api.github.com/repos/${orgName}/${repo.name}/contents/theme/${repo.name}`;
+      const themeRes = await fetch(themeUrl);
+      if (themeRes.ok) {
+        const themeJson = await themeRes.json();
+        const themeContent = atob(themeJson.content.replace(/\n/g, ""));
+        const imgMatch = themeContent.match(/^img:\s*(\w+)/m);
+        if (imgMatch) {
+          themeClass = imgMatch[1]; // 例: 'ocean'
+        }
+      }
+    } catch (e) {
+      // ファイルがなくても問題なし
+    }
+
+    if (themeClass) {
+      repoElement.classList.add(themeClass);
+    }
 
     // リンク情報の追加
     const homepageLink = repo.homepage
@@ -38,23 +61,21 @@ function displayRepos(repos) {
       <p>${repo.description || "No description provided."}</p>
       <p><strong>Main Language:</strong> ${repo.language || "Not specified"}</p>
       <p><a href="${repo.html_url}" target="_blank">View on GitHub</a></p>
-      ${homepageLink} <!-- ホームページリンクを追加 -->
+      ${homepageLink}
       <div class="extra-info" style="display: none;">
         <p>Loading additional info...</p>
       </div>
     `;
     repoListElement.appendChild(repoElement);
 
-    // イベントリスナーを追加
     repoElement.addEventListener("click", () => handleRepoClick(repo, repoElement.querySelector(".extra-info")));
   });
 }
 
-// リポジトリをクリックしたときの処理
+// リポジトリをクリックしたときの処理（そのまま）
 async function handleRepoClick(repo, extraInfoElement) {
   const repoElement = extraInfoElement.parentElement;
 
-  // 他のリポジトリを閉じる
   document.querySelectorAll(".repo").forEach(el => {
     if (el !== repoElement) {
       el.classList.remove("active");
@@ -62,7 +83,6 @@ async function handleRepoClick(repo, extraInfoElement) {
     }
   });
 
-  // 現在のリポジトリの表示を切り替え
   if (repoElement.classList.contains("active")) {
     repoElement.classList.remove("active");
     extraInfoElement.style.display = "none";
@@ -70,7 +90,6 @@ async function handleRepoClick(repo, extraInfoElement) {
     repoElement.classList.add("active");
     extraInfoElement.style.display = "block";
 
-    // 情報をロード
     extraInfoElement.innerHTML = `<p>Loading additional info...</p>`;
     try {
       const languagesResponse = await fetch(repo.languages_url);

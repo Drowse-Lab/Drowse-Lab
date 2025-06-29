@@ -1,0 +1,46 @@
+.repo.night {
+  background: #222;
+  color: #fff;
+  border: 1px solid #444;
+}
+.repo.light {
+  background: #fff;
+  color: #222;
+  border: 1px solid #ccc;
+}
+.repo.ocean {
+  background: linear-gradient(120deg, #2193b0 0%, #6dd5ed 100%);
+  color: #fff;
+}
+.repo.forest {
+  background: #29422d;
+  color: #e2f4e3;
+}
+.repo.sunset {
+  background: linear-gradient(90deg, #ff7e5f 0%, #feb47b 100%);
+  color: #fff;
+}
+.repo.sakura {
+  background: #ffe4ed;
+  color: #614051;
+}
+.repo.cyber {
+  background: #181830;
+  color: #7fffd4;
+  border: 1px solid #f0f;
+}
+.repo.classic {
+  background: #eaeaea;
+  color: #333;
+  border: 1px solid #bbb;
+}
+.repo.solarized {
+  background: #fdf6e3;
+  color: #657b83;
+  border: 1px solid #eee8d5;
+}
+.repo.halloween {
+  background: #2c003e;
+  color: #ff9900;
+  border: 1px solid #ff9900;
+}

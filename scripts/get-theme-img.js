@@ -1,30 +1,27 @@
-const fs = require("fs");
-const path = require("path");
+// scripts/get-theme-img.js
 
-const repos = require("./repos.json");
+const fs = require('fs');
+const path = require('path');
 
-function getThemeImg(repo) {
-  // drowse-lab/theme/リポジトリ名.md を参照
-  const themeFilePath = path.join(__dirname, "../drowse-lab/theme", `${repo.name}.md`);
-  try {
-    if (!fs.existsSync(themeFilePath)) return null;
-    const content = fs.readFileSync(themeFilePath, "utf-8");
-    const imgMatch = content.match(/^img:\s*(\w+)/m);
-    return imgMatch ? imgMatch[1] : null;
-  } catch (e) {
-    return null;
-  }
+const themeDir = path.join(__dirname, '../theme');
+const outPath = path.join(__dirname, '../assets/data/theme-list.json');
+
+// themeディレクトリ内の全ての.mdファイルを取得
+const files = fs.readdirSync(themeDir).filter(f => f.endsWith('.md'));
+
+const result = [];
+
+for (const file of files) {
+  const repoName = path.basename(file, '.md');
+  const content = fs.readFileSync(path.join(themeDir, file), 'utf-8');
+  // img: xxx の値を抽出（なければnull）
+  const imgMatch = content.match(/^img:\s*(\S+)/m);
+  result.push({
+    repo: repoName,
+    img: imgMatch ? imgMatch[1] : null
+  });
 }
 
-(async () => {
-  const results = [];
-  for (const repo of repos) {
-    const themeImg = getThemeImg(repo);
-    results.push({
-      repo: repo.name,
-      img: themeImg
-    });
-  }
-  fs.writeFileSync("theme-list.json", JSON.stringify(results, null, 2));
-  console.log("done");
-})();
+// JSONとして書き出し
+fs.writeFileSync(outPath, JSON.stringify(result, null, 2), 'utf-8');
+console.log('theme-list.json generated:', outPath);

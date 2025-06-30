@@ -1,18 +1,21 @@
 const orgName = "Drowse-Lab";
 const repoListElement = document.getElementById("repo-list");
 
-// theme-list.json を事前に fetch
 let themeMap = {};
-fetch("assets/data/theme-list.json")
-  .then(res => res.json())
-  .then(list => {
-    themeMap = Object.fromEntries(list.map(item => [item.repo, item.img]));
-    fetchRepos();
-  })
-  .catch(() => {
-    // 失敗しても空で続行
-    fetchRepos();
-  });
+let languagesMap = {};
+let issuesMap = {};
+
+// まとめてロード
+Promise.all([
+  fetch("assets/data/theme-list.json").then(res => res.json()).catch(() => []),
+  fetch("assets/data/languages.json").then(res => res.json()).catch(() => ({})),
+  fetch("assets/data/issues.json").then(res => res.json()).catch(() => ({}))
+]).then(([themeList, languagesJson, issuesJson]) => {
+  themeMap = Object.fromEntries(themeList.map(item => [item.repo, item.img]));
+  languagesMap = languagesJson;
+  issuesMap = issuesJson;
+  fetchRepos();
+});
 
 async function fetchRepos() {
   try {
@@ -29,18 +32,15 @@ async function fetchRepos() {
 }
 
 function displayRepos(repos) {
+  // 重複防止
+  repoListElement.innerHTML = "";
   repos.forEach(repo => {
     const repoElement = document.createElement("div");
     repoElement.className = "repo";
 
     const socialPreviewUrl = `https://opengraph.githubassets.com/latest/${orgName}/${repo.name}`;
-
-    // theme-list.json からテーマ名を取得
     const themeClass = themeMap[repo.name] || "";
-
-    if (themeClass) {
-      repoElement.classList.add(themeClass);
-    }
+    if (themeClass) repoElement.classList.add(themeClass);
 
     let htmlUrl = repo.html_url;
     if (typeof htmlUrl === "string" && htmlUrl.endsWith("#")) {
@@ -68,10 +68,7 @@ function displayRepos(repos) {
   });
 }
 
-// handleRepoClick 以降はそのままでOK
-
-// リポジトリをクリックしたときの処理（そのまま）
-async function handleRepoClick(repo, extraInfoElement) {
+function handleRepoClick(repo, extraInfoElement) {
   const repoElement = extraInfoElement.parentElement;
 
   document.querySelectorAll(".repo").forEach(el => {
@@ -88,32 +85,20 @@ async function handleRepoClick(repo, extraInfoElement) {
     repoElement.classList.add("active");
     extraInfoElement.style.display = "block";
 
-    extraInfoElement.innerHTML = `<p>Loading additional info...</p>`;
-    try {
-      const languagesResponse = await fetch(repo.languages_url);
-      const languages = await languagesResponse.json();
+    const languages = languagesMap[repo.name] || {};
+    const issues = issuesMap[repo.name] || [];
 
-      const issuesResponse = await fetch(repo.issues_url.replace("{/number}", ""));
-      const issues = await issuesResponse.json();
-
-      extraInfoElement.innerHTML = `
-        <h4>Languages:</h4>
-        <ul>
-          ${Object.entries(languages).map(([lang, count]) => `<li>${lang}: ${count} bytes</li>`).join("")}
-        </ul>
-        <h4>Issues:</h4>
-        <ul>
-          ${issues.length > 0
-            ? issues.map(issue => `<li><a href="${issue.html_url}" target="_blank">${issue.title}</a></li>`).join("")
-            : "<li>No issues found.</li>"}
-        </ul>
-      `;
-    } catch (error) {
-      console.error("Error fetching additional info:", error);
-      extraInfoElement.innerHTML = `<p>Error loading additional info.</p>`;
-    }
+    extraInfoElement.innerHTML = `
+      <h4>Languages:</h4>
+      <ul>
+        ${Object.entries(languages).map(([lang, count]) => `<li>${lang}: ${count} bytes</li>`).join("")}
+      </ul>
+      <h4>Issues:</h4>
+      <ul>
+        ${issues.length > 0
+          ? issues.map(issue => `<li><a href="${issue.html_url}" target="_blank">${issue.title}</a></li>`).join("")
+          : "<li>No issues found.</li>"}
+      </ul>
+    `;
   }
 }
-
-// 実行
-fetchRepos();

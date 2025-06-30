@@ -1,11 +1,21 @@
-// GitHub API から Drowse Lab のリポジトリ一覧を取得して表示
-const orgName = "Drowse-Lab"; // Organization名
+const orgName = "Drowse-Lab";
 const repoListElement = document.getElementById("repo-list");
 
-// リポジトリ情報を取得
+// theme-list.json を事前に fetch
+let themeMap = {};
+fetch("assets/data/theme-list.json")
+  .then(res => res.json())
+  .then(list => {
+    themeMap = Object.fromEntries(list.map(item => [item.repo, item.img]));
+    fetchRepos();
+  })
+  .catch(() => {
+    // 失敗しても空で続行
+    fetchRepos();
+  });
+
 async function fetchRepos() {
   try {
-    // APIではなくローカルのJSONファイルを読み込む
     const response = await fetch("assets/data/repos.json");
     if (!response.ok) {
       throw new Error(`Error fetching repos: ${response.statusText}`);
@@ -18,41 +28,20 @@ async function fetchRepos() {
   }
 }
 
-// リポジトリ情報を表示
 function displayRepos(repos) {
-  repos.forEach(async repo => {
+  repos.forEach(repo => {
     const repoElement = document.createElement("div");
     repoElement.className = "repo";
 
-    // Social Preview画像のURL
     const socialPreviewUrl = `https://opengraph.githubassets.com/latest/${orgName}/${repo.name}`;
 
-    // テーマの初期値
-    let themeClass = "";
-
-    // theme/リポジトリ名.md ファイルを取得してimg: テーマ名を取得
-    const themeUrl = `https://api.github.com/repos/${orgName}/${repo.name}/contents/theme/${repo.name}.md`;
-
-    try {
-      const themeRes = await fetch(themeUrl);
-      if (themeRes.ok) {
-        const themeJson = await themeRes.json();
-        const themeContent = atob(themeJson.content.replace(/\n/g, ""));
-        const imgMatch = themeContent.match(/^img:\s*(\w+)/m);
-        if (imgMatch) {
-          themeClass = imgMatch[1];
-        }
-      }
-      // themeRes.okでなければ何もせず進む（エラー出さない）
-    } catch (e) {
-      // ここでエラーが出ても何もしない（リストは表示する）
-    }
+    // theme-list.json からテーマ名を取得
+    const themeClass = themeMap[repo.name] || "";
 
     if (themeClass) {
       repoElement.classList.add(themeClass);
     }
 
-    // View on GitHub リンクのURL末尾の # を除去
     let htmlUrl = repo.html_url;
     if (typeof htmlUrl === "string" && htmlUrl.endsWith("#")) {
       htmlUrl = htmlUrl.slice(0, -1);
@@ -62,7 +51,6 @@ function displayRepos(repos) {
       ? `<p><a href="${repo.homepage}" target="_blank">Homepage</a></p>`
       : "";
 
-    // リポジトリ情報をHTMLに追加
     repoElement.innerHTML = `
       <h3>${repo.name}</h3>
       <img src="${socialPreviewUrl}" alt="Social Preview" style="max-width: 100%; margin-bottom: 10px;">
@@ -79,6 +67,8 @@ function displayRepos(repos) {
     repoElement.addEventListener("click", () => handleRepoClick(repo, repoElement.querySelector(".extra-info")));
   });
 }
+
+// handleRepoClick 以降はそのままでOK
 
 // リポジトリをクリックしたときの処理（そのまま）
 async function handleRepoClick(repo, extraInfoElement) {

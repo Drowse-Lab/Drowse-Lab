@@ -29,8 +29,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             const id = document.createElement('p');
             id.textContent = `ID: ${member.login}`;
 
-            const username = document.createElement('p');
-            username.textContent = `username: ${member.name || '不明'}`;
+            // const username = document.createElement('p');
+            // username.textContent = `username: ${member.name || '不明'}`;
 
             const profileLink = document.createElement('a');
             profileLink.href = member.html_url;

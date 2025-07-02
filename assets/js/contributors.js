@@ -20,39 +20,28 @@ document.addEventListener('DOMContentLoaded', async () => {
             const memberElement = document.createElement('div');
             memberElement.classList.add('member');
 
-            // メンバーの基本情報（JSONに含まれている値を使う）
+            // github_link からユーザーネームを抽出
+            const urlParts = member.github_link.split('/');
+            const username = urlParts[urlParts.length - 1];
+
+            // アバター画像（GitHubの公式URL形式）
             const avatar = document.createElement('img');
-            avatar.src = member.avatar_url;
-            avatar.alt = `${member.login}'s avatar`;
+            avatar.src = `https://github.com/${username}.png`;
+            avatar.alt = `${username}'s avatar`;
             avatar.classList.add('avatar');
 
-            const id = document.createElement('p');
-            id.textContent = `ID: ${member.login}`;
+            // ユーザーネーム表示
+            const usernameEl = document.createElement('p');
+            usernameEl.textContent = `ユーザーネーム: ${username}`;
 
-            const username = document.createElement('p');
-            username.textContent = `username: ${member.name || ''}`;
-
+            // プロフィールリンク
             const profileLink = document.createElement('a');
-            profileLink.href = member.html_url;
+            profileLink.href = member.github_link;
             profileLink.textContent = 'GitHub Profile';
-
-            // パーティクル情報を取得
-            const particlesResponse = await fetch(`_members/${member.login}.md`);
-            if (particlesResponse.ok) {
-                const particleText = await particlesResponse.text();
-
-                // Markdownを解析してパーティクルを表示
-                const particleElement = document.createElement('pre');
-                particleElement.textContent = `Particles: \n${particleText}`;
-                memberElement.appendChild(particleElement);
-            } else {
-                console.warn(`No particle file found for user: ${member.login}`);
-            }
 
             // DOMに要素を追加
             memberElement.appendChild(avatar);
-            memberElement.appendChild(id);
-            memberElement.appendChild(username);
+            memberElement.appendChild(usernameEl);
             memberElement.appendChild(profileLink);
 
             membersDiv.appendChild(memberElement);

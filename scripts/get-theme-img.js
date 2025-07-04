@@ -3,8 +3,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const themeDir = path.join(__dirname, '../theme');
-const outPath = path.join(__dirname, '../assets/data/theme-list.json');
+const themeDir = path.join(__dirname, '/theme');
+const outPath = path.join(__dirname, '/assets/data/theme-list.json');
 
 // themeディレクトリ内の全ての.mdファイルを取得
 const files = fs.readdirSync(themeDir).filter(f => f.endsWith('.md'));

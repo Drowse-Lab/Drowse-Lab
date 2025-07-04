@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             // ユーザーネーム表示
             const usernameEl = document.createElement('p');
-            usernameEl.textContent = `ユーザーネーム: ${username}`;
+            usernameEl.textContent = `userid: ${username}`;
 
             // プロフィールリンク
             const profileLink = document.createElement('a');

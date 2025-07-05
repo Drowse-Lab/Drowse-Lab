@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const members = await response.json();
 
-        if (members.length === 0) {
+        if (!Array.isArray(members) || members.length === 0) {
             membersDiv.textContent = 'メンバーが見つかりませんでした。';
             return;
         }

@@ -17,6 +17,18 @@ Promise.all([
   fetchRepos();
 });
 
+async function getThemeForRepo(repoName) {
+    const path = `assets/theme/${repoName}.md`;
+    try {
+        const res = await fetch(path);
+        if (!res.ok) return "default";
+        const text = await res.text();
+        const match = text.match(/^img:\s*(\S+)/m);
+        return match ? match[1] : "default";
+    } catch {
+        return "default";
+    }
+}
 async function fetchRepos() {
   try {
     const response = await fetch("assets/data/repos.json");

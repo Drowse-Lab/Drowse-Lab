@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const membersDiv = document.getElementById('members');
-
     try {
         const response = await fetch('assets/data/members.json');
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
@@ -14,8 +13,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         for (const member of members) {
             const memberElement = document.createElement('div');
             memberElement.classList.add('member');
-            if (member.theme) memberElement.classList.add(member.theme); // ← ここでテーマクラス追加
 
+            // themeがなければ"default"を付与
+            const theme = member.theme || "default";
+            memberElement.classList.add(theme);
+
+            // --- 以下略（今まで通り） ---
             const urlParts = member.github_link.split('/');
             const username = urlParts[urlParts.length - 1];
 

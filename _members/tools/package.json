@@ -4,6 +4,6 @@
   "description": "Script to generate member files",
   "main": "generateMemberFiles.js",
   "dependencies": {
-    "node-fetch": "^2.6.1"
+  "node-fetch": "^2.6.1"
   }
 }

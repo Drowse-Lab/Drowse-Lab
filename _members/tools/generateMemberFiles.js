@@ -1,52 +1,41 @@
-// const fs = require('fs');
-// const path = require('path');
-// const fetch = require('node-fetch');
+const fs = require('fs');
+const path = require('path');
 
-// const membersDir = path.join(__dirname, '_members'); // _membersディレクトリのパス
-// const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-// const ORG_NAME = 'Drowse-Lab'; // 組織名
+const membersJsonPath = path.join(__dirname, '../../assets/data/members.json'); // JSONのパス
+const membersDir = path.join(__dirname, '..'); // _membersディレクトリのパス
 
-// // GitHub APIで組織メンバーを取得
-// async function fetchMembers() {
-//     try {
-//         const response = await fetch(`https://api.github.com/orgs/${ORG_NAME}/members`, {
-//             headers: {
-//                 Authorization: `token ${GITHUB_TOKEN}`
-//             }
-//         });
+// JSONからgithubユーザー名リストを作成
+function getMembersFromJson() {
+    const json = fs.readFileSync(membersJsonPath, 'utf-8');
+    const membersArr = JSON.parse(json);
+    return membersArr.map(member => {
+        // github_linkからユーザー名だけ取り出す
+        const match = member.github_link.match(/github\.com\/([A-Za-z0-9_-]+)$/);
+        return match ? match[1] : null;
+    }).filter(Boolean).map(login => ({ login }));
+}
 
-//         if (!response.ok) {
-//             throw new Error(`Failed to fetch members: ${response.statusText}`);
-//         }
+// メンバーの設定を確認またはデフォルト設定を適用
+function ensureDefaultSettings() {
+    try {
+        const members = getMembersFromJson();
 
-//         return await response.json();
-//     } catch (error) {
-//         console.error('Error fetching members:', error);
-//         throw error;
-//     }
-// }
+        members.forEach((member) => {
+            const filePath = path.join(membersDir, `${member.login}.md`); // メンバーID用のファイル名
 
-// // メンバーの設定を確認またはデフォルト設定を適用
-// async function ensureDefaultSettings() {
-//     try {
-//         const members = await fetchMembers();
+            if (!fs.existsSync(filePath)) {
+                // ファイルがない場合、デフォルト設定を適用（ファイル生成はしない）
+                console.log(`No file found for ${member.login}, using default settings.`);
+                const defaultContent = `# ${member.login}\n\nparticles:\n  - type: default\n`;
+                // 必要に応じて、defaultContent を他の処理に渡す
+            } else {
+                console.log(`File exists for ${member.login}: ${filePath}`);
+            }
+        });
+    } catch (error) {
+        console.error('Error ensuring default settings:', error);
+        process.exit(1);
+    }
+}
 
-//         members.forEach((member) => {
-//             const filePath = path.join(membersDir, `${member.login}.md`); // メンバーID用のファイル名
-
-//             if (!fs.existsSync(filePath)) {
-//                 // ファイルがない場合、デフォルト設定を適用（ファイル生成はしない）
-//                 console.log(`No file found for ${member.login}, using default settings.`);
-//                 const defaultContent = `# ${member.login}\n\nparticles:\n  - type: default\n`;
-//                 // 必要に応じて、defaultContent を他の処理に渡す
-//             } else {
-//                 console.log(`File exists for ${member.login}: ${filePath}`);
-//             }
-//         });
-//     } catch (error) {
-//         console.error('Error ensuring default settings:', error);
-//         process.exit(1);
-//     }
-// }
-
-// ensureDefaultSettings();
+ensureDefaultSettings();

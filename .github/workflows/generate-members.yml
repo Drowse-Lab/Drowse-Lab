@@ -24,6 +24,9 @@ jobs:
         with:
           node-version: 16
 
+      - name: Ensure tools directory exists
+        run: mkdir -p _members/tools
+
       - name: Install dependencies
         working-directory: _members/tools
         run: npm install

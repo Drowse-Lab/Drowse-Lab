@@ -49,5 +49,4 @@
 //     }
 // }
 
-// // 実行
 // ensureDefaultSettings();

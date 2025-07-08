@@ -6,27 +6,26 @@ let selectedDate = null; // 日付フィルター用
 
 function renderPosts() {
   const postsContainer = document.getElementById("posts");
-  postsContainer.innerHTML = ""; // 投稿リセット
+  postsContainer.innerHTML = "";
 
   const filtered = allPosts.filter(post => {
-    // published: false → 絶対に非表示
     if (post.published === false || post.published === "false") return false;
 
-    // published: true → カレンダーでその日付が選ばれた時だけ表示
+    // 日付フィルター
     if (post.published === true || post.published === "true") {
-      if (!selectedDate) return false;
-      if (post.date !== selectedDate) return false;
+      if (selectedDate && post.date !== selectedDate) return false;
     }
 
-    // published未記載の場合は普通にフィルタ
+    // タグ／著者フィルター
     const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
     const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
     const dateMatch = !selectedDate || post.date === selectedDate;
+
     return tagMatch && authorMatch && dateMatch;
   });
 
   if (filtered.length === 0) {
-    postsContainer.innerHTML = '<h2 style="text-align:center; margin:2em 0; color:#000;">該当する記事がありません</h2>';
+    postsContainer.innerHTML = '## 該当する記事がありません';
     return;
   }
 

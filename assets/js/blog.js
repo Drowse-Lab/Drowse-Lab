@@ -9,6 +9,16 @@ function renderPosts() {
   postsContainer.innerHTML = ""; // 投稿リセット
 
   const filtered = allPosts.filter(post => {
+    // published: false → 絶対に非表示
+    if (post.published === false || post.published === "false") return false;
+
+    // published: true → カレンダーでその日付が選ばれた時だけ表示
+    if (post.published === true || post.published === "true") {
+      if (!selectedDate) return false;
+      if (post.date !== selectedDate) return false;
+    }
+
+    // published未記載の場合は普通にフィルタ
     const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
     const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
     const dateMatch = !selectedDate || post.date === selectedDate;
@@ -108,7 +118,4 @@ document.addEventListener("DOMContentLoaded", () => {
       renderPosts();
     });
   }
-
-
 });
-

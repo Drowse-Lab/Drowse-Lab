@@ -2,7 +2,7 @@ const allPosts = window.allPosts || [];
 
 let selectedTags = new Set();
 let selectedAuthors = new Set();
-let selectedDate = null; // 日付フィルター用
+let selectedDate = null; 
 
 function renderPosts() {
   const postsContainer = document.getElementById("posts");
@@ -46,7 +46,7 @@ function renderPosts() {
 
 function createFilterButtons(set, containerId, type) {
   const container = document.getElementById(containerId);
-  container.innerHTML = ""; // 一度リセット
+  container.innerHTML = "";
 
   set.forEach(item => {
     const button = document.createElement("button");
@@ -113,7 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (dateInput) {
     dateInput.addEventListener("change", () => {
-      selectedDate = dateInput.value || null; // ここで選択日付を保存
+      selectedDate = dateInput.value || null; 
       renderPosts();
     });
   }

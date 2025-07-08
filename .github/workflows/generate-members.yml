@@ -1,5 +1,4 @@
 name: Generate Member Files
-
 on:
   push:
     branches:

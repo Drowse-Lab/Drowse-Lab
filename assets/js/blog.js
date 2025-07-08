@@ -2,26 +2,28 @@ const allPosts = window.allPosts || [];
 
 let selectedTags = new Set();
 let selectedAuthors = new Set();
-let selectedDate = null; 
+let selectedDate = null;
 
 function renderPosts() {
   const postsContainer = document.getElementById("posts");
   postsContainer.innerHTML = "";
 
   const filtered = allPosts.filter(post => {
-    if (post.published === false || post.published === "false") return false;
+    const isPublished = post.published;
 
-    // 日付フィルター
-    if (post.published === true || post.published === "true") {
-      if (selectedDate && post.date !== selectedDate) return false;
+    // 非表示指定
+    if (isPublished === false || isPublished === "false") return false;
+
+    // 公開指定：フィルター一致時のみ表示
+    if (isPublished === true || isPublished === "true") {
+      const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
+      const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
+      const dateMatch = !selectedDate || post.date === selectedDate;
+      return tagMatch && authorMatch && dateMatch;
     }
 
-    // タグ／著者フィルター
-    const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
-    const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
-    const dateMatch = !selectedDate || post.date === selectedDate;
-
-    return tagMatch && authorMatch && dateMatch;
+    // published 未指定：常に表示
+    return true;
   });
 
   if (filtered.length === 0) {
@@ -113,7 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (dateInput) {
     dateInput.addEventListener("change", () => {
-      selectedDate = dateInput.value || null; 
+      selectedDate = dateInput.value || null;
       renderPosts();
     });
   }

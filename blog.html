@@ -47,16 +47,16 @@ main_nav: true
     <script>
       window.allPosts = [
         {% for post in site.posts %}
-          {
+        {
         title: {{ post.title | jsonify }},
-       url: "{{ post.url | relative_url }}",
-      date: "{{ post.date | date: '%Y-%m-%d' }}",
-      tags: [{% for tag in post.tags %}{{ tag | jsonify }}{% unless forloop.last %}, {% endunless %}{% endfor %}],
-      author: {{ post.author | jsonify }}
-      }{% unless forloop.last %}, {% endunless %}
-      {% endfor %}
-];
-
+        url: "{{ post.url | relative_url }}",
+        date: "{{ post.date | date: '%Y-%m-%d' }}",
+        tags: [{% for tag in post.tags %}{{ tag | jsonify }}{% unless forloop.last %}, {% endunless %}{% endfor %}],
+        author: {{ post.author | jsonify }},
+        published: {{ post.published | default: true }}
+        }{% unless forloop.last %}, {% endunless %}
+        {% endfor %}
+      ];
     </script>
   </main>
 </body>

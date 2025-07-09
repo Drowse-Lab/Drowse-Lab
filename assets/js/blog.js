@@ -23,17 +23,17 @@ console.log("----- DEBUG FILTER END -----");
 
 const filtered = allPosts.filter(post => {
   const isPublished = post.published;
-  if (isPublished === true || isPublished === "null"){}
 
-  //  表示しない条件
+  // false は常に非表示
   if (isPublished === false || isPublished === "false") return false;
 
-  //  表示するが、true は日付と一致してる場合のみ
+  // true の場合、日付が一致しているときだけ表示
   if (isPublished === true || isPublished === "true") {
-    if (!selectedDate || post.date !== selectedDate) return false;
+    if (selectedDate === null || post.date !== selectedDate) return false;
   }
 
-  // ✅ null or undefined の場合はそのままタグ／著者だけで判断
+  // null や undefined の場合 → 日付関係なく表示OK
+
   const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
   const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
 

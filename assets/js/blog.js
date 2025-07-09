@@ -11,21 +11,22 @@ function renderPosts() {
 const filtered = allPosts.filter(post => {
   const isPublished = post.published;
 
+  // false は常に非表示
   if (isPublished === false || isPublished === "false") return false;
 
-  // published: true のときだけ日付フィルターを強制
-  if ((isPublished === true || isPublished === "true") && selectedDate) {
-    if (post.date !== selectedDate) return false;
+  // true の場合、日付が一致しているときだけ表示
+  if (isPublished === true || isPublished === "true") {
+    if (!selectedDate || post.date !== selectedDate) return false;
   }
 
-  // published が undefined の場合、日付フィルターは無視（いつでも表示OK）
 
-  // タグと著者フィルターは通常通り適用
+  // タグと著者フィルター
   const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
   const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
 
   return tagMatch && authorMatch;
 });
+
 
 
   if (filtered.length === 0) {

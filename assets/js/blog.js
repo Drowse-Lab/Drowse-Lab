@@ -8,6 +8,19 @@ function renderPosts() {
   const postsContainer = document.getElementById("posts");
   postsContainer.innerHTML = "";
 
+  console.log("----- DEBUG FILTER START -----");
+allPosts.forEach(post => {
+  const isPublished = post.published;
+  const matchesDate = selectedDate ? (post.date === selectedDate) : true;
+  const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
+  const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
+  const result = (isPublished !== false && isPublished !== "false") &&
+                 ((isPublished === true || isPublished === "true") ? matchesDate : true) &&
+                 tagMatch && authorMatch;
+  console.log(`[${result ? "✔" : "✘"}] "${post.title}" | published: ${isPublished} | date: ${post.date} | selectedDate: ${selectedDate}`);
+});
+console.log("----- DEBUG FILTER END -----");
+
 const filtered = allPosts.filter(post => {
   const isPublished = post.published;
   if (isPublished === true || isPublished === "null"){}

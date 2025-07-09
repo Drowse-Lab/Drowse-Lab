@@ -10,6 +10,7 @@ function renderPosts() {
 
 const filtered = allPosts.filter(post => {
   const isPublished = post.published;
+  if (isPublished === true || isPublished === "null"){}
 
   //  表示しない条件
   if (isPublished === false || isPublished === "false") return false;

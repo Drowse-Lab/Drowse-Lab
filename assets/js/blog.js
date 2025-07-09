@@ -14,16 +14,16 @@ function renderPosts() {
     // 非表示指定
     if (isPublished === false || isPublished === "false") return false;
 
-    // 公開指定：フィルター一致時のみ表示
+    // 公開指定: 日付フィルターが選ばれているときのみ表示
     if (isPublished === true || isPublished === "true") {
-      const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
-      const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
-      const dateMatch = !selectedDate || post.date === selectedDate;
-      return tagMatch && authorMatch && dateMatch;
+      if (!selectedDate || post.date !== selectedDate) return false;
     }
 
-    // published 未指定：常に表示
-    return true;
+    // タグと著者フィルター共通
+    const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
+    const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
+
+    return tagMatch && authorMatch;
   });
 
   if (filtered.length === 0) {

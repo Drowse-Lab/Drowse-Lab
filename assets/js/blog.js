@@ -19,6 +19,7 @@ const filtered = allPosts.filter(post => {
     if (!selectedDate || post.date !== selectedDate) return false;
   }
 
+  if (isPublished === true || isPublished === "null"){}
 
   // タグと著者フィルター
   const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));

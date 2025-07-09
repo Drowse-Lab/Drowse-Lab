@@ -11,15 +11,15 @@ function renderPosts() {
   const filtered = allPosts.filter(post => {
     const isPublished = post.published;
 
-    // 非表示指定
+    // 非表示指定: false（文字列も含む）は絶対に表示しない
     if (isPublished === false || isPublished === "false") return false;
 
-    // 公開指定: 日付フィルターが選ばれているときのみ表示
+    // published: true → 必ず日付フィルターと一致しているときのみ表示
     if (isPublished === true || isPublished === "true") {
       if (!selectedDate || post.date !== selectedDate) return false;
     }
 
-    // タグと著者フィルター共通
+    // タグと著者フィルターは通常通り適用
     const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
     const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
 
@@ -115,7 +115,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (dateInput) {
     dateInput.addEventListener("change", () => {
-      selectedDate = dateInput.value || null;
+      const date = new Date(dateInput.value);
+      if (!isNaN(date.getTime())) {
+        selectedDate = date.toISOString().slice(0, 10); // YYYY-MM-DD
+      } else {
+        selectedDate = null;
+      }
       renderPosts();
     });
   }

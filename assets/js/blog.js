@@ -31,21 +31,23 @@ const filtered = allPosts.filter(post => {
   // false → 常に非表示
   if (isPublished === false || isPublished === "false") return false;
 
-  // true → selectedDate と一致しないなら非表示
+  // true → selectedDate と完全一致する場合のみ表示
   if (isPublished === true || isPublished === "true") {
-    if (!selectedDate || post.date !== selectedDate) return false;
+    return post.date === selectedDate;
   }
 
-  // null / undefined → selectedDate が指定されていたら、日付が一致しないと非表示
-  if ((isPublished === undefined || isPublished === null) && selectedDate) {
-    if (post.date !== selectedDate) return false;
+  // null or undefined → selectedDate と一致してない場合に表示（≠ 選択された日）
+  if ((isPublished === null || isPublished === undefined || isPublished === "null")) {
+    if (selectedDate && post.date === selectedDate) return false;
+    return true;
   }
 
+  // タグ・著者
   const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
   const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
-
   return tagMatch && authorMatch;
 });
+
 
 
 

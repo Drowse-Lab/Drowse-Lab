@@ -31,18 +31,19 @@ const filtered = allPosts.filter(post => {
   // false → 常に非表示
   if (isPublished === false || isPublished === "false") return false;
 
-  // true → selectedDate があれば一致時のみ表示。なければ表示。
+  // true → selectedDate と完全一致しないなら非表示
   if (isPublished === true || isPublished === "true") {
-    if (selectedDate && post.date !== selectedDate) return false;
+    if (!selectedDate || post.date !== selectedDate) return false;
   }
 
-  // null, undefined は常に表示
+  // null, undefined → 表示される
 
   const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
   const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
 
   return tagMatch && authorMatch;
 });
+
 
 
 

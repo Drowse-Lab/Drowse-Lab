@@ -46,6 +46,7 @@ const filtered = allPosts.filter(post => {
 });
 
 
+
 console.log("=== FILTERED POSTS ===");
 console.log(filtered);
 
@@ -142,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
     dateInput.addEventListener("change", () => {
       const date = new Date(dateInput.value);
       if (!isNaN(date.getTime())) {
-        selectedDate = date.toISOString().slice(0, 10); // YYYY-MM-DD
+        selectedDate = date.toISOString().slice(0, 10);
       } else {
         selectedDate = null;
       }

@@ -36,13 +36,17 @@ const filtered = allPosts.filter(post => {
     if (!selectedDate || post.date !== selectedDate) return false;
   }
 
-  // null / undefined（= 未定義）はスルーしてそのまま通る（常に表示）
+  // null / undefined → selectedDate が指定されていたら、日付が一致しないと非表示
+  if ((isPublished === undefined || isPublished === null) && selectedDate) {
+    if (post.date !== selectedDate) return false;
+  }
 
   const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
   const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
 
   return tagMatch && authorMatch;
 });
+
 
 
 

@@ -31,7 +31,7 @@ const filtered = allPosts.filter(post => {
   if (isPublished === false || isPublished === "false") return false;
      //falseだったら絶対に表示しない
 
-  if (isPublished === "null")
+  if (isPublished === "null"){}
      //nullだったら何も起こさない
    
 

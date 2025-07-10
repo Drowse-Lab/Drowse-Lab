@@ -41,23 +41,14 @@ const filtered = allPosts.filter(post => {
     if (selectedDate && post.date === selectedDate) return false;
     return true;
   }
-
   // タグ・著者
   const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
   const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
   return tagMatch && authorMatch;
 });
 
-
-
-
-
-
-
 console.log("=== FILTERED POSTS ===");
 console.log(filtered);
-
-
 
   if (filtered.length === 0) {
     postsContainer.innerHTML = '<h2 style="text-align:center; margin:2em 0; color:#000;">該当する記事がありません</h2>';

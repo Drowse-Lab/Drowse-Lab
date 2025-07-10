@@ -8,19 +8,21 @@ function renderPosts() {
   const postsContainer = document.getElementById("posts");
   postsContainer.innerHTML = "";
 
-  console.log("----- DEBUG FILTER START -----");
-  console.log(allPosts);
+console.log("----- DEBUG FILTER START -----");
+console.log(allPosts);
+console.log("選択された日付（selectedDate）:", selectedDate);
 allPosts.forEach(post => {
   const isPublished = post.published;
   const matchesDate = selectedDate ? (post.date === selectedDate) : true;
   const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
   const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
   const result = (isPublished !== false && isPublished !== "false") &&
-                 ((isPublished === true || isPublished === "true") ? matchesDate : true) &&
+                 ((isPublished === true || isPublished === "true") && selectedDate !== null ? post.date === selectedDate : true) &&
                  tagMatch && authorMatch;
   console.log(`[${result ? "✔" : "✘"}] "${post.title}" | published: ${isPublished} | date: ${post.date} | selectedDate: ${selectedDate}`);
 });
 console.log("----- DEBUG FILTER END -----");
+
 
 
 const filtered = allPosts.filter(post => {
@@ -30,7 +32,7 @@ const filtered = allPosts.filter(post => {
   if (isPublished === false || isPublished === "false") return false;
 
   // true のとき、日付が選択されているなら一致チェック
-  if ((isPublished === true || isPublished === "true") && selectedDate !== null) {
+  if ((isPublished === true || isPublished === "true") && isPublished !== "null") {
     if (post.date !== selectedDate) return false;
   }
 

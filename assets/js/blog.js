@@ -29,12 +29,12 @@ const filtered = allPosts.filter(post => {
   // 非表示指定
   if (isPublished === false || isPublished === "false") return false;
 
-  // true のときのみ日付が一致しないと表示しない
+  // true のときのみ日付一致が必要
   if (isPublished === true || isPublished === "true") {
     if (!selectedDate || post.date !== selectedDate) return false;
   }
 
-  // null や undefined は何もせず通す（常に表示）
+  // null や undefined は表示（このまま通る）
 
   const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
   const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);

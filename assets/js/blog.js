@@ -9,6 +9,7 @@ function renderPosts() {
   postsContainer.innerHTML = "";
 
   console.log("----- DEBUG FILTER START -----");
+  console.log(allPosts);
 allPosts.forEach(post => {
   const isPublished = post.published;
   const matchesDate = selectedDate ? (post.date === selectedDate) : true;
@@ -20,6 +21,7 @@ allPosts.forEach(post => {
   console.log(`[${result ? "✔" : "✘"}] "${post.title}" | published: ${isPublished} | date: ${post.date} | selectedDate: ${selectedDate}`);
 });
 console.log("----- DEBUG FILTER END -----");
+
 
 const filtered = allPosts.filter(post => {
   const isPublished = post.published;

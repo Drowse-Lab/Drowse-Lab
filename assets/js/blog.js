@@ -10,7 +10,7 @@ function renderPosts() {
 
 console.log("----- DEBUG FILTER START -----");
 console.log(allPosts);
-console.log("選択された日付（selectedDate）:", selectedDate);
+console.log("selectedDate:", selectedDate);
 allPosts.forEach(post => {
   const isPublished = post.published;
   const matchesDate = selectedDate ? (post.date === selectedDate) : true;
@@ -23,7 +23,7 @@ allPosts.forEach(post => {
 });
 console.log("----- DEBUG FILTER END -----");
 
-
+console.log("Filtering posts... published + date check");
 
 const filtered = allPosts.filter(post => {
   const isPublished = post.published;

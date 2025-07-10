@@ -32,7 +32,7 @@ const filtered = allPosts.filter(post => {
   if (isPublished === false || isPublished === "false") return false;
 
   // true のとき、日付が選択されているなら一致チェック
- if ((isPublished === true || isPublished === "true") && selectedDate !== null) {
+ if ((isPublished === true || isPublished === "true") && isPublished !== "null") {
   if (post.date !== selectedDate) return false;
 }
 

@@ -24,22 +24,22 @@ console.log("----- DEBUG FILTER END -----");
 const filtered = allPosts.filter(post => {
   const isPublished = post.published;
 
- if (isPublished === true || isPublished === "true") {
-    if (selectedDate === null || post.date !== selectedDate) return false;
-     //trueかつ日付がっていた場合のみ表示
-  }
+  // 非表示指定
   if (isPublished === false || isPublished === "false") return false;
-     //falseだったら絶対に表示しない
 
-  if (isPublished === "null"){}
-     //nullだったら何も起こさない
-   
+  // true のときのみ日付が一致しないと表示しない
+  if (isPublished === true || isPublished === "true") {
+    if (!selectedDate || post.date !== selectedDate) return false;
+  }
 
-const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
+  // null や undefined は何もせず通す（常に表示）
+
+  const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
   const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
 
   return tagMatch && authorMatch;
 });
+
 
 
   if (filtered.length === 0) {

@@ -31,21 +31,24 @@ const filtered = allPosts.filter(post => {
   // false → 常に非表示
   if (isPublished === false || isPublished === "false") return false;
 
-  // true → selectedDate と完全一致する場合のみ表示
-  if (isPublished === true || isPublished === "true") {
-    return post.date === selectedDate;
-  }
+  //// true → selectedDate と完全一致する場合のみ表示
+  // if (isPublished === true || isPublished === "true") {
+  //   return post.date === selectedDate;
+  // }
 
-  // null or undefined → selectedDate と一致してない場合に表示（≠ 選択された日）
-  if ((isPublished === null || isPublished === undefined || isPublished === "null")) {
-    if (selectedDate && post.date === selectedDate) return false;
-    return true;
-  }
+  // // null or undefined → selectedDate と一致してない場合に表示（≠ 選択された日）
+  // if ((isPublished === null || isPublished === undefined || isPublished === "null")) {
+  //   if (selectedDate && post.date === selectedDate) return false;
+  //   return true;
+  // }
   // タグ・著者
-  const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
-  const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
+  
   return tagMatch && authorMatch;
-});
+    const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
+    const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
+    const dateMatch = !selectedDate || post.date === selectedDate;
+    return tagMatch && authorMatch && dateMatch;
+  });
 
 console.log("=== FILTERED POSTS ===");
 console.log(filtered);

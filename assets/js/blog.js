@@ -25,30 +25,30 @@ console.log("----- DEBUG FILTER END -----");
 
 console.log("Filtering posts... published + date check");
 
-const filtered = allPosts.filter(post => {
-  const isPublished = post.published;
 
-  // false → 常に非表示
-  if (isPublished === false || isPublished === "false") return false;
+  const filtered = allPosts.filter(post => {
+    const isPublished = post.published;
+    console.log(`[DEBUG] "${post.title}", published:`, isPublished, "date:", post.date);
 
-  //// true → selectedDate と完全一致する場合のみ表示
-  // if (isPublished === true || isPublished === "true") {
-  //   return post.date === selectedDate;
-  // }
+    // 非公開
+    if (isPublished === false || isPublished === "false") return false;
 
-  // // null or undefined → selectedDate と一致してない場合に表示（≠ 選択された日）
-  // if ((isPublished === null || isPublished === undefined || isPublished === "null")) {
-  //   if (selectedDate && post.date === selectedDate) return false;
-  //   return true;
-  // }
-  // タグ・著者
-  
-  return tagMatch && authorMatch;
+    // published: true（公開記事）は日付と一致しないと表示しない
+    if (isPublished === true || isPublished === "true") {
+      if (!selectedDate || post.date !== selectedDate) return false;
+    }
+
+    // published: null / undefined → 常に表示 ※日付フィルターも無視
+
+    // タグ・投稿者フィルター
     const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
     const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
-    const dateMatch = !selectedDate || post.date === selectedDate;
-    return tagMatch && authorMatch && dateMatch;
+
+    const ok = tagMatch && authorMatch;
+    console.log(" → pass filters?", ok);
+    return ok;
   });
+
 
 console.log("=== FILTERED POSTS ===");
 console.log(filtered);

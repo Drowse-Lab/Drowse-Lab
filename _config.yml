@@ -23,15 +23,13 @@ defaults:
 paginate: 5
 paginate_path: "/blog/page:num"
 
-gems:
-  - jekyll-paginate
-  - jekyll-feed
+
 plugins:
   - jekyll-feed
   - jekyll-paginate
 
-author: 零鮫
-subtitle: "mod更新など"
+author: Drowse-Lab members
+subtitle: ""
 
 include:
   - blog.html

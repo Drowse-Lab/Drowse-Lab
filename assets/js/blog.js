@@ -28,18 +28,18 @@ console.log("Filtering posts... published + date check");
 
   
 const filtered = allPosts.filter(post => {
-  const onlyDate = post.onlydate; // ← ここで定義
-  console.log(`[DEBUG] "${post.title}", onlyDate:`, onlyDate, "date:", post.date, "selectedDate:", selectedDate);
+  const onlyDate = post.onlydate === true || post.onlydate === "true";
+  const matchesDate = selectedDate && post.date === selectedDate;
 
-  if (onlyDate === true || onlyDate === "true") {
-    if (!selectedDate || post.date !== selectedDate) return false;
-  }
+  // onlydate が true なら、日付が一致しないと非表示
+  if (onlyDate && !matchesDate) return false;
 
   // タグ・投稿者フィルター
   const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
   const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
+
   const ok = tagMatch && authorMatch;
-  console.log(" → pass filters?", ok);
+  console.log(`[DEBUG] "${post.title}" → onlydate: ${onlyDate}, matchesDate: ${matchesDate}, tagMatch: ${tagMatch}, authorMatch: ${authorMatch}, PASS: ${ok}`);
   return ok;
 });
 

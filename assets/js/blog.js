@@ -31,7 +31,7 @@ console.log("Filtering posts... published + date check");
     
     console.log(`[DEBUG] "${post.title}", published:`, isPublished, "date:", post.date);
  
-    if (onlyDate === true || onlyDate === "true") {
+    if (onlydate === true || onlydate === "true") {
       if (!selectedDate || post.date !== selectedDate) return false;
     }
 

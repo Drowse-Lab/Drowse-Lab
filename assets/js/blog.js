@@ -28,7 +28,7 @@ console.log("Filtering posts... published + date check");
 
   
 const filtered = allPosts.filter(post => {
-  const onlydate = post.onlydate; // ← ここで定義
+  const onlyDate = post.onlydate; // ← ここで定義
   console.log(`[DEBUG] "${post.title}", onlyDate:`, onlyDate, "date:", post.date, "selectedDate:", selectedDate);
 
   if (onlyDate === true || onlyDate === "true") {

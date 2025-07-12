@@ -30,7 +30,7 @@ console.log("Filtering posts... published + date check");
     const isPublished = post.published;
     
     console.log(`[DEBUG] "${post.title}", published:`, isPublished, "date:", post.date);
-    if ((post.onlydate !== false && post.onlydate !== "false")) {
+    if (post.onlydate !== false && post.onlydate !== "false") {
       if (!selectedDate || post.date !== selectedDate) return false;
     }
     // // 非公開

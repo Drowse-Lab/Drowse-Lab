@@ -26,22 +26,22 @@ console.log("----- DEBUG FILTER END -----");
 console.log("Filtering posts... published + date check");
 
 
-  const filtered = allPosts.filter(post => {
-    const isPublished = post.published;
-    
-    console.log(`[DEBUG] "${post.title}", published:`, isPublished, "date:", post.date);
- 
-    if (onlydate === true || onlydate === "true") {
-      if (!selectedDate || post.date !== selectedDate) return false;
-    }
+const filtered = allPosts.filter(post => {
+  const onlyDate = post.onlydate; // ← ここで定義
+  console.log(`[DEBUG] "${post.title}", onlyDate:`, onlyDate, "date:", post.date, "selectedDate:", selectedDate);
 
-    // タグ・投稿者フィルター
-    const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
-    const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
-    const ok = tagMatch && authorMatch;
-    console.log(" → pass filters?", ok);
-    return ok;
-  });
+  if (onlyDate === true || onlyDate === "true") {
+    if (!selectedDate || post.date !== selectedDate) return false;
+  }
+
+  // タグ・投稿者フィルター
+  const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
+  const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
+  const ok = tagMatch && authorMatch;
+  console.log(" → pass filters?", ok);
+  return ok;
+});
+
 
 
 console.log("=== FILTERED POSTS ===");

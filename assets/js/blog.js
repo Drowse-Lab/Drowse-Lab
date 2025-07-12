@@ -29,20 +29,24 @@ console.log("Filtering posts... published + date check");
   
 const filtered = allPosts.filter(post => {
   console.log("▶️ raw onlydate:", post.onlydate, "| type:", typeof post.onlydate);
+
   const onlyDate = post.onlydate === true;
-  const matchesDate = selectedDate && post.date === selectedDate;
+  const matchesDate = onlyDate
+    ? selectedDate && post.date === selectedDate
+    : true;
 
   if (onlyDate && !matchesDate) {
     console.log(`[SKIP] "${post.title}" onlyDate:trueだけど日付不一致: ${post.date} vs ${selectedDate}`);
     return false;
   }
+
   const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
   const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
   const ok = tagMatch && authorMatch;
+
   console.log(`[RESULT] "${post.title}" → onlyDate:${onlyDate}, matchesDate:${matchesDate}, pass:${ok}`);
   return ok;
 });
-
 
 
 

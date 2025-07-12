@@ -28,12 +28,13 @@ console.log("Filtering posts... published + date check");
 
   
 const filtered = allPosts.filter(post => {
-  const onlyDate = String(post.onlydate).toLowerCase() === "true"; // ← true / "true" の両方に対応
+  // front matter に onlydate: true があるかどうかを判定（文字列でも true 扱いする）
+  const onlyDate = post.onlydate === true || post.onlydate === "true";
   const matchesDate = selectedDate && post.date === selectedDate;
 
-  // onlyDate = true の記事は selectedDate と一致しなければ非表示
+  // onlydate が true のときに日付が一致しないなら除外
   if (onlyDate && !matchesDate) {
-    console.log(`[SKIP] "${post.title}" → onlydate: true だけど日付不一致`);
+    console.log(`[SKIP] "${post.title}" → onlydate: true だけど selectedDate に一致してない`);
     return false;
   }
 
@@ -45,6 +46,7 @@ const filtered = allPosts.filter(post => {
   console.log(`[DEBUG] "${post.title}" → onlydate: ${onlyDate}, matchesDate: ${matchesDate}, tagMatch: ${tagMatch}, authorMatch: ${authorMatch}, PASS: ${ok}`);
   return ok;
 });
+
 
 
 

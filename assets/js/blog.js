@@ -33,20 +33,21 @@ const filtered = allPosts.filter(post => {
   const onlyDate = post.onlydate === true || post.onlydate === "true";
   const matchesDate = selectedDate && post.date === selectedDate;
 
-  // onlyDateがtrueのとき、日付が一致しないならスキップ
   if (onlyDate && !matchesDate) {
     console.log(`[SKIP] "${post.title}" onlyDate:trueだけど日付不一致: ${post.date} vs ${selectedDate}`);
     return false;
   }
 
-  // 日付条件クリア後、タグと著者のフィルターをチェック
-  const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
+  // タグとユーザーのフィルター（常にチェック）
+  const tagMatch = selectedTags.size === 0 || post.tags?.some(tag => selectedTags.has(tag));
   const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
+
   const ok = tagMatch && authorMatch;
 
-  console.log(`[RESULT] "${post.title}" → onlyDate:${onlyDate}, matchesDate:${matchesDate}, pass:${ok}`);
+  console.log(`[RESULT] "${post.title}" → onlyDate:${onlyDate}, matchesDate:${matchesDate}, tag:${tagMatch}, author:${authorMatch}, pass:${ok}`);
   return ok;
 });
+
 
 
 

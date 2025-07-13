@@ -31,10 +31,16 @@ const filtered = allPosts.filter(post => {
   console.log("▶️ raw onlydate:", post.onlydate, "| type:", typeof post.onlydate);
 
   const onlyDate = post.onlydate === true || post.onlydate === "true";
-  const matchesDate = selectedDate && post.date === selectedDate;
+
+  // post.date から "YYYY-MM-DD" を抽出
+  const postDate = typeof post.date === "string"
+    ? post.date.slice(0, 10) // 例: "2025-06-08"
+    : "";
+
+  const matchesDate = selectedDate && postDate === selectedDate;
 
   if (onlyDate && !matchesDate) {
-    console.log(`[SKIP] "${post.title}" onlyDate:trueだけど日付不一致: ${post.date} vs ${selectedDate}`);
+    console.log(`[SKIP] "${post.title}" onlyDate:trueだけど日付不一致: ${postDate} vs ${selectedDate}`);
     return false;
   }
 
@@ -47,6 +53,7 @@ const filtered = allPosts.filter(post => {
   console.log(`[RESULT] "${post.title}" → onlyDate:${onlyDate}, matchesDate:${matchesDate}, tag:${tagMatch}, author:${authorMatch}, pass:${ok}`);
   return ok;
 });
+
 
 
 

@@ -25,36 +25,39 @@ console.log("----- DEBUG FILTER END -----");
 
 console.log("Filtering posts... published + date check");
 
-
 const filtered = allPosts.filter(post => {
   const onlyDate = post.onlydate === true || post.onlydate === "true";
-
-  const postDate = typeof post.date === "string"
-    ? post.date.slice(0, 10)
-    : "";
-
+  const postDate = typeof post.date === "string" ? post.date.slice(0, 10) : "";
   const matchesDate = selectedDate && postDate === selectedDate;
 
-  console.log(`[CHECK DATE] ${post.title} | postDate: ${postDate} | selectedDate: ${selectedDate}`);
+  console.log(`[CHECK DATE] ${post.title} | onlyDate: ${onlyDate} | postDate: ${postDate} | selectedDate: ${selectedDate}`);
 
-  // selectedDate が指定されていて、postDate が一致しなければ除外
-  if (selectedDate && !matchesDate) {
-    console.log(`[SKIP] "${post.title}" → 選択された日付 ${selectedDate} に一致しない: ${postDate}`);
-    return false;
+  // onlydate:true の投稿 → selectedDate がない or 一致しない → 非表示
+  if (onlyDate) {
+    if (!selectedDate) {
+      console.log(`[SKIP] "${post.title}" → onlyDate:true だけど selectedDate 未選択なので非表示`);
+      return false;
+    }
+    if (!matchesDate) {
+      console.log(`[SKIP] "${post.title}" → onlyDate:true だけど日付不一致: ${postDate} vs ${selectedDate}`);
+      return false;
+    }
+  } else {
+    // onlydate:false の投稿 → selectedDate があるなら一致チェック
+    if (selectedDate && !matchesDate) {
+      console.log(`[SKIP] "${post.title}" → 日付不一致 (通常投稿): ${postDate} vs ${selectedDate}`);
+      return false;
+    }
   }
 
   // タグ・著者フィルター
   const tagMatch = selectedTags.size === 0 || post.tags?.some(tag => selectedTags.has(tag));
   const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
-
   const ok = tagMatch && authorMatch;
 
-  console.log(`[RESULT] "${post.title}" → onlyDate:${onlyDate}, matchesDate:${matchesDate}, tag:${tagMatch}, author:${authorMatch}, pass:${ok}`);
+  console.log(`[RESULT] "${post.title}" → pass:${ok}`);
   return ok;
 });
-
-
-
 
 
 console.log("=== FILTERED POSTS ===");

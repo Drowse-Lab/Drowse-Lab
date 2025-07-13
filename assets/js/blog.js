@@ -60,6 +60,7 @@ const filtered = allPosts.filter(post => {
 });
 
 
+
 console.log("=== FILTERED POSTS ===");
 console.log(filtered);
 

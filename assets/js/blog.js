@@ -26,7 +26,6 @@ console.log("----- DEBUG FILTER END -----");
 console.log("Filtering posts... published + date check");
 
 
-  
 const filtered = allPosts.filter(post => {
   const onlyDate = post.onlydate === true || post.onlydate === "true";
 
@@ -36,8 +35,9 @@ const filtered = allPosts.filter(post => {
 
   const matchesDate = selectedDate && postDate === selectedDate;
 
-  // ✅ selectedDate が設定されているときは、
-  // onlydate: true は当然、onlydate: false も日付一致しないと非表示にする
+  console.log(`[CHECK DATE] ${post.title} | postDate: ${postDate} | selectedDate: ${selectedDate}`);
+
+  // selectedDate が指定されていて、postDate が一致しなければ除外
   if (selectedDate && !matchesDate) {
     console.log(`[SKIP] "${post.title}" → 選択された日付 ${selectedDate} に一致しない: ${postDate}`);
     return false;

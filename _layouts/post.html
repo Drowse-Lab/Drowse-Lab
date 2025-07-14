@@ -105,6 +105,19 @@ layout: default
   {% endfor %} -->
 <!-- 	
 </section> -->
+
+{% if page.model_path %}
+  <link rel="model" href="{{ page.model_path | relative_url }}" type="model/json" />
+  <div id="model-viewer-container">
+    <!-- ここに3Dモデル表示用のcanvasやWebGLビューアを置く -->
+  </div>
+  <label>
+    <input type="checkbox" id="glowToggle" {% if page.enable_glow %}checked{% endif %}>
+    Enable glowing effect
+  </label>
+{% endif %}
+
+
 {% if site.inter_post_navigation == true %}
 	<section class="post-navigation">
 		<span class="prev-post">

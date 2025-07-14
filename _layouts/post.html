@@ -186,6 +186,52 @@ layout: default
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     })();
   </script>
+	<script src="https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.157.0/examples/js/controls/OrbitControls.js"></script>
+<script type="module">
+  import {
+    MinecraftModelLoader,
+    MinecraftTextureLoader
+  } from 'https://cdn.jsdelivr.net/npm/@fanthstudios/three-mcmodel@0.2.5/dist/three-mcmodel.module.js';
+
+  // Three.js セットアップ
+  const container = document.getElementById('mcmodel-viewer');
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  container.appendChild(renderer.domElement);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(
+    45,
+    container.clientWidth / container.clientHeight,
+    0.1,
+    1000
+  );
+  camera.position.set(20, 20, 20);
+
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.update();
+
+  scene.add(new THREE.DirectionalLight(0xffffff, 1));
+  scene.add(new THREE.AmbientLight(0x888888));
+
+  // モデル読み込み
+  const loader = new MinecraftModelLoader();
+  loader.load('/assets/models/yukiba.json', mesh => {
+    // テクスチャが JSON に指定されている場合の処理
+    const texLoader = new MinecraftTextureLoader();
+    mesh.resolveTextures(path => texLoader.load(`/assets/textures/${path}.png`));
+    scene.add(mesh);
+    animate();
+  });
+
+  function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+  }
+</script>
+
   <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
   <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 </section>

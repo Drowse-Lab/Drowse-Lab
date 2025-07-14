@@ -18,16 +18,16 @@ Promise.all([
 });
 
 async function getThemeForRepo(repoName) {
-    const path = `assets/theme/${repoName}.md`;
-    try {
-        const res = await fetch(path);
-        if (!res.ok) return "default";
-        const text = await res.text();
-        const match = text.match(/^img:\s*(\S+)/m);
-        return match ? match[1] : "default";
-    } catch {
-        return "default";
-    }
+  const path = `assets/theme/${repoName}.md`;
+  try {
+    const res = await fetch(path);
+    if (!res.ok) return "default";
+    const text = await res.text();
+    const match = text.match(/^img:\s*(\S+)/m);
+    return match ? match[1] : "default";
+  } catch {
+    return "default";
+  }
 }
 async function fetchRepos() {
   try {
@@ -108,8 +108,8 @@ function handleRepoClick(repo, extraInfoElement) {
       <h4>Issues:</h4>
       <ul>
         ${issues.length > 0
-          ? issues.map(issue => `<li><a href="${issue.html_url}" target="_blank">${issue.title}</a></li>`).join("")
-          : "<li>No issues found.</li>"}
+        ? issues.map(issue => `<li><a href="${issue.html_url}" target="_blank">${issue.title}</a></li>`).join("")
+        : "<li>No issues found.</li>"}
       </ul>
     `;
   }

@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let alreadyCollided = Array.from({ length: navLinks.length }, () => false);
 
   function spawnShards(x, y, count = 12) {
-    for(let i=0; i<count; i++) {
+    for (let i = 0; i < count; i++) {
       const shard = document.createElement('div');
       shard.className = 'shard';
       document.body.appendChild(shard);
@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
       shard.style.left = `${x - 4}px`;
       shard.style.top = `${y - 4}px`;
       setTimeout(() => {
-        shard.style.transform = `translate(${dx}px, ${dy}px) rotate(${Math.random()*360}deg) scale(${0.6 + Math.random()*0.6})`;
+        shard.style.transform = `translate(${dx}px, ${dy}px) rotate(${Math.random() * 360}deg) scale(${0.6 + Math.random() * 0.6})`;
         shard.style.opacity = 0;
       }, 20);
       setTimeout(() => {
@@ -40,13 +40,13 @@ document.addEventListener("DOMContentLoaded", () => {
         btnRect.bottom < linkRect.top ||
         btnRect.top > linkRect.bottom
       );
-      if(isOverlap && !alreadyCollided[idx]) {
+      if (isOverlap && !alreadyCollided[idx]) {
         alreadyCollided[idx] = true;
         navCollisions++;
         const rect = filterBtn.getBoundingClientRect();
         spawnShards(rect.left + rect.width / 2, rect.top + rect.height / 2, 10);
       }
-      if(!isOverlap) {
+      if (!isOverlap) {
         alreadyCollided[idx] = false;
       }
     });

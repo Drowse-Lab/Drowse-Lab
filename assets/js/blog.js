@@ -8,61 +8,61 @@ function renderPosts() {
   const postsContainer = document.getElementById("posts");
   postsContainer.innerHTML = "";
 
-console.log("----- DEBUG FILTER START -----");
-console.log(allPosts);
-console.log("selectedDate:", selectedDate);
-allPosts.forEach(post => {
-  const isPublished = post.published;
-  const matchesDate = selectedDate ? (post.date === selectedDate) : true;
-  const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
-  const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
-  const result = (isPublished !== false && isPublished !== "false") &&
-                 ((isPublished === true || isPublished === "true") && selectedDate !== null ? post.date === selectedDate : true) &&
-                 tagMatch && authorMatch;
-  console.log(`[${result ? "✔" : "✘"}] "${post.title}" | published: ${isPublished} | date: ${post.date} | selectedDate: ${selectedDate}`);
-});
-console.log("----- DEBUG FILTER END -----");
+  console.log("----- DEBUG FILTER START -----");
+  console.log(allPosts);
+  console.log("selectedDate:", selectedDate);
+  allPosts.forEach(post => {
+    const isPublished = post.published;
+    const matchesDate = selectedDate ? (post.date === selectedDate) : true;
+    const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
+    const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
+    const result = (isPublished !== false && isPublished !== "false") &&
+      ((isPublished === true || isPublished === "true") && selectedDate !== null ? post.date === selectedDate : true) &&
+      tagMatch && authorMatch;
+    console.log(`[${result ? "✔" : "✘"}] "${post.title}" | published: ${isPublished} | date: ${post.date} | selectedDate: ${selectedDate}`);
+  });
+  console.log("----- DEBUG FILTER END -----");
 
-console.log("Filtering posts... published + date check");
+  console.log("Filtering posts... published + date check");
 
-const filtered = allPosts.filter(post => {
-  const onlyDate = post.onlydate === true || post.onlydate === "true";
-  const postDate = typeof post.date === "string" ? post.date.slice(0, 10) : "";
-  const matchesDate = selectedDate && postDate === selectedDate;
+  const filtered = allPosts.filter(post => {
+    const onlyDate = post.onlydate === true || post.onlydate === "true";
+    const postDate = typeof post.date === "string" ? post.date.slice(0, 10) : "";
+    const matchesDate = selectedDate && postDate === selectedDate;
 
-  console.log(`[CHECK DATE] ${post.title} | onlyDate: ${onlyDate} | postDate: ${postDate} | selectedDate: ${selectedDate}`);
+    console.log(`[CHECK DATE] ${post.title} | onlyDate: ${onlyDate} | postDate: ${postDate} | selectedDate: ${selectedDate}`);
 
-  // onlydate:true の投稿 → selectedDate がない or 一致しない → 非表示
-  if (onlyDate) {
-    if (!selectedDate) {
-      console.log(`[SKIP] "${post.title}" → onlyDate:true だけど selectedDate 未選択なので非表示`);
-      return false;
+    // onlydate:true の投稿 → selectedDate がない or 一致しない → 非表示
+    if (onlyDate) {
+      if (!selectedDate) {
+        console.log(`[SKIP] "${post.title}" → onlyDate:true だけど selectedDate 未選択なので非表示`);
+        return false;
+      }
+      if (!matchesDate) {
+        console.log(`[SKIP] "${post.title}" → onlyDate:true だけど日付不一致: ${postDate} vs ${selectedDate}`);
+        return false;
+      }
+    } else {
+      // onlydate:false の投稿 → selectedDate があるなら一致チェック
+      if (selectedDate && !matchesDate) {
+        console.log(`[SKIP] "${post.title}" → 日付不一致 (通常投稿): ${postDate} vs ${selectedDate}`);
+        return false;
+      }
     }
-    if (!matchesDate) {
-      console.log(`[SKIP] "${post.title}" → onlyDate:true だけど日付不一致: ${postDate} vs ${selectedDate}`);
-      return false;
-    }
-  } else {
-    // onlydate:false の投稿 → selectedDate があるなら一致チェック
-    if (selectedDate && !matchesDate) {
-      console.log(`[SKIP] "${post.title}" → 日付不一致 (通常投稿): ${postDate} vs ${selectedDate}`);
-      return false;
-    }
-  }
 
-  // タグ・著者フィルター
-  const tagMatch = selectedTags.size === 0 || post.tags?.some(tag => selectedTags.has(tag));
-  const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
-  const ok = tagMatch && authorMatch;
+    // タグ・著者フィルター
+    const tagMatch = selectedTags.size === 0 || post.tags?.some(tag => selectedTags.has(tag));
+    const authorMatch = selectedAuthors.size === 0 || selectedAuthors.has(post.author);
+    const ok = tagMatch && authorMatch;
 
-  console.log(`[RESULT] "${post.title}" → pass:${ok}`);
-  return ok;
-});
+    console.log(`[RESULT] "${post.title}" → pass:${ok}`);
+    return ok;
+  });
 
 
 
-console.log("=== FILTERED POSTS ===");
-console.log(filtered);
+  console.log("=== FILTERED POSTS ===");
+  console.log(filtered);
 
   if (filtered.length === 0) {
     postsContainer.innerHTML = '<h2 style="text-align:center; margin:2em 0; color:#000;">該当する記事がありません</h2>';

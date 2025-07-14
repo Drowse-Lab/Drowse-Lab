@@ -1,8 +1,8 @@
 const allPosts = window.allPosts || [];
 
 document.addEventListener("DOMContentLoaded", () => {
-  try { populateFilters(); } catch (e) {}
-  try { renderPosts(); } catch (e) {}
+  try { populateFilters(); } catch (e) { }
+  try { renderPosts(); } catch (e) { }
 
   // --- コードブロック装飾処理ここから ---
   document.querySelectorAll("pre code").forEach((codeBlock) => {

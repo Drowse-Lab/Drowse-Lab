@@ -7,18 +7,18 @@ const GITHUB_CLIENT_ID = 'YOUR_CLIENT_ID';
 const GITHUB_CLIENT_SECRET = 'YOUR_CLIENT_SECRET';
 
 passport.serializeUser((user, done) => {
-    done(null, user);
+  done(null, user);
 });
 
 passport.deserializeUser((obj, done) => {
-    done(null, obj);
+  done(null, obj);
 });
 
 passport.use(new GitHubStrategy({
-    clientID: GITHUB_CLIENT_ID,
-    clientSecret: GITHUB_CLIENT_SECRET,
-    callbackURL: "http://localhost:3000/auth/github/callback"
-  },
+  clientID: GITHUB_CLIENT_ID,
+  clientSecret: GITHUB_CLIENT_SECRET,
+  callbackURL: "http://localhost:3000/auth/github/callback"
+},
   (accessToken, refreshToken, profile, done) => {
     return done(null, profile);
   }
@@ -27,29 +27,29 @@ passport.use(new GitHubStrategy({
 const app = express();
 
 app.use(session({
-    secret: 'your_secret_key',
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-        secure: process.env.NODE_ENV === 'production'
-    }
+  secret: 'your_secret_key',
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production'
+  }
 }));
 app.use(passport.initialize());
 app.use(passport.session());
 
 app.get('/auth/github', passport.authenticate('github', { scope: ['user:email'] }));
 
-app.get('/auth/github/callback', 
+app.get('/auth/github/callback',
   passport.authenticate('github', { failureRedirect: '/' }),
   (req, res) => {
     res.redirect('/');
   });
 
 app.get('/logout', (req, res) => {
-    req.logout((err) => {
-        if (err) { return next(err); }
-        res.redirect('/');
-    });
+  req.logout((err) => {
+    if (err) { return next(err); }
+    res.redirect('/');
+  });
 });
 
 // app.get('/', (req, res) => {
@@ -72,7 +72,7 @@ app.use(limiter);
 const path = require('path');
 const ROOT_DIR = path.resolve(__dirname, 'public'); // Define a safe root directory
 
-app.get('/:path', function(req, res) {
+app.get('/:path', function (req, res) {
   let userPath = req.params.path;
   let resolvedPath = path.resolve(ROOT_DIR, userPath); // Normalize the path
 
@@ -86,5 +86,5 @@ app.get('/:path', function(req, res) {
 });
 
 app.listen(3000, () => {
-    console.log('App listening on port 3000');
+  console.log('App listening on port 3000');
 });

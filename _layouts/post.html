@@ -42,6 +42,20 @@ layout: default
   </label>
 {% endif %}
 
+{% if page.textures %}
+<section class="texture-list" style="margin-top: 2em;">
+  <h3>使用テクスチャ一覧</h3>
+  <div style="display: flex; flex-wrap: wrap; gap: 1em;">
+    {% for tex in page.textures %}
+      <div style="text-align: center;">
+        <img src="{{ '/assets/textures/' | append: tex | relative_url }}" alt="{{ tex }}" style="height: 64px; border: 1px solid #ccc; border-radius: 4px; background: #fff;" />
+        <div style="font-size: 0.9em;">{{ tex }}</div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
   
 {% if site.jekyll-archives %}
 {% if page.tags.size > 0 %}

@@ -52,7 +52,7 @@ enabled: true
     </aside>
     <div id="posts"></div>
 <script>
-  window.postsData = [
+  window.allPosts = [
     {% for post in site.posts %}
     {
       title: {{ post.title | jsonify }},

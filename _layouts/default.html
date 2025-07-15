@@ -62,19 +62,25 @@
     const loader = new THREE.ObjectLoader();
     let model;
 
-    loader.load(modelPath, obj => {
-      model = obj;
-      scene.add(model);
-      animate();
+loader.load(modelPath, obj => {
+  model = obj;
 
-      const glowToggle = document.getElementById('glowToggle');
-      if (glowToggle) {
-        setGlow(glowToggle.checked);
-        glowToggle.addEventListener('change', e => setGlow(e.target.checked));
-      }
-    }, undefined, err => {
-      console.error('モデルの読み込みエラー:', err);
-    });
+  // ⬇️ 追加：拡大スケールと位置調整
+  model.scale.set(10, 10, 10);
+  model.position.set(0, 0, 0);
+
+  scene.add(model);
+  animate();
+
+  const glowToggle = document.getElementById('glowToggle');
+  if (glowToggle) {
+    setGlow(glowToggle.checked);
+    glowToggle.addEventListener('change', e => setGlow(e.target.checked));
+  }
+}, undefined, err => {
+  console.error('モデルの読み込みエラー:', err);
+});
+
 
     function setGlow(enabled) {
       if (!model) return;

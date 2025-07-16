@@ -35,16 +35,17 @@
   {% endif %}
 <!-- 必要なスクリプトだけ -->
 <script src="{{ '/assets/js/posts.js' | relative_url }}" defer></script>
-<script type="module">
-  import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js';
-  import {
-    MinecraftModelLoader,
-    MinecraftTextureLoader
-  } from 'https://cdn.jsdelivr.net/npm/@fanthstudios/three-mcmodel@0.2.5/dist/three-mcmodel.module.js';
+  
+<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@fanthstudios/three-mcmodel@0.2.5/dist/three-mcmodel.js"></script>
 
+<script>
   document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('model-viewer-container');
-    if (!container) return;
+    if (!container || typeof THREE === 'undefined' || typeof MinecraftModelLoader === 'undefined') {
+      console.error("必要なライブラリが読み込まれていません。");
+      return;
+    }
 
     const modelPath = '{{ page.model_path | relative_url }}';
     console.log("✅ モデルパス:", modelPath);
@@ -72,9 +73,8 @@
     let model;
     loader.load(modelPath, mesh => {
       model = mesh;
-      model.resolveTextures(name => texLoader.load(`/Drowse-Lab/assets/textures/${name}.png`));
+      model.resolveTextures(name => texLoader.load('/Drowse-Lab/assets/textures/' + name + '.png'));
       model.scale.set(10, 10, 10);
-      model.position.set(0, 0, 0);
       scene.add(model);
       animate();
 
@@ -105,8 +105,6 @@
     }
   });
 </script>
-
-
 
 
 </body>

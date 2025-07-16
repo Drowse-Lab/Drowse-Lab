@@ -35,20 +35,19 @@
   {% endif %}
 <!-- 必要なスクリプトだけ -->
 <script src="{{ '/assets/js/posts.js' | relative_url }}" defer></script>
-<!-- Three.js本体は不要：three-mcmodel がESMで読み込む -->
 <script type="module">
   import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js';
   import {
     MinecraftModelLoader,
     MinecraftTextureLoader
-  } from 'https://cdn.jsdelivr.net/npm/@fanthstudios/three-mcmodel@0.2.5/dist/three-mcmodel.module.js';
+  } from 'https://cdn.jsdelivr.net/npm/@fanth-studios/three-mcmodel@0.2.5/dist/three-mcmodel.mjs';
 
   document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('model-viewer-container');
     if (!container) return;
 
     const modelPath = '{{ page.model_path | relative_url }}';
-    console.log("✅ モデルパス:", modelPath); 
+    console.log("✅ モデルパス:", modelPath);
 
     const width = container.clientWidth || 400;
     const height = container.clientHeight || 400;
@@ -73,18 +72,12 @@
     let model;
     loader.load(modelPath, mesh => {
       model = mesh;
-
-      // テクスチャを解決
       model.resolveTextures(name => texLoader.load(`/Drowse-Lab/assets/textures/${name}.png`));
-
-      // 拡大スケールと位置調整（必要なら）
       model.scale.set(10, 10, 10);
       model.position.set(0, 0, 0);
-
       scene.add(model);
       animate();
 
-      // グロー効果の処理
       const glowToggle = document.getElementById('glowToggle');
       if (glowToggle) {
         setGlow(glowToggle.checked);
@@ -112,6 +105,7 @@
     }
   });
 </script>
+
 
 
 

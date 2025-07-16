@@ -35,22 +35,28 @@
   {% endif %}
 <!-- 必要なスクリプトだけ -->
 <script src="{{ '/assets/js/posts.js' | relative_url }}" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+<!-- Three.js本体は不要：three-mcmodel がESMで読み込む -->
+<script type="module">
+  import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js';
+  import {
+    MinecraftModelLoader,
+    MinecraftTextureLoader
+  } from 'https://cdn.jsdelivr.net/npm/@fanthstudios/three-mcmodel@0.2.5/dist/three-mcmodel.module.js';
 
-<script>
   document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('model-viewer-container');
     if (!container) return;
 
     const modelPath = '{{ page.model_path | relative_url }}';
     console.log("✅ モデルパス:", modelPath); 
-    
+
     const width = container.clientWidth || 400;
     const height = container.clientHeight || 400;
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-    camera.position.z = 5;
+    camera.position.set(5, 5, 5);
+    camera.lookAt(0, 0, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(width, height);
@@ -61,33 +67,37 @@
     dirLight.position.set(0, 1, 1);
     scene.add(dirLight);
 
-    const loader = new THREE.ObjectLoader();
+    const loader = new MinecraftModelLoader();
+    const texLoader = new MinecraftTextureLoader();
+
     let model;
+    loader.load(modelPath, mesh => {
+      model = mesh;
 
-loader.load(modelPath, obj => {
-  model = obj;
+      // テクスチャを解決
+      model.resolveTextures(name => texLoader.load(`/Drowse-Lab/assets/textures/${name}.png`));
 
-  // ⬇️ 追加：拡大スケールと位置調整
-  model.scale.set(10, 10, 10);
-  model.position.set(0, 0, 0);
+      // 拡大スケールと位置調整（必要なら）
+      model.scale.set(10, 10, 10);
+      model.position.set(0, 0, 0);
 
-  scene.add(model);
-  animate();
+      scene.add(model);
+      animate();
 
-  const glowToggle = document.getElementById('glowToggle');
-  if (glowToggle) {
-    setGlow(glowToggle.checked);
-    glowToggle.addEventListener('change', e => setGlow(e.target.checked));
-  }
-}, undefined, err => {
-  console.error('モデルの読み込みエラー:', err);
-});
-
+      // グロー効果の処理
+      const glowToggle = document.getElementById('glowToggle');
+      if (glowToggle) {
+        setGlow(glowToggle.checked);
+        glowToggle.addEventListener('change', e => setGlow(e.target.checked));
+      }
+    }, undefined, err => {
+      console.error('モデルの読み込みエラー:', err);
+    });
 
     function setGlow(enabled) {
       if (!model) return;
       model.traverse(child => {
-        if (child.isMesh) {
+        if (child.isMesh && child.material) {
           child.material.emissive = new THREE.Color(0x00ff00);
           child.material.emissiveIntensity = enabled ? 0.7 : 0;
           child.material.needsUpdate = true;
@@ -102,6 +112,7 @@ loader.load(modelPath, obj => {
     }
   });
 </script>
+
 
 
 </body>

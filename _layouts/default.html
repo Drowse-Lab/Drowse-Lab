@@ -43,6 +43,8 @@
     if (!container) return;
 
     const modelPath = '{{ page.model_path | relative_url }}';
+    console.log("✅ モデルパス:", modelPath); 
+    
     const width = container.clientWidth || 400;
     const height = container.clientHeight || 400;
 

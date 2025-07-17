@@ -37,75 +37,67 @@
 <script src="{{ '/assets/js/posts.js' | relative_url }}" defer></script>
   
 <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@fanthstudios/three-mcmodel@0.2.5/dist/three-mcmodel.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/loaders/GLTFLoader.js"></script>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const container = document.getElementById('model-viewer-container');
-    if (!container || typeof THREE === 'undefined' || typeof MinecraftModelLoader === 'undefined') {
-      console.error("必要なライブラリが読み込まれていません。");
-      return;
+document.addEventListener('DOMContentLoaded', () => {
+  const container = document.getElementById('model-viewer-container');
+  if (!container || typeof THREE.GLTFLoader === 'undefined') {
+    console.error("Three.js または GLTFLoader が読み込まれていません。");
+    return;
+  }
+
+  const modelPath = '{{ page.model_path | relative_url }}';
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, container.clientWidth/container.clientHeight, 0.1, 1000);
+  camera.position.set(5, 5, 5);
+  camera.lookAt(0, 0, 0);
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  container.appendChild(renderer.domElement);
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+  const dl = new THREE.DirectionalLight(0xffffff, 1);
+  dl.position.set(1, 1, 1);
+  scene.add(dl);
+
+  const loader = new THREE.GLTFLoader();
+  let model;
+
+  loader.load(modelPath, gltf => {
+    model = gltf.scene;
+    model.scale.set(10, 10, 10);
+    scene.add(model);
+    animate();
+
+    const glowToggle = document.getElementById('glowToggle');
+    if (glowToggle) {
+      setGlow(glowToggle.checked);
+      glowToggle.addEventListener('change', e => setGlow(e.target.checked));
     }
-
-    const modelPath = '{{ page.model_path | relative_url }}';
-    console.log("✅ モデルパス:", modelPath);
-
-    const width = container.clientWidth || 400;
-    const height = container.clientHeight || 400;
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-    camera.position.set(5, 5, 5);
-    camera.lookAt(0, 0, 0);
-
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(width, height);
-    container.appendChild(renderer.domElement);
-
-    scene.add(new THREE.AmbientLight(0xffffff, 0.8));
-    const dirLight = new THREE.DirectionalLight(0xffffff, 1);
-    dirLight.position.set(0, 1, 1);
-    scene.add(dirLight);
-
-    const loader = new MinecraftModelLoader();
-    const texLoader = new MinecraftTextureLoader();
-
-    let model;
-    loader.load(modelPath, mesh => {
-      model = mesh;
-      model.resolveTextures(name => texLoader.load('/Drowse-Lab/assets/textures/' + name + '.png'));
-      model.scale.set(10, 10, 10);
-      scene.add(model);
-      animate();
-
-      const glowToggle = document.getElementById('glowToggle');
-      if (glowToggle) {
-        setGlow(glowToggle.checked);
-        glowToggle.addEventListener('change', e => setGlow(e.target.checked));
-      }
-    }, undefined, err => {
-      console.error('モデルの読み込みエラー:', err);
-    });
-
-    function setGlow(enabled) {
-      if (!model) return;
-      model.traverse(child => {
-        if (child.isMesh && child.material) {
-          child.material.emissive = new THREE.Color(0x00ff00);
-          child.material.emissiveIntensity = enabled ? 0.7 : 0;
-          child.material.needsUpdate = true;
-        }
-      });
-    }
-
-    function animate() {
-      requestAnimationFrame(animate);
-      if (model) model.rotation.y += 0.01;
-      renderer.render(scene, camera);
-    }
+  }, undefined, err => {
+    console.error('GLTF読み込みエラー:', err);
   });
-</script>
 
+  function setGlow(enabled) {
+    if (!model) return;
+    model.traverse(child => {
+      if (child.isMesh && child.material) {
+        child.material.emissive = new THREE.Color(0x00ff00);
+        child.material.emissiveIntensity = enabled ? 0.7 : 0;
+        child.material.needsUpdate = true;
+      }
+    });
+  }
+
+  function animate() {
+    requestAnimationFrame(animate);
+    if (model) model.rotation.y += 0.01;
+    renderer.render(scene, camera);
+  }
+});
+</script>
 
 </body>
 

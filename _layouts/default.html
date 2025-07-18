@@ -35,8 +35,7 @@
   {% endif %}
 <!-- 必要なスクリプトだけ -->
 <script src="{{ '/assets/js/posts.js' | relative_url }}" defer></script>
-  
-<!-- HTML: Three.js + GLTFLoader を ESモジュールとして読み込む -->
+<!-- 必ず type="module" にする -->
 <script type="module">
   import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
   import { GLTFLoader } from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders/GLTFLoader.js';
@@ -48,8 +47,7 @@
       return;
     }
 
-    const modelPath = '{{ page.model_path | relative_url }}';
-    console.log("✅ モデルパス:", modelPath);
+    const modelPath = '/assets/models/customkatanairon3d.glb'; // 拡張子注意：glTF形式なら .glb か .gltf
 
     const width = container.clientWidth || 400;
     const height = container.clientHeight || 400;
@@ -87,7 +85,6 @@
     }
   });
 </script>
-
 
 </body>
 

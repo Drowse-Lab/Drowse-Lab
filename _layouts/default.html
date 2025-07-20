@@ -81,10 +81,11 @@
 
       const material = new THREE.MeshStandardMaterial({ map: texture });
 
-      for (const element of bbmodel.elements) {
-        const [x1, y1, z1] = element.from;
-        const [x2, y2, z2] = element.to;
-        const size = [x2 - x1, y2 - y1, z2 - z1];
+const modelGroup = new THREE.Group();
+for (const element of bbmodel.elements) {
+  const [x1, y1, z1] = element.from;
+  const [x2, y2, z2] = element.to;
+  const size = [x2 - x1, y2 - y1, z2 - z1];
 
         const geometry = new THREE.BoxGeometry(...size.map(s => s / 16));
         const mesh = new THREE.Mesh(geometry, material);

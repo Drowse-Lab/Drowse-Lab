@@ -75,8 +75,13 @@
       const bbmodel = await res.json();
 
       // ✅ テクスチャ読み込み
-      const tex = '{{ page.textures[0] | relative_url }}';
-      const texPath = `/assets/textures/${tex}`;
+      // 修正前
+const tex = '{{ page.textures[0] | relative_url }}';
+const texPath = `/assets/textures/${tex}`;
+
+// 修正後（1行だけ置き換えて！）
+const texPath = '{{ "/assets/textures/" | append: page.textures[0] | relative_url }}';
+
       const texture = new THREE.TextureLoader().load(texPath);
       texture.magFilter = THREE.NearestFilter;
 

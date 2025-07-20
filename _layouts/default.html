@@ -38,10 +38,6 @@
   {% if page.model_path %}
   <!-- 表示エリア -->
   <div id="model-viewer-container" style="width:100%; height:500px; margin-top:1em;"></div>
-  <label>
-    <input type="checkbox" id="glowToggle" {% if page.enable_glow %}checked{% endif %}>
-    Enable glowing effect
-  </label>
 
   <script type="module">
     import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js';

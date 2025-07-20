@@ -74,6 +74,7 @@
       const res = await fetch(modelUrl);
       const bbmodel = await res.json();
 
+      // ✅ テクスチャ読み込み
       const tex = '{{ page.textures[0] | relative_url }}';
       const texPath = `/assets/textures/${tex}`;
       const texture = new THREE.TextureLoader().load(texPath);
@@ -81,26 +82,36 @@
 
       const material = new THREE.MeshStandardMaterial({ map: texture });
 
-const modelGroup = new THREE.Group();
-for (const element of bbmodel.elements) {
-  const [x1, y1, z1] = element.from;
-  const [x2, y2, z2] = element.to;
-  const size = [x2 - x1, y2 - y1, z2 - z1];
+      // ✅ モデルグループにまとめる
+      const modelGroup = new THREE.Group();
+
+      for (const element of bbmodel.elements) {
+        const [x1, y1, z1] = element.from;
+        const [x2, y2, z2] = element.to;
+        const size = [x2 - x1, y2 - y1, z2 - z1];
 
         const geometry = new THREE.BoxGeometry(...size.map(s => s / 16));
         const mesh = new THREE.Mesh(geometry, material);
+
+        // Blockbench中心(8,8,8)をThree.js中心(0,0,0)に合わせる
         mesh.position.set(
           (x1 + size[0] / 2 - 8) / 16,
           (y1 + size[1] / 2 - 8) / 16,
           (z1 + size[2] / 2 - 8) / 16
         );
-        scene.add(mesh);
+
+        modelGroup.add(mesh);
       }
 
+      // ✅ スケール調整 & シーン追加
+      modelGroup.scale.set(5, 5, 5);
+      scene.add(modelGroup);
+
+      // ✅ グロー切り替え
       const glow = document.getElementById('glowToggle');
       if (glow) {
         glow.addEventListener('change', () => {
-          scene.traverse(obj => {
+          modelGroup.traverse(obj => {
             if (obj.isMesh) {
               obj.material.emissive = new THREE.Color(0x00ff00);
               obj.material.emissiveIntensity = glow.checked ? 0.7 : 0;
@@ -110,6 +121,7 @@ for (const element of bbmodel.elements) {
         });
         glow.dispatchEvent(new Event('change'));
       }
+
     } catch (e) {
       console.error("❌ モデル読み込みエラー:", e);
     }
@@ -119,6 +131,7 @@ for (const element of bbmodel.elements) {
       scene.rotation.y += 0.01;
       renderer.render(scene, camera);
     }
+
     animate();
   });
 </script>

@@ -83,7 +83,7 @@
       for (const element of bbmodel.elements) {
         const [x1, y1, z1] = element.from;
         const [x2, y2, z2] = element.to;
-        const size = [x2 - x1, y2 - y1, z2 - z1].map(s => s / 16); // スケーリング
+        const size = [x2 - x1, y2 - y1, z2 - z1].map(s => s / 16); // ブロック単位
 
         const geometry = new THREE.BoxGeometry(...size);
         const material = new THREE.MeshStandardMaterial({ map: texture });
@@ -91,13 +91,16 @@
         const mesh = new THREE.Mesh(geometry, material);
 
         mesh.position.set(
-          (x1 + size[0] * 8 - 8) / 16,
-          (y1 + size[1] * 8 - 8) / 16,
-          (z1 + size[2] * 8 - 8) / 16
+          ((x1 + size[0] * 8) - 8) / 16,
+          ((y1 + size[1] * 8) - 8) / 16,
+          ((z1 + size[2] * 8) - 8) / 16
         );
 
         modelGroup.add(mesh);
       }
+
+      // ✅ 全体をさらに小さくする（0.25倍）
+      modelGroup.scale.set(0.25, 0.25, 0.25);
 
       scene.add(modelGroup);
 
@@ -126,6 +129,7 @@
     animate();
   });
 </script>
+
   {% endif %}
 </body>
 </html>

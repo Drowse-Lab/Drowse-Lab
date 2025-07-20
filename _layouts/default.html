@@ -70,66 +70,52 @@
     light.position.set(5, 10, 7.5);
     scene.add(light);
 
-    try {
-      const res = await fetch(modelUrl);
-      const bbmodel = await res.json();
+try {
+  const res = await fetch(modelUrl);
+  const bbmodel = await res.json();
 
-      // ✅ テクスチャ読み込み
-      // 修正前
-const tex = '{{ page.textures[0] | relative_url }}';
-const texPath = `/assets/textures/${tex}`;
+  const texName = '{{ page.textures[0] }}';
+  const texPath = '{{ "/assets/textures/" | relative_url }}' + texName;
+  const texture = new THREE.TextureLoader().load(texPath);
+  texture.magFilter = THREE.NearestFilter;
 
-// 修正後（1行だけ置き換えて！）
-const texPath = '{{ "/assets/textures/" | append: page.textures[0] | relative_url }}';
+  const material = new THREE.MeshStandardMaterial({ map: texture });
 
-      const texture = new THREE.TextureLoader().load(texPath);
-      texture.magFilter = THREE.NearestFilter;
+  const modelGroup = new THREE.Group();
+  for (const element of bbmodel.elements) {
+    const [x1, y1, z1] = element.from;
+    const [x2, y2, z2] = element.to;
+    const size = [x2 - x1, y2 - y1, z2 - z1];
 
-      const material = new THREE.MeshStandardMaterial({ map: texture });
+    const geometry = new THREE.BoxGeometry(...size.map(s => s / 16));
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(
+      (x1 + size[0] / 2 - 8) / 16,
+      (y1 + size[1] / 2 - 8) / 16,
+      (z1 + size[2] / 2 - 8) / 16
+    );
+    modelGroup.add(mesh);
+  }
 
-      // ✅ モデルグループにまとめる
-      const modelGroup = new THREE.Group();
+  scene.add(modelGroup);
 
-      for (const element of bbmodel.elements) {
-        const [x1, y1, z1] = element.from;
-        const [x2, y2, z2] = element.to;
-        const size = [x2 - x1, y2 - y1, z2 - z1];
+  const glow = document.getElementById('glowToggle');
+  if (glow) {
+    glow.addEventListener('change', () => {
+      modelGroup.traverse(obj => {
+        if (obj.isMesh) {
+          obj.material.emissive = new THREE.Color(0x00ff00);
+          obj.material.emissiveIntensity = glow.checked ? 0.7 : 0;
+          obj.material.needsUpdate = true;
+        }
+      });
+    });
+    glow.dispatchEvent(new Event('change'));
+  }
+} catch (e) {
+  console.error("❌ モデル読み込みエラー:", e);
+}
 
-        const geometry = new THREE.BoxGeometry(...size.map(s => s / 16));
-        const mesh = new THREE.Mesh(geometry, material);
-
-        // Blockbench中心(8,8,8)をThree.js中心(0,0,0)に合わせる
-        mesh.position.set(
-          (x1 + size[0] / 2 - 8) / 16,
-          (y1 + size[1] / 2 - 8) / 16,
-          (z1 + size[2] / 2 - 8) / 16
-        );
-
-        modelGroup.add(mesh);
-      }
-
-      // ✅ スケール調整 & シーン追加
-      modelGroup.scale.set(5, 5, 5);
-      scene.add(modelGroup);
-
-      // ✅ グロー切り替え
-      const glow = document.getElementById('glowToggle');
-      if (glow) {
-        glow.addEventListener('change', () => {
-          modelGroup.traverse(obj => {
-            if (obj.isMesh) {
-              obj.material.emissive = new THREE.Color(0x00ff00);
-              obj.material.emissiveIntensity = glow.checked ? 0.7 : 0;
-              obj.material.needsUpdate = true;
-            }
-          });
-        });
-        glow.dispatchEvent(new Event('change'));
-      }
-
-    } catch (e) {
-      console.error("❌ モデル読み込みエラー:", e);
-    }
 
     function animate() {
       requestAnimationFrame(animate);

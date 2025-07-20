@@ -33,14 +33,6 @@ layout: default
   {{ content }}
 </article>
 
-{% if page.model_path %}
-  <link rel="model" href="{{ page.model_path | relative_url }}" type="model/json" />
-  <div id="model-viewer-container" style="width: 100%; height: 400px;"></div>
-  <label>
-    <input type="checkbox" id="glowToggle" {% if page.enable_glow %}checked{% endif %}>
-    Enable glowing effect
-  </label>
-{% endif %}
 
 {% if page.textures %}
 <section class="texture-list" style="margin-top: 2em; padding-left: 2%;">

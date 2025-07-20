@@ -43,82 +43,56 @@
   Enable glowing effect
 </label>
 
-<script type="module">
-  import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js';
+  <div id="model-viewer-container" style="width:100%; height:500px;"></div>
+  <script type="module">
+    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js';
 
-  document.addEventListener('DOMContentLoaded', async () => {
     const container = document.getElementById('model-viewer-container');
-    if (!container) return;
-
-    const modelUrl = '{{ page.model_path | relative_url }}';
-    const texName = '{{ page.textures[0] }}';
-    const texPath = '{{ "/assets/textures/" | relative_url }}' + texName;
-
-    const width = container.clientWidth || 400;
-    const height = container.clientHeight || 400;
+    const modelUrl = '/Drowse-Lab/assets/models/customkatanairon3d.json';
+    const texPath = '/Drowse-Lab/assets/textures/customkatana3d.png';
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-    camera.position.set(0, 2, 6);
-    camera.lookAt(0, 1, 0);
+    const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+    camera.position.set(0, 2, 5);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(width, height);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
     container.appendChild(renderer.domElement);
 
-    scene.add(new THREE.AmbientLight(0xffffff, 0.6));
-    const light = new THREE.DirectionalLight(0xffffff, 1);
-    light.position.set(5, 10, 7.5);
-    scene.add(light);
+    scene.add(new THREE.AmbientLight(0xffffff, 1));
 
     try {
       const res = await fetch(modelUrl);
+      if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
       const bbmodel = await res.json();
+      console.log("📦 モデル内容:", bbmodel);
 
       const texture = new THREE.TextureLoader().load(texPath);
-      texture.magFilter = THREE.NearestFilter;
+      const mat = new THREE.MeshStandardMaterial({ map: texture });
 
-      const modelGroup = new THREE.Group();
+      const group = new THREE.Group();
 
-      for (const element of bbmodel.elements) {
-        const [x1, y1, z1] = element.from;
-        const [x2, y2, z2] = element.to;
-        const size = [x2 - x1, y2 - y1, z2 - z1].map(s => s / 16); // ブロック単位
+      for (const el of bbmodel.elements) {
+        const [x1, y1, z1] = el.from;
+        const [x2, y2, z2] = el.to;
+        const size = [x2 - x1, y2 - y1, z2 - z1].map(s => s / 16);
 
-        const geometry = new THREE.BoxGeometry(...size);
-        const material = new THREE.MeshStandardMaterial({ map: texture });
-
-        const mesh = new THREE.Mesh(geometry, material);
-
+        const geo = new THREE.BoxGeometry(...size);
+        const mesh = new THREE.Mesh(geo, mat);
         mesh.position.set(
-          ((x1 + size[0] * 8) - 8) / 16,
-          ((y1 + size[1] * 8) - 8) / 16,
-          ((z1 + size[2] * 8) - 8) / 16
+          ((x1 + x2) / 2 - 8) / 16,
+          ((y1 + y2) / 2 - 8) / 16,
+          ((z1 + z2) / 2 - 8) / 16
         );
-
-        modelGroup.add(mesh);
+        group.add(mesh);
       }
 
-      // ✅ 全体をさらに小さくする（0.25倍）
-      modelGroup.scale.set(0.25, 0.25, 0.25);
+      group.scale.set(0.25, 0.25, 0.25);
+      scene.add(group);
 
-      scene.add(modelGroup);
-
-      const glow = document.getElementById('glowToggle');
-      if (glow) {
-        glow.addEventListener('change', () => {
-          modelGroup.traverse(obj => {
-            if (obj.isMesh) {
-              obj.material.emissive = new THREE.Color(0x00ff00);
-              obj.material.emissiveIntensity = glow.checked ? 0.7 : 0;
-              obj.material.needsUpdate = true;
-            }
-          });
-        });
-        glow.dispatchEvent(new Event('change'));
-      }
+      animate();
     } catch (e) {
-      console.error("❌ モデル読み込みエラー:", e);
+      console.error("❌ モデル読み込み失敗:", e);
     }
 
     function animate() {
@@ -126,10 +100,7 @@
       scene.rotation.y += 0.01;
       renderer.render(scene, camera);
     }
-    animate();
-  });
-</script>
-
+  </script>
   {% endif %}
 </body>
 </html>

@@ -118,8 +118,7 @@ async function init() {
           u1 / texSize, 1 - v1 / texSize
         ];
 
-        // 1面にだけマテリアルを適用（BoxGeometryは6面、1面4頂点）
-        materials[faceIdx] = new THREE.MeshStandardMaterial({ map: tex });
+        materials[faceIdx] = new THREE.MeshStandardMaterial({ map: tex, transparent: true });
 
         const base = faceIdx * 8;
         for (let i = 0; i < 4; i++) {

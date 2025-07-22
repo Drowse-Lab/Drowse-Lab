@@ -64,9 +64,8 @@ async function init() {
     if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
     const bbmodel = await res.json();
     console.log("📦 モデル内容:", bbmodel);
-
-    const textureMap = new Map();
     const textureDefs = {{ page.textures | jsonify }};
+    const textureMap = new Map();
 
     // 複数テクスチャ読み込み
     await Promise.all(Object.entries(textureDefs).map(([key, filename]) =>

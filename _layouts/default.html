@@ -68,17 +68,21 @@ async function init() {
     const textureMap = new Map();
     const textureDefs = {{ page.textures | jsonify }};
 
-    // テクスチャを読み込み
+    // テクスチャを読み込み（NearestFilter + alphaTest 対応）
     await Promise.all(Object.entries(textureDefs).map(([key, filename]) =>
       new Promise((resolve, reject) => {
-        const tex = new THREE.TextureLoader().load(
+        const loader = new THREE.TextureLoader();
+        loader.load(
           '{{ site.baseurl }}/assets/textures/' + filename,
-          () => {
+          (tex) => {
+            tex.magFilter = THREE.NearestFilter;
+            tex.minFilter = THREE.NearestFilter;
+            tex.transparent = true;
             textureMap.set(key, tex);
             resolve();
           },
           undefined,
-          err => {
+          (err) => {
             console.error(`❌ テクスチャ読み込み失敗 [${key}]:`, err);
             reject(err);
           }
@@ -95,7 +99,7 @@ async function init() {
       const size = [x2 - x1, y2 - y1, z2 - z1].map(s => s / 16);
 
       const geo = new THREE.BoxGeometry(...size);
-      const uvs = geo.attributes.uv.array.slice(); // clone
+      const uvs = geo.attributes.uv.array.slice();
       const materials = [];
 
       for (let i = 0; i < 6; i++) {
@@ -118,7 +122,13 @@ async function init() {
           u1 / texSize, 1 - v1 / texSize
         ];
 
-        materials[faceIdx] = new THREE.MeshStandardMaterial({ map: tex, transparent: true });
+        // 🔧 シャープな表示＋透明処理
+        materials[faceIdx] = new THREE.MeshStandardMaterial({
+          map: tex,
+          transparent: true,
+          alphaTest: 0.1,
+          side: THREE.FrontSide
+        });
 
         const base = faceIdx * 8;
         for (let i = 0; i < 4; i++) {
@@ -153,6 +163,7 @@ async function init() {
 
 document.addEventListener('DOMContentLoaded', init);
 </script>
+
 {% endif %}
 </body>
 </html>

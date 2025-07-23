@@ -1,6 +1,6 @@
 {
 	"credit": "Made with Blockbench",
-	"parent": "cutomkatanairon3d",
+	"parent": "customkatanairon3d",
 	"textures": {
 		"3": "customkatana3d",
 		"particle": "katana3dmagic"

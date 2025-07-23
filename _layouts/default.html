@@ -64,14 +64,14 @@ async function init() {
     if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
     const bbmodel = await res.json();
     console.log("📦 モデル内容:", bbmodel);
-    const textureDefs = {{ page.textures | jsonify }};
-    const textureMap = new Map();
 
-    // 複数テクスチャ読み込み
+    const textureMap = new Map();
+    const textureDefs = {{ page.textures | jsonify }};
+
     await Promise.all(Object.entries(textureDefs).map(([key, filename]) =>
       new Promise((resolve, reject) => {
         const tex = new THREE.TextureLoader().load(
-          '{{ site.baseurl }}' + filename,
+          '{{ site.baseurl }}/assets/textures/' + filename,
           () => {
             textureMap.set(key, tex);
             resolve();
@@ -94,12 +94,11 @@ async function init() {
       const size = [x2 - x1, y2 - y1, z2 - z1].map(s => s / 16);
 
       const geo = new THREE.BoxGeometry(...size);
-      const uvAttr = geo.attributes.uv;
-      const uvArray = uvAttr.array;
+      const uvs = geo.attributes.uv.array.slice(); // clone
       const materials = [];
 
       for (let i = 0; i < 6; i++) {
-        materials[i] = new THREE.MeshStandardMaterial({ transparent: true });
+        materials[i] = new THREE.MeshStandardMaterial({ transparent: true, opacity: 1 });
       }
 
       for (const [face, info] of Object.entries(el.faces)) {
@@ -118,21 +117,16 @@ async function init() {
           u1 / texSize, 1 - v1 / texSize
         ];
 
-        // 面ごとのUV割り当て
-        const base = faceIdx * 8;
-        uvArray[base + 0] = uvRect[0]; uvArray[base + 1] = uvRect[1];
-        uvArray[base + 2] = uvRect[2]; uvArray[base + 3] = uvRect[3];
-        uvArray[base + 4] = uvRect[4]; uvArray[base + 5] = uvRect[5];
-        uvArray[base + 6] = uvRect[6]; uvArray[base + 7] = uvRect[7];
+        materials[faceIdx] = new THREE.MeshStandardMaterial({ map: tex, transparent: true });
 
-        materials[faceIdx] = new THREE.MeshStandardMaterial({
-          map: tex,
-          transparent: true
-        });
+        const base = faceIdx * 8;
+        for (let i = 0; i < 4; i++) {
+          uvs[base + i * 2] = uvRect[i * 2];
+          uvs[base + i * 2 + 1] = uvRect[i * 2 + 1];
+        }
       }
 
-      uvAttr.needsUpdate = true;
-
+      geo.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(uvs), 2));
       const mesh = new THREE.Mesh(geo, materials);
       mesh.position.set(
         ((x1 + x2) / 2 - 8) / 16,
@@ -158,6 +152,7 @@ async function init() {
 
 document.addEventListener('DOMContentLoaded', init);
 </script>
+
 {% endif %}
 </body>
 </html>

@@ -4,69 +4,39 @@ title: ブログ
 permalink: /blog.html
 main_nav: true
 pagination:
-enabled: true
+  enabled: true
 ---
 
-<!DOCTYPE html>
-<html lang="ja">
+<main class="blog-main">
+  <h1>ブログ一覧</h1>
+  <button id="filterToggle" class="hamburger-button">☰</button>
+  <aside id="filterSidebar" class="filter-sidebar">
+    <button id="filterClose" class="filter-close">×</button>
+    <h3>日付で絞り込み</h3>
+    <div class="filter-section">
+      <input type="date" id="date-filter" />
+    </div>
+    <h3>タグで絞り込み</h3>
+    <div id="tag-buttons"></div>
+    <h3>投稿者で絞り込み</h3>
+    <div id="author-buttons"></div>
+  </aside>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{{ page.title }}</title>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <link rel="icon" href="{{ '/assets/image/DrowseLabIcon.jpg' | relative_url }}" type="image/jpeg" />
-  <!--   <script src="{{ '/assets/js/filterButtonEffects.js' | relative_url }}" defer></script> -->
-  <link rel="stylesheet" href="{{ '/assets/css/styles.css' | relative_url }}">
-  <script src="{{ '/assets/js/blog.js' | relative_url }}" defer></script>
+  <div id="posts"></div>
 
-
-</head>
-
-<body>
-  <!-- <header class="site-header">
-    <nav>
-      <ul>
-        <li><a href="{{ '/index.html' | relative_url }}">ホーム</a></li>
-        <li><a href="{{ '/blog.html' | relative_url }}">ブログ</a></li>
-        <li><a href="{{ '/contributors.html' | relative_url }}">メンバー紹介</a></li>
-        <li><a href="{{ '/repo-list.html' | relative_url }}">リポジトリ紹介</a></li>
-      </ul>
-    </nav>
-  </header> -->
-
-  <main class="blog-main">
-    <h1>ブログ一覧</h1>
-    <button id="filterToggle" class="hamburger-button">☰</button>
-    <aside id="filterSidebar" class="filter-sidebar">
-      <button id="filterClose" class="filter-close">×</button>
-      <h3>日付で絞り込み</h3>
-      <div class="filter-section">
-        <input type="date" id="date-filter" />
-      </div>
-      <h3>タグで絞り込み</h3>
-      <div id="tag-buttons"></div>
-      <h3>投稿者で絞り込み</h3>
-      <div id="author-buttons"></div>
-    </aside>
-    <div id="posts"></div>
-<script>
-  window.allPosts = [
-    {% for post in site.posts %}
-    {
-      title: {{ post.title | jsonify }},
-      url: "{{ post.url | relative_url }}",
-      date: "{{ post.date | date: '%Y-%m-%d' }}",
-      tags: [{% for tag in post.tags %}{{ tag | jsonify }}{% unless forloop.last %}, {% endunless %}{% endfor %}],
-      author: {{ post.author | jsonify }},
-      published: {{ post.published | default: true }},
-      onlydate: {{ post.onlydate | default: false | jsonify }}
-    }{% unless forloop.last %}, {% endunless %}
-    {% endfor %}
-  ];
-</script>
-
-  </main>
-</body>
-
-</html>
+  <script>
+    window.allPosts = [
+      {% for post in site.posts %}
+      {
+        title: {{ post.title | jsonify }},
+        url: "{{ post.url | relative_url }}",
+        date: "{{ post.date | date: '%Y-%m-%d' }}",
+        tags: [{% for tag in post.tags %}{{ tag | jsonify }}{% unless forloop.last %}, {% endunless %}{% endfor %}],
+        author: {{ post.author | jsonify }},
+        published: {{ post.published | default: true }},
+        onlydate: {{ post.onlydate | default: false | jsonify }}
+      }{% unless forloop.last %}, {% endunless %}
+      {% endfor %}
+    ];
+  </script>
+</main>

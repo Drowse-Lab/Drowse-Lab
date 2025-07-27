@@ -2,12 +2,20 @@
 <html>
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ page.title }}</title>
+
   <link rel="stylesheet" href="{{ '/assets/css/styles.css' | relative_url }}">
-  <link rel="icon" href="{{ '/assets/image/DrowseLabIcon.jpg' | relative_url }}" type="image/jpeg" />
+
+  {% if page.title == "ブログ" %}
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="{{ '/assets/js/blog.js' | relative_url }}" defer></script>
+  {% endif %}
+
+  <link rel="icon" href="{{ '/assets/image/DrowseLabIcon.jpg' | relative_url }}" type="image/jpeg">
 </head>
+
 
 {% include head.html %}
 

@@ -33,6 +33,15 @@ layout: default
   {{ content }}
 </article>
 
+{% if page.model_path %}
+<section class="model-viewer" style="margin-top: 2em;">
+  <div id="mcmodel-viewer" data-model-path="{{ page.model_path }}" style="width: 100%; height: 400px; border: 1px solid #ccc; border-radius: 4px; background: #f0f0f0;"></div>
+</section>
+<script src="{{ '/assets/js/three.min.js' | relative_url }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.152.0/examples/js/controls/OrbitControls.js"></script>
+<script src="{{ '/assets/js/mcmodel-viewer.js' | relative_url }}"></script>
+{% endif %}
+
 
 {% if page.textures %}
 <section class="texture-list" style="margin-top: 2em; padding-left: 2%;">

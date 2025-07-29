@@ -86,6 +86,9 @@ async function init() {
           texturePath,
           () => {
             console.log(`✅ テクスチャ読み込み成功 [${key}]`);
+            tex.magFilter = THREE.NearestFilter;
+            tex.minFilter = THREE.NearestFilter;
+            tex.needsUpdate = true;
             textureMap.set(key, tex);
             resolve();
           },

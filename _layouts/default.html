@@ -77,11 +77,15 @@ async function init() {
     const textureMap = new Map();
     const textureDefs = {{ page.textures | jsonify }};
 
+    console.log("🎨 テクスチャ定義:", textureDefs);
     await Promise.all(Object.entries(textureDefs).map(([key, filename]) =>
       new Promise((resolve, reject) => {
+        const texturePath = '{{ site.baseurl }}/assets/textures/' + filename;
+        console.log(`📂 テクスチャパス [${key}]:`, texturePath);
         const tex = new THREE.TextureLoader().load(
-          '{{ site.baseurl }}/assets/textures/' + filename,
+          texturePath,
           () => {
+            console.log(`✅ テクスチャ読み込み成功 [${key}]`);
             textureMap.set(key, tex);
             resolve();
           },
@@ -115,8 +119,12 @@ async function init() {
         if (faceIdx === undefined || !info.uv) continue;
 
         const texKey = info.texture?.replace(/^#/, '');
+        console.log(`🔍 Face ${face}: テクスチャキー="${texKey}"`);
         const tex = textureMap.get(texKey);
-        if (!tex) continue;
+        if (!tex) {
+          console.warn(`⚠️ テクスチャが見つかりません: ${texKey}`);
+          continue;
+        }
 
         const [u1, v1, u2, v2] = info.uv;
         const uvRect = [

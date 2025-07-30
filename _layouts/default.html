@@ -44,7 +44,6 @@
   <script src="{{ '/assets/js/posts.js' | relative_url }}" defer></script>
 
 {% if page.model_path %}
-<!-- 表示エリア -->
 <div id="model-viewer-container" style="width:100%; height:500px; margin-top:1em;"></div>
 
 <script type="module">
@@ -55,7 +54,9 @@ async function init() {
   if (!container) return;
 
   const modelUrl = '{{ site.baseurl }}{{ page.model_path }}';
-  const texSize = 512;
+  const textureDefs = {{ page.textures | jsonify }};
+
+  const texSize = 512;  // texture image resolution
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
@@ -70,88 +71,59 @@ async function init() {
 
   try {
     const res = await fetch(modelUrl);
-    if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const bbmodel = await res.json();
-    console.log("📦 モデル内容:", bbmodel);
+    console.log("Model:", bbmodel);
 
+    const textureLoader = new THREE.TextureLoader();
     const textureMap = new Map();
-    const textureDefs = {{ page.textures | jsonify }};
 
-    console.log("🎨 テクスチャ定義:", textureDefs);
+    // テクスチャを非同期読み込み
     await Promise.all(Object.entries(textureDefs).map(([key, filename]) =>
       new Promise((resolve, reject) => {
-        const texturePath = '{{ site.baseurl }}/assets/textures/' + filename;
-        console.log(`📂 テクスチャパス [${key}]:`, texturePath);
-        const tex = new THREE.TextureLoader().load(
-          texturePath,
-          () => {
-            console.log(`✅ テクスチャ読み込み成功 [${key}]`);
-            tex.magFilter = THREE.NearestFilter;
-            tex.minFilter = THREE.NearestFilter;
-            tex.needsUpdate = true;
-            textureMap.set(key, tex);
-            resolve();
-          },
+        const texUrl = '{{ site.baseurl }}/assets/textures/' + filename;
+        textureLoader.load(texUrl,
+          tex => { tex.magFilter = tex.minFilter = THREE.NearestFilter; textureMap.set(key, tex); resolve(); },
           undefined,
-          err => {
-            console.error(`❌ テクスチャ読み込み失敗 [${key}]:`, err);
-            reject(err);
-          }
+          err => { console.error(`Load failed [${key}]`, err); reject(err); }
         );
       })
     ));
 
-    const faceIndexMap = { north: 0, south: 1, up: 2, down: 3, east: 4, west: 5 };
+    const faceIndex = { north: 0, south: 1, up: 2, down: 3, east: 4, west: 5 };
     const group = new THREE.Group();
 
     for (const el of bbmodel.elements) {
-      const [x1, y1, z1] = el.from;
-      const [x2, y2, z2] = el.to;
-      const size = [x2 - x1, y2 - y1, z2 - z1].map(s => s / 16);
-
+      const size = el.to.map((v, i) => (v - el.from[i]) / 16);
       const geo = new THREE.BoxGeometry(...size);
-      const uvs = geo.attributes.uv.array.slice(); // clone
-      const materials = [];
-
-      for (let i = 0; i < 6; i++) {
-        materials[i] = new THREE.MeshStandardMaterial({ transparent: true, opacity: 1 });
-      }
+      const uvs = geo.attributes.uv.array.slice();  // clone original UVs
+      const mats = Array(6).fill(null).map(() =>
+        new THREE.MeshStandardMaterial({ transparent: true })
+      );
 
       for (const [face, info] of Object.entries(el.faces)) {
-        const faceIdx = faceIndexMap[face];
-        if (faceIdx === undefined || !info.uv) continue;
-
+        const idx = faceIndex[face];
         const texKey = info.texture?.replace(/^#/, '');
-        console.log(`🔍 Face ${face}: テクスチャキー="${texKey}"`);
         const tex = textureMap.get(texKey);
-        if (!tex) {
-          console.warn(`⚠️ テクスチャが見つかりません: ${texKey}`);
-          continue;
-        }
+        if (idx !== undefined && tex) {
+          const [u1, v1, u2, v2] = info.uv;
+          const uvRect = [u1/texSize, 1-v2/texSize, u2/texSize, 1-v1/texSize];
+          mats[idx].map = tex;
 
-        const [u1, v1, u2, v2] = info.uv;
-        const uvRect = [
-          u1 / texSize, 1 - v2 / texSize,
-          u2 / texSize, 1 - v2 / texSize,
-          u2 / texSize, 1 - v1 / texSize,
-          u1 / texSize, 1 - v1 / texSize
-        ];
-
-        materials[faceIdx] = new THREE.MeshStandardMaterial({ map: tex, transparent: true });
-
-        const base = faceIdx * 8;
-        for (let i = 0; i < 4; i++) {
-          uvs[base + i * 2] = uvRect[i * 2];
-          uvs[base + i * 2 + 1] = uvRect[i * 2 + 1];
+          const base = idx * 8;
+          for (let i = 0; i < 4; i++) {
+            uvs[base + i*2]     = uvRect[i*2];
+            uvs[base + i*2 + 1] = uvRect[i*2 + 1];
+          }
         }
       }
 
       geo.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(uvs), 2));
-      const mesh = new THREE.Mesh(geo, materials);
+      const mesh = new THREE.Mesh(geo, mats);
       mesh.position.set(
-        ((x1 + x2) / 2 - 8) / 16,
-        ((y1 + y2) / 2 - 8) / 16,
-        ((z1 + z2) / 2 - 8) / 16
+        ((el.from[0]+el.to[0])/2 - 8)/16,
+        ((el.from[1]+el.to[1])/2 - 8)/16,
+        ((el.from[2]+el.to[2])/2 - 8)/16
       );
       group.add(mesh);
     }
@@ -159,21 +131,22 @@ async function init() {
     group.scale.set(3, 3, 3);
     scene.add(group);
 
-    function animate() {
+    // アニメーションとレンダリング
+    (function animate() {
       requestAnimationFrame(animate);
       group.rotation.y += 0.01;
       renderer.render(scene, camera);
-    }
-    animate();
-  } catch (e) {
-    console.error("❌ モデル読み込み失敗:", e);
+    })();
+
+  } catch(e) {
+    console.error("Model load failed:", e);
   }
 }
 
 document.addEventListener('DOMContentLoaded', init);
 </script>
-
 {% endif %}
+
 
 </body>
 </html>

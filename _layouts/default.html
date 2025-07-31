@@ -46,9 +46,20 @@
 {% if page.model_path %}
 <div id="model-viewer-container" style="width:100%; height:500px; margin-top:1em;"></div>
 
+<!-- import map + es-module-shims の追加 -->
+<script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js",
+    "three/examples/jsm/controls/OrbitControls.js": "https://cdn.jsdelivr.net/npm/three@0.152.2/examples/jsm/controls/OrbitControls.js"
+  }
+}
+</script>
+
 <script type="module">
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js';
-import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.152.2/examples/jsm/controls/OrbitControls.js';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 async function init() {
   const container = document.getElementById('model-viewer-container');
@@ -90,7 +101,7 @@ async function init() {
       })
     ));
 
-    const faceIndex = { north:0,south:1,up:2,down:3,east:4,west:5 };
+    const faceIndex = { north:0, south:1, up:2, down:3, east:4, west:5 };
     const group = new THREE.Group();
     const texSize = 512;
 
@@ -145,6 +156,7 @@ async function init() {
 document.addEventListener('DOMContentLoaded', init);
 </script>
 {% endif %}
+
 
 </body>
 </html>

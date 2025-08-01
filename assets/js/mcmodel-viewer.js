@@ -30,8 +30,9 @@ class BlockModelRenderer {
     for (const [key, textureName] of Object.entries(textureData)) {
       if (key !== 'particle') {
         const promise = new Promise((resolve) => {
-          // Assuming texture files are in /assets/textures/
-          const texturePath = `/assets/textures/${textureName}.png`;
+          // Build relative texture path using site base URL
+          const baseUrl = window.location.pathname.includes('/Drowse-Lab/') ? '/Drowse-Lab' : '';
+          const texturePath = `${baseUrl}/assets/textures/${textureName}.png`;
           
           this.textureLoader.load(
             texturePath,
@@ -188,7 +189,8 @@ if (container) {
   const loader = new BlockModelRenderer(scene);
 
   // Get model path from data attribute or use default
-  const modelPath = container.dataset.modelPath || "/assets/models/customkatanairon3d.json";
+  const baseUrl = window.location.pathname.includes('/Drowse-Lab/') ? '/Drowse-Lab' : '';
+  const modelPath = container.dataset.modelPath ? baseUrl + container.dataset.modelPath : baseUrl + "/assets/models/customkatanairon3d.json";
   loader.loadModel(modelPath, () => {
     animate();
   });

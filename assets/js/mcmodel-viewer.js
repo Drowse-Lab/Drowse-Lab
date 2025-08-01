@@ -129,27 +129,44 @@ class BlockModelRenderer {
       
       // Apply UV mapping if specified
       if (element.faces) {
-        const uvs = geometry.attributes.uv;
-        let faceIndex = 0;
+        // Create custom UV mapping for each face
+        const uvAttribute = geometry.attributes.uv;
+        const uvArray = uvAttribute.array;
         
-        faceOrder.forEach((face, i) => {
+        // Face indices for BoxGeometry:
+        // 0-3: right (+X), 4-7: left (-X), 8-11: top (+Y), 
+        // 12-15: bottom (-Y), 16-19: front (+Z), 20-23: back (-Z)
+        const faceUVIndices = {
+          'east': [0, 1, 2, 3],    // right
+          'west': [4, 5, 6, 7],    // left
+          'up': [8, 9, 10, 11],    // top
+          'down': [12, 13, 14, 15], // bottom
+          'south': [16, 17, 18, 19], // front
+          'north': [20, 21, 22, 23]  // back
+        };
+        
+        Object.keys(faceUVIndices).forEach(face => {
           if (element.faces[face] && element.faces[face].uv) {
             const uv = element.faces[face].uv;
             const u1 = uv[0] / 16;
-            const v1 = 1 - uv[1] / 16;
+            const v1 = 1 - uv[3] / 16; // Flip V coordinate
             const u2 = uv[2] / 16;
-            const v2 = 1 - uv[3] / 16;
+            const v2 = 1 - uv[1] / 16; // Flip V coordinate
             
-            // Set UV coordinates for this face (2 triangles = 6 vertices)
-            const baseIndex = i * 4;
-            uvs.setXY(baseIndex, u1, v2);
-            uvs.setXY(baseIndex + 1, u2, v2);
-            uvs.setXY(baseIndex + 2, u1, v1);
-            uvs.setXY(baseIndex + 3, u2, v1);
+            const indices = faceUVIndices[face];
+            // UV layout for each face (4 vertices)
+            uvArray[indices[0] * 2] = u1;
+            uvArray[indices[0] * 2 + 1] = v1;
+            uvArray[indices[1] * 2] = u2;
+            uvArray[indices[1] * 2 + 1] = v1;
+            uvArray[indices[2] * 2] = u1;
+            uvArray[indices[2] * 2 + 1] = v2;
+            uvArray[indices[3] * 2] = u2;
+            uvArray[indices[3] * 2 + 1] = v2;
           }
         });
         
-        uvs.needsUpdate = true;
+        uvAttribute.needsUpdate = true;
       }
       
       group.add(mesh);

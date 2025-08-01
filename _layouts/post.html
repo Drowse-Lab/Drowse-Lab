@@ -38,7 +38,105 @@ layout: default
   <div id="mcmodel-viewer" data-model-path="{{ page.model_path }}" style="width: 100%; height: 400px; border: 1px solid #ccc; border-radius: 4px; background: #f0f0f0;"></div>
 </section>
 <script src="{{ '/assets/js/three.min.js' | relative_url }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.152.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+// Define OrbitControls for Three.js after loading three.min.js
+THREE.OrbitControls = function(camera, domElement) {
+  this.camera = camera;
+  this.domElement = domElement;
+  this.enabled = true;
+  this.target = new THREE.Vector3();
+  this.minDistance = 0;
+  this.maxDistance = Infinity;
+  this.minPolarAngle = 0;
+  this.maxPolarAngle = Math.PI;
+  
+  var scope = this;
+  var rotateSpeed = 1.0;
+  var panSpeed = 1.0;
+  var zoomSpeed = 1.0;
+  
+  var rotateStart = new THREE.Vector2();
+  var rotateEnd = new THREE.Vector2();
+  var rotateDelta = new THREE.Vector2();
+  
+  var spherical = new THREE.Spherical();
+  var sphericalDelta = new THREE.Spherical();
+  
+  var scale = 1;
+  var panOffset = new THREE.Vector3();
+  
+  var STATE = { NONE: -1, ROTATE: 0, DOLLY: 1, PAN: 2 };
+  var state = STATE.NONE;
+  
+  this.update = function() {
+    var offset = new THREE.Vector3();
+    offset.copy(scope.camera.position).sub(scope.target);
+    spherical.setFromVector3(offset);
+    spherical.theta += sphericalDelta.theta;
+    spherical.phi += sphericalDelta.phi;
+    spherical.phi = Math.max(scope.minPolarAngle, Math.min(scope.maxPolarAngle, spherical.phi));
+    spherical.makeSafe();
+    spherical.radius *= scale;
+    spherical.radius = Math.max(scope.minDistance, Math.min(scope.maxDistance, spherical.radius));
+    scope.target.add(panOffset);
+    offset.setFromSpherical(spherical);
+    scope.camera.position.copy(scope.target).add(offset);
+    scope.camera.lookAt(scope.target);
+    sphericalDelta.set(0, 0, 0);
+    scale = 1;
+    panOffset.set(0, 0, 0);
+  };
+  
+  function onMouseDown(event) {
+    if (!scope.enabled) return;
+    event.preventDefault();
+    if (event.button === 0) {
+      state = STATE.ROTATE;
+      rotateStart.set(event.clientX, event.clientY);
+    } else if (event.button === 1) {
+      state = STATE.DOLLY;
+    } else if (event.button === 2) {
+      state = STATE.PAN;
+    }
+  }
+  
+  function onMouseMove(event) {
+    if (!scope.enabled) return;
+    event.preventDefault();
+    if (state === STATE.ROTATE) {
+      rotateEnd.set(event.clientX, event.clientY);
+      rotateDelta.subVectors(rotateEnd, rotateStart);
+      sphericalDelta.theta -= 2 * Math.PI * rotateDelta.x / domElement.clientWidth * rotateSpeed;
+      sphericalDelta.phi -= 2 * Math.PI * rotateDelta.y / domElement.clientHeight * rotateSpeed;
+      rotateStart.copy(rotateEnd);
+      scope.update();
+    }
+  }
+  
+  function onMouseUp() {
+    if (!scope.enabled) return;
+    state = STATE.NONE;
+  }
+  
+  function onMouseWheel(event) {
+    if (!scope.enabled) return;
+    event.preventDefault();
+    event.stopPropagation();
+    if (event.deltaY < 0) {
+      scale /= zoomSpeed;
+    } else if (event.deltaY > 0) {
+      scale *= zoomSpeed;
+    }
+    scope.update();
+  }
+  
+  domElement.addEventListener('mousedown', onMouseDown, false);
+  domElement.addEventListener('mousemove', onMouseMove, false);
+  domElement.addEventListener('mouseup', onMouseUp, false);
+  domElement.addEventListener('wheel', onMouseWheel, false);
+  domElement.addEventListener('contextmenu', function(e) { e.preventDefault(); }, false);
+};
+</script>
 <script src="{{ '/assets/js/mcmodel-viewer.js' | relative_url }}"></script>
 {% endif %}
 

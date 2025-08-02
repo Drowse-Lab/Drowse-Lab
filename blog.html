@@ -26,13 +26,14 @@ pagination:
 
 <script>
 // Load posts data from JSON file
-fetch('{{ "/assets/data/posts.json" | relative_url }}')
+const baseUrl = window.location.pathname.includes('/Drowse-Lab/') ? '/Drowse-Lab' : '';
+fetch(baseUrl + '/assets/data/posts.json')
   .then(response => response.json())
   .then(data => {
     window.allPosts = data;
     // Load posts.js after data is loaded
     const script = document.createElement('script');
-    script.src = '{{ "/assets/js/posts.js" | relative_url }}';
+    script.src = baseUrl + '/assets/js/posts.js';
     document.body.appendChild(script);
   })
   .catch(error => {

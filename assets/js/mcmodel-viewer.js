@@ -43,7 +43,7 @@ class BlockModelRenderer {
               texture.wrapS = THREE.RepeatWrapping;
               texture.wrapT = THREE.RepeatWrapping;
               
-              this.materials[key] = new THREE.MeshLambertMaterial({
+              this.materials[key] = new THREE.MeshBasicMaterial({
                 map: texture,
                 side: THREE.DoubleSide,
                 alphaTest: 0.5,
@@ -56,7 +56,7 @@ class BlockModelRenderer {
             (error) => {
               console.error(`Error loading texture ${texturePath}:`, error);
               // Create default gray material on error
-              this.materials[key] = new THREE.MeshLambertMaterial({
+              this.materials[key] = new THREE.MeshBasicMaterial({
                 color: 0x888888,
                 side: THREE.DoubleSide
               });
@@ -102,9 +102,9 @@ class BlockModelRenderer {
       faceOrder.forEach(face => {
         if (element.faces[face] && element.faces[face].texture) {
           const textureKey = element.faces[face].texture.replace('#', '');
-          materials.push(this.materials[textureKey] || new THREE.MeshLambertMaterial({ color: 0x888888 }));
+          materials.push(this.materials[textureKey] || new THREE.MeshBasicMaterial({ color: 0x888888 }));
         } else {
-          materials.push(new THREE.MeshLambertMaterial({ color: 0x888888 }));
+          materials.push(new THREE.MeshBasicMaterial({ color: 0x888888 }));
         }
       });
       
@@ -196,7 +196,7 @@ const container = document.getElementById("mcmodel-viewer");
 if (container) {
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setSize(container.clientWidth, container.clientHeight);
-  renderer.setClearColor(0xf0f0f0, 1);
+  renderer.setClearColor(0xfafafa, 1);
   container.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
@@ -210,11 +210,9 @@ if (container) {
   controls.maxDistance = 50;
   controls.update();
 
-  const light = new THREE.DirectionalLight(0xffffff, 1);
-  light.position.set(10, 10, 10);
-  scene.add(light);
-
-  const ambient = new THREE.AmbientLight(0x888888);
+  // Remove directional light since we're using MeshBasicMaterial
+  // Add only ambient light for consistent brightness
+  const ambient = new THREE.AmbientLight(0xffffff, 1);
   scene.add(ambient);
 
   const loader = new BlockModelRenderer(scene);

@@ -1,8 +1,11 @@
+// Wait for allPosts to be defined
 const allPosts = window.allPosts || [];
 
+// Initialize when script loads (called after data is loaded)
+try { populateFilters(); } catch (e) { console.error('Error in populateFilters:', e); }
+try { renderPosts(); } catch (e) { console.error('Error in renderPosts:', e); }
+
 document.addEventListener("DOMContentLoaded", () => {
-  try { populateFilters(); } catch (e) { }
-  try { renderPosts(); } catch (e) { }
 
   // --- コードブロック装飾処理ここから ---
   document.querySelectorAll("pre code").forEach((codeBlock) => {

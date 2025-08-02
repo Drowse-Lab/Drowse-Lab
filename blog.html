@@ -25,19 +25,20 @@ pagination:
   <div id="posts"></div>
 
 <script>
-window.allPosts = [
-  {%- for post in site.posts -%}
-    {
-      "title": {{ post.title | jsonify }},
-      "url": {{ post.url | relative_url | jsonify }},
-      "date": "{{ post.date | date: '%Y-%m-%d' }}",
-      "tags": {{ post.tags | jsonify }},
-      "author": {{ post.author | jsonify }},
-      "published": {{ post.published | default: true | jsonify }},
-      "onlydate": {{ post.onlydate | default: false | jsonify }}
-    }{%- unless forloop.last -%},{%- endunless -%}
-  {%- endfor -%}
-];
+// Load posts data from JSON file
+fetch('{{ "/assets/data/posts.json" | relative_url }}')
+  .then(response => response.json())
+  .then(data => {
+    window.allPosts = data;
+    // Load posts.js after data is loaded
+    const script = document.createElement('script');
+    script.src = '{{ "/assets/js/posts.js" | relative_url }}';
+    document.body.appendChild(script);
+  })
+  .catch(error => {
+    console.error('Error loading posts data:', error);
+    window.allPosts = [];
+  });
 </script>
 
 </main>

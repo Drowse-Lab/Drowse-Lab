@@ -204,6 +204,10 @@ if (container) {
   camera.position.set(20, 20, 20);
 
   const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.05;
+  controls.minDistance = 10;
+  controls.maxDistance = 50;
   controls.update();
 
   const light = new THREE.DirectionalLight(0xffffff, 1);

@@ -40,12 +40,16 @@ class BlockModelRenderer {
               texture.magFilter = THREE.NearestFilter;
               texture.minFilter = THREE.NearestFilter;
               texture.colorSpace = THREE.SRGBColorSpace;
+              texture.wrapS = THREE.RepeatWrapping;
+              texture.wrapT = THREE.RepeatWrapping;
               
               this.materials[key] = new THREE.MeshLambertMaterial({
                 map: texture,
                 side: THREE.DoubleSide,
-                alphaTest: 0.5
+                alphaTest: 0.5,
+                transparent: true
               });
+              console.log(`Loaded texture ${key}: ${texturePath}`);
               resolve();
             },
             undefined,
@@ -133,25 +137,26 @@ class BlockModelRenderer {
         const uvAttribute = geometry.attributes.uv;
         const uvArray = uvAttribute.array;
         
-        // Face indices for BoxGeometry:
-        // 0-3: right (+X), 4-7: left (-X), 8-11: top (+Y), 
-        // 12-15: bottom (-Y), 16-19: front (+Z), 20-23: back (-Z)
+        // Face indices for BoxGeometry in Three.js:
+        // The actual order is: right, left, top, bottom, front, back
+        // Each face has 4 vertices (2 triangles)
         const faceUVIndices = {
-          'east': [0, 1, 2, 3],    // right
-          'west': [4, 5, 6, 7],    // left
-          'up': [8, 9, 10, 11],    // top
-          'down': [12, 13, 14, 15], // bottom
-          'south': [16, 17, 18, 19], // front
-          'north': [20, 21, 22, 23]  // back
+          'east': [0, 1, 2, 3],     // right (+X)
+          'west': [4, 5, 6, 7],     // left (-X)
+          'up': [8, 9, 10, 11],     // top (+Y)
+          'down': [12, 13, 14, 15], // bottom (-Y)
+          'south': [16, 17, 18, 19], // front (+Z)
+          'north': [20, 21, 22, 23]  // back (-Z)
         };
         
         Object.keys(faceUVIndices).forEach(face => {
           if (element.faces[face] && element.faces[face].uv) {
             const uv = element.faces[face].uv;
-            const u1 = uv[0] / 16;
-            const v1 = 1 - uv[3] / 16; // Flip V coordinate
-            const u2 = uv[2] / 16;
-            const v2 = 1 - uv[1] / 16; // Flip V coordinate
+            // Ensure UV coordinates are within bounds
+            const u1 = Math.max(0, Math.min(1, uv[0] / 16));
+            const v1 = Math.max(0, Math.min(1, 1 - uv[3] / 16)); // Flip V coordinate
+            const u2 = Math.max(0, Math.min(1, uv[2] / 16));
+            const v2 = Math.max(0, Math.min(1, 1 - uv[1] / 16)); // Flip V coordinate
             
             const indices = faceUVIndices[face];
             // UV layout for each face (4 vertices)
@@ -163,6 +168,11 @@ class BlockModelRenderer {
             uvArray[indices[2] * 2 + 1] = v2;
             uvArray[indices[3] * 2] = u2;
             uvArray[indices[3] * 2 + 1] = v2;
+            
+            // Debug log for problematic element
+            if (element.from[1] === 18.5 && element.from[2] === 17.1) {
+              console.log(`Face ${face} UV:`, uv, '-> u1:', u1, 'v1:', v1, 'u2:', u2, 'v2:', v2);
+            }
           }
         });
         

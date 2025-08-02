@@ -1,9 +1,13 @@
 // Wait for allPosts to be defined
-const allPosts = window.allPosts || [];
+let allPosts = window.allPosts || [];
 
 // Initialize when script loads (called after data is loaded)
-try { populateFilters(); } catch (e) { console.error('Error in populateFilters:', e); }
-try { renderPosts(); } catch (e) { console.error('Error in renderPosts:', e); }
+if (typeof populateFilters === 'function') {
+  try { populateFilters(); } catch (e) { console.error('Error in populateFilters:', e); }
+}
+if (typeof renderPosts === 'function') {
+  try { renderPosts(); } catch (e) { console.error('Error in renderPosts:', e); }
+}
 
 document.addEventListener("DOMContentLoaded", () => {
 

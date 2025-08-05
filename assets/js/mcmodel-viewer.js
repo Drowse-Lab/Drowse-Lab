@@ -152,22 +152,24 @@ class BlockModelRenderer {
         Object.keys(faceUVIndices).forEach(face => {
           if (element.faces[face] && element.faces[face].uv) {
             const uv = element.faces[face].uv;
-            // Ensure UV coordinates are within bounds
-            const u1 = Math.max(0, Math.min(1, uv[0] / 16));
-            const v1 = Math.max(0, Math.min(1, 1 - uv[3] / 16)); // Flip V coordinate
-            const u2 = Math.max(0, Math.min(1, uv[2] / 16));
-            const v2 = Math.max(0, Math.min(1, 1 - uv[1] / 16)); // Flip V coordinate
+            // Convert UV coordinates from Minecraft format (0-16) to normalized (0-1)
+            const u1 = uv[0] / 16;
+            const v1 = 1 - (uv[3] / 16); // Flip V coordinate for Three.js
+            const u2 = uv[2] / 16;
+            const v2 = 1 - (uv[1] / 16); // Flip V coordinate for Three.js
             
             const indices = faceUVIndices[face];
-            // UV layout for each face (4 vertices)
+            // UV layout for each face (4 vertices for 2 triangles)
+            // Triangle 1: bottom-left, bottom-right, top-left
+            // Triangle 2: bottom-right, top-right, top-left
             uvArray[indices[0] * 2] = u1;
-            uvArray[indices[0] * 2 + 1] = v1;
+            uvArray[indices[0] * 2 + 1] = v2;
             uvArray[indices[1] * 2] = u2;
-            uvArray[indices[1] * 2 + 1] = v1;
+            uvArray[indices[1] * 2 + 1] = v2;
             uvArray[indices[2] * 2] = u1;
-            uvArray[indices[2] * 2 + 1] = v2;
+            uvArray[indices[2] * 2 + 1] = v1;
             uvArray[indices[3] * 2] = u2;
-            uvArray[indices[3] * 2 + 1] = v2;
+            uvArray[indices[3] * 2 + 1] = v1;
             
             // Debug log for problematic element
             if (element.from[1] === 18.5 && element.from[2] === 17.1) {

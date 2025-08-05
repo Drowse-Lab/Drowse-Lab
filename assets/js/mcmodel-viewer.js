@@ -2,10 +2,12 @@
 
 // BlockModelRenderer class for loading Minecraft-style JSON models
 class BlockModelRenderer {
-  constructor(scene) {
+  constructor(scene, enableGlow = false) {
     this.scene = scene;
     this.textureLoader = new THREE.TextureLoader();
     this.materials = {};
+    this.enableGlow = enableGlow;
+    this.glowMaterials = {};
   }
 
   loadModel(modelPath, callback) {
@@ -49,6 +51,49 @@ class BlockModelRenderer {
                 alphaTest: 0.5,
                 transparent: true
               });
+              
+              // Create glow material if enabled
+              if (this.enableGlow) {
+                this.glowMaterials[key] = new THREE.ShaderMaterial({
+                  uniforms: {
+                    tDiffuse: { value: texture },
+                    time: { value: 0 },
+                    glowColor: { value: new THREE.Color(0x9b59b6) }, // Purple glow
+                    glowIntensity: { value: 0.4 }
+                  },
+                  vertexShader: `
+                    varying vec2 vUv;
+                    void main() {
+                      vUv = uv;
+                      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                    }
+                  `,
+                  fragmentShader: `
+                    uniform sampler2D tDiffuse;
+                    uniform float time;
+                    uniform vec3 glowColor;
+                    uniform float glowIntensity;
+                    varying vec2 vUv;
+                    
+                    void main() {
+                      vec4 texColor = texture2D(tDiffuse, vUv);
+                      
+                      // Animated glow effect
+                      float glow = sin(time * 2.0) * 0.5 + 0.5;
+                      vec3 glowEffect = glowColor * glow * glowIntensity;
+                      
+                      // Mix original texture with glow
+                      vec3 finalColor = texColor.rgb + glowEffect * texColor.a;
+                      
+                      gl_FragColor = vec4(finalColor, texColor.a);
+                    }
+                  `,
+                  side: THREE.DoubleSide,
+                  transparent: true,
+                  alphaTest: 0.5
+                });
+              }
+              
               console.log(`Loaded texture ${key}: ${texturePath}`);
               resolve();
             },
@@ -102,7 +147,11 @@ class BlockModelRenderer {
       faceOrder.forEach(face => {
         if (element.faces[face] && element.faces[face].texture) {
           const textureKey = element.faces[face].texture.replace('#', '');
-          materials.push(this.materials[textureKey] || new THREE.MeshBasicMaterial({ color: 0x888888 }));
+          if (this.enableGlow && this.glowMaterials[textureKey]) {
+            materials.push(this.glowMaterials[textureKey]);
+          } else {
+            materials.push(this.materials[textureKey] || new THREE.MeshBasicMaterial({ color: 0x888888 }));
+          }
         } else {
           materials.push(new THREE.MeshBasicMaterial({ color: 0x888888 }));
         }
@@ -190,6 +239,20 @@ class BlockModelRenderer {
     group.position.sub(center);
     
     this.scene.add(group);
+    
+    // Store the model group for animation updates
+    this.modelGroup = group;
+  }
+  
+  // Update method for animating glow effect
+  update(time) {
+    if (this.enableGlow) {
+      Object.values(this.glowMaterials).forEach(material => {
+        if (material.uniforms && material.uniforms.time) {
+          material.uniforms.time.value = time;
+        }
+      });
+    }
   }
 }
 
@@ -217,7 +280,9 @@ if (container) {
   const ambient = new THREE.AmbientLight(0xffffff, 1);
   scene.add(ambient);
 
-  const loader = new BlockModelRenderer(scene);
+  // Check for enable_glow attribute
+  const enableGlow = container.dataset.enableGlow === 'true';
+  const loader = new BlockModelRenderer(scene, enableGlow);
 
   // Get model path from data attribute or use default
   const baseUrl = window.location.pathname.includes('/Drowse-Lab/') ? '/Drowse-Lab' : '';
@@ -228,6 +293,11 @@ if (container) {
 
   function animate() {
     requestAnimationFrame(animate);
+    
+    // Update glow animation
+    const time = performance.now() * 0.001; // Convert to seconds
+    loader.update(time);
+    
     controls.update();
     renderer.render(scene, camera);
   }

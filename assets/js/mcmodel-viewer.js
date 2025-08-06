@@ -58,32 +58,61 @@ class BlockModelRenderer {
                   uniforms: {
                     tDiffuse: { value: texture },
                     time: { value: 0 },
-                    glowColor: { value: new THREE.Color(0x9b59b6) }, // Purple glow
-                    glowIntensity: { value: 0.4 }
+                    glowColor1: { value: new THREE.Color(0x9b59b6) }, // Purple
+                    glowColor2: { value: new THREE.Color(0xe8daef) }, // Light purple/white
+                    glowIntensity: { value: 0.6 }
                   },
                   vertexShader: `
                     varying vec2 vUv;
+                    varying vec3 vNormal;
+                    varying vec3 vViewPosition;
                     void main() {
                       vUv = uv;
-                      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                      vNormal = normalize(normalMatrix * normal);
+                      vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+                      vViewPosition = -mvPosition.xyz;
+                      gl_Position = projectionMatrix * mvPosition;
                     }
                   `,
                   fragmentShader: `
                     uniform sampler2D tDiffuse;
                     uniform float time;
-                    uniform vec3 glowColor;
+                    uniform vec3 glowColor1;
+                    uniform vec3 glowColor2;
                     uniform float glowIntensity;
                     varying vec2 vUv;
+                    varying vec3 vNormal;
+                    varying vec3 vViewPosition;
                     
                     void main() {
                       vec4 texColor = texture2D(tDiffuse, vUv);
                       
-                      // Animated glow effect
-                      float glow = sin(time * 2.0) * 0.5 + 0.5;
-                      vec3 glowEffect = glowColor * glow * glowIntensity;
+                      // Create moving shimmer pattern
+                      float shimmer1 = sin(vUv.x * 10.0 + time * 3.0) * sin(vUv.y * 10.0 - time * 2.0);
+                      float shimmer2 = cos(vUv.x * 15.0 - time * 4.0) * cos(vUv.y * 15.0 + time * 3.5);
+                      float shimmer = (shimmer1 + shimmer2) * 0.25 + 0.5;
                       
-                      // Mix original texture with glow
+                      // Diagonal moving bands
+                      float diagonalBand = sin((vUv.x + vUv.y) * 20.0 - time * 5.0) * 0.5 + 0.5;
+                      
+                      // Edge glow effect
+                      vec3 viewDir = normalize(vViewPosition);
+                      float edgeGlow = 1.0 - abs(dot(viewDir, vNormal));
+                      edgeGlow = pow(edgeGlow, 1.5);
+                      
+                      // Combine effects
+                      float combinedEffect = shimmer * 0.4 + diagonalBand * 0.4 + edgeGlow * 0.2;
+                      
+                      // Animate between purple and white
+                      float colorMix = sin(time * 2.5) * 0.5 + 0.5;
+                      vec3 glowColor = mix(glowColor1, glowColor2, colorMix * combinedEffect);
+                      
+                      // Apply glow
+                      vec3 glowEffect = glowColor * combinedEffect * glowIntensity;
                       vec3 finalColor = texColor.rgb + glowEffect * texColor.a;
+                      
+                      // Add brightness to simulate the star effect
+                      finalColor = mix(finalColor, vec3(1.0), combinedEffect * 0.2 * texColor.a);
                       
                       gl_FragColor = vec4(finalColor, texColor.a);
                     }

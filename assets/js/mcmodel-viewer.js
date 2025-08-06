@@ -41,7 +41,7 @@ class BlockModelRenderer {
             (texture) => {
               texture.magFilter = THREE.NearestFilter;
               texture.minFilter = THREE.NearestFilter;
-              // texture.colorSpace = THREE.SRGBColorSpace; // Not available in Three.js 0.125
+              texture.colorSpace = THREE.SRGBColorSpace;
               texture.wrapS = THREE.RepeatWrapping;
               texture.wrapT = THREE.RepeatWrapping;
               

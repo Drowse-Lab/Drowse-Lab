@@ -30,7 +30,7 @@ pagination:
       {
         title: {{ post.title | jsonify }},
         url: {{ post.url | relative_url | jsonify }},
-        date: {{ post.date | date: '%Y-%m-%d' | jsonify }},
+        date: {{ post.date | date: "%Y-%m-%d" | jsonify }},
         tags: {{ post.tags | jsonify }},
         author: {{ post.author | jsonify }},
         published: {{ post.published | default: true | jsonify }},

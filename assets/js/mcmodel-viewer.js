@@ -87,32 +87,36 @@ class BlockModelRenderer {
                     void main() {
                       vec4 texColor = texture2D(tDiffuse, vUv);
                       
-                      // Create moving shimmer pattern
-                      float shimmer1 = sin(vUv.x * 10.0 + time * 3.0) * sin(vUv.y * 10.0 - time * 2.0);
-                      float shimmer2 = cos(vUv.x * 15.0 - time * 4.0) * cos(vUv.y * 15.0 + time * 3.5);
-                      float shimmer = (shimmer1 + shimmer2) * 0.25 + 0.5;
+                      // Simple regular wave pattern moving diagonally
+                      float wave1 = sin((vUv.x - vUv.y) * 8.0 + time * 3.0) * 0.5 + 0.5;
+                      float wave2 = sin((vUv.x + vUv.y) * 8.0 - time * 3.0) * 0.5 + 0.5;
                       
-                      // Diagonal moving bands
-                      float diagonalBand = sin((vUv.x + vUv.y) * 20.0 - time * 5.0) * 0.5 + 0.5;
+                      // Combine waves for shimmer effect
+                      float shimmer = (wave1 + wave2) * 0.5;
                       
-                      // Edge glow effect
+                      // Pulsing glow intensity
+                      float pulse = sin(time * 4.0) * 0.3 + 0.7;
+                      
+                      // Edge glow effect (rim lighting)
                       vec3 viewDir = normalize(vViewPosition);
-                      float edgeGlow = 1.0 - abs(dot(viewDir, vNormal));
-                      edgeGlow = pow(edgeGlow, 1.5);
+                      float rim = 1.0 - abs(dot(viewDir, vNormal));
+                      rim = pow(rim, 2.0) * 0.5;
                       
-                      // Combine effects
-                      float combinedEffect = shimmer * 0.4 + diagonalBand * 0.4 + edgeGlow * 0.2;
+                      // Combine effects with more weight on the shimmer
+                      float effect = shimmer * pulse + rim;
                       
-                      // Animate between purple and white
-                      float colorMix = sin(time * 2.5) * 0.5 + 0.5;
-                      vec3 glowColor = mix(glowColor1, glowColor2, colorMix * combinedEffect);
+                      // Smooth color transition between purple and white
+                      float colorBlend = shimmer * pulse;
+                      vec3 glowColor = mix(glowColor1, glowColor2, colorBlend);
                       
-                      // Apply glow
-                      vec3 glowEffect = glowColor * combinedEffect * glowIntensity;
-                      vec3 finalColor = texColor.rgb + glowEffect * texColor.a;
+                      // Apply glow as overlay to preserve texture brightness
+                      vec3 glowEffect = glowColor * effect * glowIntensity;
                       
-                      // Add brightness to simulate the star effect
-                      finalColor = mix(finalColor, vec3(1.0), combinedEffect * 0.2 * texColor.a);
+                      // Keep original texture bright and add glow on top
+                      vec3 finalColor = texColor.rgb + (glowEffect * texColor.a * 0.8);
+                      
+                      // Ensure minimum brightness
+                      finalColor = max(texColor.rgb, finalColor);
                       
                       gl_FragColor = vec4(finalColor, texColor.a);
                     }

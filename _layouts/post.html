@@ -40,10 +40,27 @@ layout: default
     マウス操作: 左ドラッグで回転 | ホイールでズーム | 右ドラッグで移動
   </div>
 </section>
-<script src="{{ '/assets/js/three.min.js' | relative_url }}"></script>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.150.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.150.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+// Make THREE and OrbitControls available globally for mcmodel-viewer.js
+window.THREE = THREE;
+window.THREE.OrbitControls = OrbitControls;
+</script>
 <script>
-// Define OrbitControls for Three.js after loading three.min.js
-THREE.OrbitControls = function(camera, domElement) {
+// Legacy OrbitControls definition for compatibility (will be removed after updating mcmodel-viewer.js)
+function defineLegacyOrbitControls() {
+  if (window.THREE && !window.THREE.OrbitControls) {
+    window.THREE.OrbitControls = function(camera, domElement) {
   this.camera = camera;
   this.domElement = domElement;
   this.enabled = true;
@@ -235,8 +252,12 @@ THREE.OrbitControls = function(camera, domElement) {
   domElement.addEventListener('touchend', onTouchEnd, false);
   domElement.addEventListener('contextmenu', function(e) { e.preventDefault(); }, false);
 };
+  }
+}
+// Call after a small delay to ensure THREE is loaded
+setTimeout(defineLegacyOrbitControls, 100);
 </script>
-<script src="{{ '/assets/js/mcmodel-viewer.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/mcmodel-viewer.js' | relative_url }}" defer></script>
 {% endif %}
 
 

@@ -40,30 +40,9 @@ layout: default
     マウス操作: 左ドラッグで回転 | ホイールでズーム | 右ドラッグで移動
   </div>
 </section>
-<script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
-<script type="importmap">
-{
-  "imports": {
-    "three": "https://unpkg.com/three@0.150.0/build/three.module.js",
-    "three/addons/": "https://unpkg.com/three@0.150.0/examples/jsm/"
-  }
-}
-</script>
-<script type="module">
-import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
-// Make THREE and OrbitControls available globally
-window.THREE = THREE;
-window.THREE.OrbitControls = OrbitControls;
-
-// Load mcmodel-viewer.js after THREE is ready
-window.addEventListener('load', () => {
-  const script = document.createElement('script');
-  script.src = '{{ '/assets/js/mcmodel-viewer.js' | relative_url }}';
-  document.body.appendChild(script);
-});
-</script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.125.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.125.0/examples/js/controls/OrbitControls.js"></script>
+<script src="{{ '/assets/js/mcmodel-viewer.js' | relative_url }}"></script>
 {% endif %}
 
 

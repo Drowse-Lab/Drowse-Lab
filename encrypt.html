@@ -1,302 +1,108 @@
 ---
 layout: page
 title: ファイルの暗号化
-permalink: /encrypt/
+permalink: /encrypt.html
 ---
 
-<style>
-        .encrypt-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .file-area {
-            border: 2px dashed #ccc;
-            border-radius: 10px;
-            padding: 40px;
-            text-align: center;
-            margin: 20px 0;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .file-area:hover {
-            background-color: #f0f0f0;
-            border-color: #999;
-        }
-        .file-area.dragover {
-            background-color: #e0e0e0;
-            border-color: #666;
-        }
-        .button-group {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin: 30px 0;
-        }
-        .btn {
-            padding: 12px 30px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .btn-encrypt {
-            background-color: #4CAF50;
-            color: white;
-        }
-        .btn-encrypt:hover {
-            background-color: #45a049;
-        }
-        .btn-decrypt {
-            background-color: #2196F3;
-            color: white;
-        }
-        .btn-decrypt:hover {
-            background-color: #0b7dda;
-        }
-        .btn:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-        }
-        .password-input {
-            margin: 20px 0;
-            text-align: center;
-        }
-        .password-input input {
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            width: 300px;
-            max-width: 100%;
-        }
-        .status-message {
-            margin: 20px 0;
-            padding: 15px;
-            border-radius: 5px;
-            text-align: center;
-            display: none;
-        }
-        .status-message.success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        .status-message.error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        .file-info {
-            margin: 20px 0;
-            padding: 15px;
-            background-color: #f8f9fa;
-            border-radius: 5px;
-            display: none;
-        }
-        .file-info h3 {
-            margin-top: 0;
-        }
-        .file-info p {
-            margin: 5px 0;
-        }
-        .settings-section {
-            margin: 30px 0;
-            padding: 20px;
-            background-color: #f0f0f0;
-            border-radius: 10px;
-        }
-        .settings-section h2 {
-            margin-top: 0;
-            color: #333;
-        }
-        .settings-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin: 20px 0;
-        }
-        .setting-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .setting-item label {
-            flex: 1;
-        }
-        .setting-item input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-        }
-        .setting-item select, .setting-item input[type="number"] {
-            padding: 5px;
-            border: 1px solid #ddd;
-            border-radius: 3px;
-            width: 150px;
-        }
-        .config-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        .btn-config {
-            background-color: #9c27b0;
-            color: white;
-            padding: 10px 20px;
-            font-size: 14px;
-        }
-        .btn-config:hover {
-            background-color: #7b1fa2;
-        }
-        .preset-buttons {
-            display: flex;
-            gap: 10px;
-            margin: 15px 0;
-            flex-wrap: wrap;
-        }
-        .btn-preset {
-            background-color: #ff9800;
-            color: white;
-            padding: 8px 16px;
-            font-size: 13px;
-        }
-        .btn-preset:hover {
-            background-color: #f57c00;
-        }
-        .back-button {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background-color: #6c757d;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 14px;
-        }
-        .back-button:hover {
-            background-color: #5a6268;
-        }
-        .lang-toggle {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background-color: #007bff;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .lang-toggle:hover {
-            background-color: #0056b3;
-        }
-</style>
+<link rel="stylesheet" href="{{ site.baseurl }}/assets/css/encrypt.css">
 
-<a href="{{ site.baseurl }}/other/" class="back-button" data-i18n="encrypt.back">戻る</a>
-    <button id="langToggle" class="lang-toggle">EN</button>
+<a href="{{ site.baseurl }}/other.html" class="back-button" data-i18n="encrypt.back">← 戻る</a>
+<button id="langToggle" class="lang-toggle">EN</button>
+
+<div class="encrypt-container">
+    <h1 data-i18n="encrypt.title">ファイルの暗号化・復号化</h1>
     
-    <div class="encrypt-container">
-        <h1 data-i18n="encrypt.title">ファイルの暗号化・復号化</h1>
+    <div class="file-area" id="dropArea">
+        <p data-i18n="encrypt.dragDrop">ここにファイルをドラッグ＆ドロップ</p>
+        <p data-i18n="encrypt.or">または</p>
+        <input type="file" id="fileInput" style="display: none;">
+        <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()" data-i18n="encrypt.selectFile">ファイルを選択</button>
+    </div>
+
+    <div class="file-info" id="fileInfo">
+        <h3 data-i18n="encrypt.selectedFile">選択されたファイル</h3>
+        <p><span data-i18n="encrypt.fileName">ファイル名:</span> <span id="fileName"></span></p>
+        <p><span data-i18n="encrypt.fileSize">ファイルサイズ:</span> <span id="fileSize"></span></p>
+    </div>
+
+    <div class="password-input">
+        <label for="password" data-i18n="encrypt.password">パスワード:</label>
+        <input type="password" id="password" placeholder="暗号化/復号化用のパスワード" data-i18n="encrypt.passwordPlaceholder">
+    </div>
+
+    <div class="button-group">
+        <button class="btn btn-primary" id="encryptBtn" disabled data-i18n="encrypt.encrypt">暗号化</button>
+        <button class="btn btn-secondary" id="decryptBtn" disabled data-i18n="encrypt.decrypt">復号化</button>
+    </div>
+
+    <div class="status-message" id="statusMessage"></div>
+
+    <div class="settings-section">
+        <h2 data-i18n="encrypt.settings">暗号化設定</h2>
         
-        <div class="file-area" id="dropArea">
-            <p data-i18n="encrypt.dragDrop">ここにファイルをドラッグ＆ドロップ</p>
-            <p data-i18n="encrypt.or">または</p>
-            <input type="file" id="fileInput" style="display: none;">
-            <button class="btn btn-encrypt" onclick="document.getElementById('fileInput').click()" data-i18n="encrypt.selectFile">ファイルを選択</button>
+        <div class="preset-buttons">
+            <button class="btn btn-preset" onclick="loadPreset('high-security')" data-i18n="encrypt.highSecurity">高セキュリティ</button>
+            <button class="btn btn-preset" onclick="loadPreset('balanced')" data-i18n="encrypt.balanced">バランス型</button>
+            <button class="btn btn-preset" onclick="loadPreset('fast')" data-i18n="encrypt.fast">高速処理</button>
         </div>
 
-        <div class="file-info" id="fileInfo">
-            <h3 data-i18n="encrypt.selectedFile">選択されたファイル</h3>
-            <p><span data-i18n="encrypt.fileName">ファイル名:</span> <span id="fileName"></span></p>
-            <p><span data-i18n="encrypt.fileSize">ファイルサイズ:</span> <span id="fileSize"></span></p>
-        </div>
-
-        <div class="password-input">
-            <label for="password" data-i18n="encrypt.password">パスワード:</label>
-            <input type="password" id="password" placeholder="暗号化/復号化用のパスワード" data-i18n="encrypt.passwordPlaceholder">
-        </div>
-
-        <div class="button-group">
-            <button class="btn btn-encrypt" id="encryptBtn" disabled data-i18n="encrypt.encrypt">暗号化</button>
-            <button class="btn btn-decrypt" id="decryptBtn" disabled data-i18n="encrypt.decrypt">復号化</button>
-        </div>
-
-        <div class="status-message" id="statusMessage"></div>
-
-        <div class="settings-section">
-            <h2 data-i18n="encrypt.settings">暗号化設定</h2>
+        <div class="settings-grid">
+            <div class="setting-item">
+                <label for="algorithm" data-i18n="encrypt.algorithm">暗号化アルゴリズム:</label>
+                <select id="algorithm">
+                    <option value="AES-GCM">AES-GCM (推奨)</option>
+                    <option value="AES-CBC">AES-CBC</option>
+                    <option value="AES-CTR">AES-CTR</option>
+                </select>
+            </div>
             
-            <div class="preset-buttons">
-                <button class="btn btn-preset" onclick="loadPreset('high-security')" data-i18n="encrypt.highSecurity">高セキュリティ</button>
-                <button class="btn btn-preset" onclick="loadPreset('balanced')" data-i18n="encrypt.balanced">バランス型</button>
-                <button class="btn btn-preset" onclick="loadPreset('fast')" data-i18n="encrypt.fast">高速処理</button>
+            <div class="setting-item">
+                <label for="keySize" data-i18n="encrypt.keySize">キーサイズ:</label>
+                <select id="keySize">
+                    <option value="128">128ビット</option>
+                    <option value="256" selected>256ビット</option>
+                </select>
             </div>
+            
+            <div class="setting-item">
+                <label for="iterations" data-i18n="encrypt.iterations">反復回数:</label>
+                <input type="number" id="iterations" value="10000" min="1000" max="1000000">
+            </div>
+            
+            <div class="setting-item">
+                <label for="saltLength" data-i18n="encrypt.saltLength">ソルト長:</label>
+                <input type="number" id="saltLength" value="16" min="8" max="32">
+            </div>
+            
+            <div class="setting-item">
+                <label for="compression" data-i18n="encrypt.compression">圧縮を有効化:</label>
+                <input type="checkbox" id="compression">
+            </div>
+            
+            <div class="setting-item">
+                <label for="fileIntegrity" data-i18n="encrypt.fileIntegrity">ファイル整合性チェック:</label>
+                <input type="checkbox" id="fileIntegrity" checked>
+            </div>
+            
+            <div class="setting-item">
+                <label for="metadataEncryption" data-i18n="encrypt.metadataEncryption">メタデータも暗号化:</label>
+                <input type="checkbox" id="metadataEncryption" checked>
+            </div>
+            
+            <div class="setting-item">
+                <label for="multipleKeys" data-i18n="encrypt.multipleKeys">複数キー暗号化:</label>
+                <input type="checkbox" id="multipleKeys">
+            </div>
+        </div>
 
-            <div class="settings-grid">
-                <div class="setting-item">
-                    <label for="algorithm">暗号化アルゴリズム:</label>
-                    <select id="algorithm">
-                        <option value="AES-GCM">AES-GCM (推奨)</option>
-                        <option value="AES-CBC">AES-CBC</option>
-                        <option value="AES-CTR">AES-CTR</option>
-                    </select>
-                </div>
-                
-                <div class="setting-item">
-                    <label for="keySize">キーサイズ:</label>
-                    <select id="keySize">
-                        <option value="128">128ビット</option>
-                        <option value="256" selected>256ビット</option>
-                    </select>
-                </div>
-                
-                <div class="setting-item">
-                    <label for="iterations">反復回数:</label>
-                    <input type="number" id="iterations" value="10000" min="1000" max="1000000">
-                </div>
-                
-                <div class="setting-item">
-                    <label for="saltLength">ソルト長:</label>
-                    <input type="number" id="saltLength" value="16" min="8" max="32">
-                </div>
-                
-                <div class="setting-item">
-                    <label for="compression">圧縮を有効化:</label>
-                    <input type="checkbox" id="compression">
-                </div>
-                
-                <div class="setting-item">
-                    <label for="fileIntegrity">ファイル整合性チェック:</label>
-                    <input type="checkbox" id="fileIntegrity" checked>
-                </div>
-                
-                <div class="setting-item">
-                    <label for="metadataEncryption">メタデータも暗号化:</label>
-                    <input type="checkbox" id="metadataEncryption" checked>
-                </div>
-                
-                <div class="setting-item">
-                    <label for="multipleKeys">複数キー暗号化:</label>
-                    <input type="checkbox" id="multipleKeys">
-                </div>
-            </div>
-
-            <div class="config-buttons">
-                <button class="btn btn-config" onclick="saveConfig()">設定を保存 (JSON)</button>
-                <input type="file" id="configFileInput" accept=".json" style="display: none;" onchange="loadConfigFile(event)">
-                <button class="btn btn-config" onclick="document.getElementById('configFileInput').click()">設定を読み込み (JSON)</button>
-                <button class="btn btn-config" onclick="resetConfig()">デフォルトに戻す</button>
-            </div>
+        <div class="config-buttons">
+            <button class="btn btn-secondary" onclick="saveConfig()" data-i18n="encrypt.saveConfig">設定を保存 (JSON)</button>
+            <input type="file" id="configFileInput" accept=".json" style="display: none;" onchange="loadConfigFile(event)">
+            <button class="btn btn-secondary" onclick="document.getElementById('configFileInput').click()" data-i18n="encrypt.loadConfig">設定を読み込み (JSON)</button>
+            <button class="btn btn-secondary" onclick="resetConfig()" data-i18n="encrypt.resetConfig">デフォルトに戻す</button>
         </div>
     </div>
+</div>
 
 <script src="{{ site.baseurl }}/assets/js/language.js"></script>
 <script src="{{ site.baseurl }}/assets/js/encrypt.js"></script>

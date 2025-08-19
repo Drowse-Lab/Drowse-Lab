@@ -1,77 +1,10 @@
 ---
 layout: page
 title: その他の機能
-permalink: /other/
+permalink: /other.html
 ---
 
-<style>
-    .features-container {
-        max-width: 1000px;
-        margin: 0 auto;
-        padding: 20px;
-    }
-    .features-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 20px;
-        margin-top: 30px;
-    }
-    .feature-card {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 10px;
-        padding: 30px;
-        text-align: center;
-        transition: transform 0.3s, box-shadow 0.3s;
-        cursor: pointer;
-        text-decoration: none;
-        color: white;
-    }
-    .feature-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    }
-    .feature-icon {
-        font-size: 48px;
-        margin-bottom: 15px;
-    }
-    .feature-title {
-        font-size: 20px;
-        font-weight: bold;
-        margin-bottom: 10px;
-    }
-    .feature-description {
-        font-size: 14px;
-        opacity: 0.9;
-    }
-    .encrypt-card {
-        background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-    }
-    .coming-soon {
-        background: linear-gradient(135deg, #868e96 0%, #495057 100%);
-        opacity: 0.7;
-        cursor: not-allowed;
-    }
-    .coming-soon:hover {
-        transform: none;
-        box-shadow: none;
-    }
-    .lang-toggle {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background-color: #007bff;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 14px;
-        z-index: 1000;
-    }
-    .lang-toggle:hover {
-        background-color: #0056b3;
-    }
-</style>
+<link rel="stylesheet" href="{{ site.baseurl }}/assets/css/other.css">
 
 <button id="langToggle" class="lang-toggle">EN</button>
 
@@ -80,7 +13,7 @@ permalink: /other/
     <p data-i18n="other.description">便利なツールと機能を提供しています。</p>
     
     <div class="features-grid">
-        <a href="{{ site.baseurl }}/encrypt/" class="feature-card encrypt-card">
+        <a href="{{ site.baseurl }}/encrypt.html" class="feature-card encrypt-card">
             <div class="feature-icon">🔐</div>
             <div class="feature-title" data-i18n="other.encryptFile">ファイルを暗号化</div>
             <div class="feature-description" data-i18n="other.encryptDescription">ファイルを安全に暗号化・復号化します</div>

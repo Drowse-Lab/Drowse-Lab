@@ -1,7 +1,7 @@
 title: Drowse-Lab
 description: "Drowse-Labのブログと開発記録"
 url: "https://drowse-lab.github.io"
-baseurl: "/Drowse-Lab"
+baseurl: ""
 
 markdown: kramdown
 theme: minima

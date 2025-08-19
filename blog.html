@@ -26,6 +26,8 @@ pagination:
 
 
 <script>
+// Jekyllによって処理される部分
+{% if site.posts %}
 try {
   window.allPosts = [
     {% for post in site.posts %}
@@ -42,7 +44,13 @@ try {
   ];
 } catch (e) {
   console.error("Error loading posts data:", e);
+  window.allPosts = [];
 }
+{% else %}
+// Jekyllビルド前のフォールバック
+window.allPosts = [];
+console.info("Posts data will be loaded after Jekyll build");
+{% endif %}
 </script>
 
 </main>

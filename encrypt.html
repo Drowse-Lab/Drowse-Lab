@@ -4,12 +4,7 @@ title: ファイルの暗号化
 permalink: /encrypt/
 ---
 
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
+<style>
         .encrypt-container {
             max-width: 800px;
             margin: 0 auto;
@@ -169,44 +164,80 @@ permalink: /encrypt/
         .btn-preset:hover {
             background-color: #f57c00;
         }
-    </style>
-</head>
-<body>
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+        }
+        .back-button:hover {
+            background-color: #5a6268;
+        }
+        .lang-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .lang-toggle:hover {
+            background-color: #0056b3;
+        }
+</style>
+
+<a href="{{ site.baseurl }}/other/" class="back-button" data-i18n="encrypt.back">戻る</a>
+    <button id="langToggle" class="lang-toggle">EN</button>
+    
     <div class="encrypt-container">
-        <h1>ファイルの暗号化・復号化</h1>
+        <h1 data-i18n="encrypt.title">ファイルの暗号化・復号化</h1>
         
         <div class="file-area" id="dropArea">
-            <p>ここにファイルをドラッグ＆ドロップ</p>
-            <p>または</p>
+            <p data-i18n="encrypt.dragDrop">ここにファイルをドラッグ＆ドロップ</p>
+            <p data-i18n="encrypt.or">または</p>
             <input type="file" id="fileInput" style="display: none;">
-            <button class="btn btn-encrypt" onclick="document.getElementById('fileInput').click()">ファイルを選択</button>
+            <button class="btn btn-encrypt" onclick="document.getElementById('fileInput').click()" data-i18n="encrypt.selectFile">ファイルを選択</button>
         </div>
 
         <div class="file-info" id="fileInfo">
-            <h3>選択されたファイル</h3>
-            <p>ファイル名: <span id="fileName"></span></p>
-            <p>ファイルサイズ: <span id="fileSize"></span></p>
+            <h3 data-i18n="encrypt.selectedFile">選択されたファイル</h3>
+            <p><span data-i18n="encrypt.fileName">ファイル名:</span> <span id="fileName"></span></p>
+            <p><span data-i18n="encrypt.fileSize">ファイルサイズ:</span> <span id="fileSize"></span></p>
         </div>
 
         <div class="password-input">
-            <label for="password">パスワード:</label>
-            <input type="password" id="password" placeholder="暗号化/復号化用のパスワード">
+            <label for="password" data-i18n="encrypt.password">パスワード:</label>
+            <input type="password" id="password" placeholder="暗号化/復号化用のパスワード" data-i18n="encrypt.passwordPlaceholder">
         </div>
 
         <div class="button-group">
-            <button class="btn btn-encrypt" id="encryptBtn" disabled>暗号化</button>
-            <button class="btn btn-decrypt" id="decryptBtn" disabled>復号化</button>
+            <button class="btn btn-encrypt" id="encryptBtn" disabled data-i18n="encrypt.encrypt">暗号化</button>
+            <button class="btn btn-decrypt" id="decryptBtn" disabled data-i18n="encrypt.decrypt">復号化</button>
         </div>
 
         <div class="status-message" id="statusMessage"></div>
 
         <div class="settings-section">
-            <h2>暗号化設定</h2>
+            <h2 data-i18n="encrypt.settings">暗号化設定</h2>
             
             <div class="preset-buttons">
-                <button class="btn btn-preset" onclick="loadPreset('high-security')">高セキュリティ</button>
-                <button class="btn btn-preset" onclick="loadPreset('balanced')">バランス型</button>
-                <button class="btn btn-preset" onclick="loadPreset('fast')">高速処理</button>
+                <button class="btn btn-preset" onclick="loadPreset('high-security')" data-i18n="encrypt.highSecurity">高セキュリティ</button>
+                <button class="btn btn-preset" onclick="loadPreset('balanced')" data-i18n="encrypt.balanced">バランス型</button>
+                <button class="btn btn-preset" onclick="loadPreset('fast')" data-i18n="encrypt.fast">高速処理</button>
             </div>
 
             <div class="settings-grid">
@@ -267,6 +298,5 @@ permalink: /encrypt/
         </div>
     </div>
 
-    <script src="/assets/js/encrypt.js"></script>
-</body>
-</html>
+<script src="{{ site.baseurl }}/assets/js/language.js"></script>
+<script src="{{ site.baseurl }}/assets/js/encrypt.js"></script>

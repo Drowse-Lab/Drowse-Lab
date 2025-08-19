@@ -8,15 +8,35 @@
   <link rel="stylesheet" href="assets/css/styles.css">
   <link rel="stylesheet" href="assets/css/theme.css">
   <link rel="icon" type="image/DrowseLabIcon" href="assets/image/DrowseLabIcon.jpg">
+  <style>
+    .lang-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      z-index: 1000;
+    }
+    .lang-toggle:hover {
+      background-color: #0056b3;
+    }
+  </style>
 </head>
 
 <body>
+  <button id="langToggle" class="lang-toggle">EN</button>
   <nav>
     <ul>
-      <li><a href="index.html">ホーム</a></li>
-      <li><a href="blog.html">ブログ</a></li>
-      <li><a href="contributors.html">メンバー紹介</a></li>
-      <li><a href="repo-list.html">リポジトリ紹介</a></li>
+      <li><a href="index.html" data-i18n="nav.home">ホーム</a></li>
+      <li><a href="blog.html" data-i18n="nav.blog">ブログ</a></li>
+      <li><a href="contributors.html" data-i18n="nav.members">メンバー紹介</a></li>
+      <li><a href="repo-list.html" data-i18n="nav.repositories">リポジトリ紹介</a></li>
+      <li><a href="other.html" data-i18n="nav.other">その他</a></li>
     </ul>
   </nav>
 
@@ -25,6 +45,7 @@
     <div id="repo-list">
       <!-- リポジトリ情報がここに動的に追加されます -->
     </div>
+    <script src="assets/js/language.js"></script>
     <script src="assets/js/repo-list.js"></script>
   </body>
 

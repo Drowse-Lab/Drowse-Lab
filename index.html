@@ -7,22 +7,42 @@
     <title>Drowse-Lab</title>
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="icon" type="image/DrowseLabIcon" href="assets/image/DrowseLabIcon.jpg">
+    <style>
+        .lang-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            z-index: 1000;
+        }
+        .lang-toggle:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 
 <body>
+    <button id="langToggle" class="lang-toggle">EN</button>
     <nav>
         <ul>
-            <li><a href="index.html">ホーム</a></li>
-            <li><a href="blog.html">ブログ</a></li>
-            <li><a href="contributors.html">メンバー紹介</a></li>
-            <li><a href="repo-list.html">リポジトリ紹介</a></li>
+            <li><a href="index.html" data-i18n="nav.home">ホーム</a></li>
+            <li><a href="blog.html" data-i18n="nav.blog">ブログ</a></li>
+            <li><a href="contributors.html" data-i18n="nav.members">メンバー紹介</a></li>
+            <li><a href="repo-list.html" data-i18n="nav.repositories">リポジトリ紹介</a></li>
+            <li><a href="other.html" data-i18n="nav.other">その他</a></li>
         </ul>
     </nav>
 
-    <h1>ようこそ、Drowse Labへ</h1>
-    <h2>このOrganizationについて</h2>
-    <p>Drowse Labは、minecraft mod,webを開発をするOrganizationです。</p>
-    <p>このOrganizationは会社ではなく同好会です。</p>
+    <h1 data-i18n="home.welcome">ようこそ、Drowse Labへ</h1>
+    <h2 data-i18n="home.about">このOrganizationについて</h2>
+    <p data-i18n="home.aboutText1">Drowse Labは、minecraft mod,webを開発をするOrganizationです。</p>
+    <p data-i18n="home.aboutText2">このOrganizationは会社ではなく同好会です。</p>
 
     <h2>機能一覧</h2>
     <ul>
@@ -47,6 +67,7 @@
     <!-- <p>このプロジェクトはMITライセンスの下で提供されています。詳細については、<a href="LICENSE">LICENSE</a>ファイルを参照してください。</p> -->
 
     <p>Drowse Labに関する詳細情報や最新の更新情報については、<a href="https://github.com/Drowse-Lab">公式ウェブサイト</a>をご覧ください。</p>
+    <script src="assets/js/language.js"></script>
 </body>
 
 </html>

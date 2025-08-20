@@ -63,60 +63,7 @@ function formatFileSize(bytes) {
     return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
 }
 
-// 暗号化ボタンクリック
-encryptBtn.addEventListener('click', async () => {
-    const password = passwordInput.value;
-    
-    if (!password) {
-        showMessage('パスワードを入力してください', 'error');
-        return;
-    }
-    
-    if (!selectedFile) {
-        showMessage('ファイルを選択してください', 'error');
-        return;
-    }
-    
-    try {
-        const fileData = await readFileAsArrayBuffer(selectedFile);
-        const encrypted = await encryptData(fileData, password);
-        downloadFile(encrypted, selectedFile.name + '.encrypted');
-        showMessage('ファイルが正常に暗号化されました', 'success');
-    } catch (error) {
-        showMessage('暗号化中にエラーが発生しました: ' + error.message, 'error');
-    }
-});
-
-// 復号化ボタンクリック
-decryptBtn.addEventListener('click', async () => {
-    const password = passwordInput.value;
-    
-    if (!password) {
-        showMessage('パスワードを入力してください', 'error');
-        return;
-    }
-    
-    if (!selectedFile) {
-        showMessage('ファイルを選択してください', 'error');
-        return;
-    }
-    
-    try {
-        const fileData = await readFileAsArrayBuffer(selectedFile);
-        const decrypted = await decryptData(fileData, password);
-        
-        // 元のファイル名を復元（.encryptedを削除）
-        let originalName = selectedFile.name;
-        if (originalName.endsWith('.encrypted')) {
-            originalName = originalName.slice(0, -10);
-        }
-        
-        downloadFile(decrypted, originalName);
-        showMessage('ファイルが正常に復号化されました', 'success');
-    } catch (error) {
-        showMessage('復号化中にエラーが発生しました: ' + error.message, 'error');
-    }
-});
+// 既存のイベントリスナーは削除（DOMContentLoaded内で設定するため）
 
 // ファイルをArrayBufferとして読み込む
 function readFileAsArrayBuffer(file) {
@@ -501,11 +448,12 @@ async function decryptDataWithConfig(data, password) {
 
 // 暗号化・復号化ボタンのイベントリスナーを更新
 document.addEventListener('DOMContentLoaded', () => {
-    // 既存のイベントリスナーを削除して新しいものに置き換え
-    const newEncryptBtn = encryptBtn.cloneNode(true);
-    encryptBtn.parentNode.replaceChild(newEncryptBtn, encryptBtn);
+    // ボタンの参照を再取得
+    const encryptButton = document.getElementById('encryptBtn');
+    const decryptButton = document.getElementById('decryptBtn');
     
-    newEncryptBtn.addEventListener('click', async () => {
+    if (encryptButton) {
+        encryptButton.addEventListener('click', async () => {
         const password = passwordInput.value;
         
         if (!password) {
@@ -535,12 +483,11 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             showMessage('暗号化中にエラーが発生しました: ' + error.message, 'error');
         }
-    });
+        });
+    }
     
-    const newDecryptBtn = decryptBtn.cloneNode(true);
-    decryptBtn.parentNode.replaceChild(newDecryptBtn, decryptBtn);
-    
-    newDecryptBtn.addEventListener('click', async () => {
+    if (decryptButton) {
+        decryptButton.addEventListener('click', async () => {
         const password = passwordInput.value;
         
         if (!password) {
@@ -567,5 +514,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             showMessage('復号化中にエラーが発生しました: ' + error.message, 'error');
         }
-    });
+        });
+    }
 });

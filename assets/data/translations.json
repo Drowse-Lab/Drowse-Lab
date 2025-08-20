@@ -43,6 +43,31 @@
       "textConverter": "テキスト変換",
       "comingSoon": "近日公開予定"
     },
+    "common": {
+      "backToHome": "ホームに戻る"
+    },
+    "contactpolicy": {
+      "title": "お問い合わせ・ポリシー",
+      "contactForm": "お問い合わせフォーム",
+      "contactDescription": "ご質問、ご意見、バグ報告などがございましたら、下記のフォームからお気軽にお問い合わせください。",
+      "privacyPolicy": "プライバシーポリシー",
+      "privacyDescription": "Drowse Labでは、お客様のプライバシーを尊重し、個人情報の保護に努めています。",
+      "privacy1": "収集した個人情報は、お問い合わせへの回答にのみ使用します",
+      "privacy2": "第三者への提供は、法令に基づく場合を除き行いません",
+      "privacy3": "個人情報の管理には細心の注意を払い、適切な管理を行います",
+      "terms": "利用規約",
+      "termsDescription": "本サイトおよび提供するサービスの利用にあたっては、以下の事項にご同意いただくものとします。",
+      "term1": "本サイトのコンテンツの無断転載・複製を禁止します",
+      "term2": "提供するソフトウェアは「現状のまま」で提供され、いかなる保証も行いません",
+      "term3": "利用により生じた損害について、一切の責任を負いません",
+      "term4": "予告なくサービスの内容を変更または終了する場合があります",
+      "codeOfConduct": "行動規範",
+      "conductDescription": "Drowse Labコミュニティでは、すべての参加者に対して敬意を持って接することを求めています。",
+      "conduct1": "建設的で親切なコミュニケーションを心がけてください",
+      "conduct2": "異なる意見や経験を尊重してください",
+      "conduct3": "ハラスメントや差別的な行為は容認されません",
+      "conduct4": "コミュニティの発展に貢献する行動を推奨します"
+    },
     "encrypt": {
       "title": "ファイルの暗号化・復号化",
       "back": "戻る",
@@ -116,6 +141,31 @@
       "imageEditor": "Image Editor",
       "textConverter": "Text Converter",
       "comingSoon": "Coming Soon"
+    },
+    "common": {
+      "backToHome": "Back to Home"
+    },
+    "contactpolicy": {
+      "title": "Contact & Policy",
+      "contactForm": "Contact Form",
+      "contactDescription": "If you have any questions, feedback, or bug reports, please feel free to contact us using the form below.",
+      "privacyPolicy": "Privacy Policy",
+      "privacyDescription": "At Drowse Lab, we respect your privacy and strive to protect your personal information.",
+      "privacy1": "Personal information collected will only be used to respond to inquiries",
+      "privacy2": "We will not provide information to third parties except as required by law",
+      "privacy3": "We will manage personal information with the utmost care and appropriate management",
+      "terms": "Terms of Use",
+      "termsDescription": "By using this site and our services, you agree to the following terms.",
+      "term1": "Unauthorized reproduction or duplication of content on this site is prohibited",
+      "term2": "Software provided is provided 'as is' without any warranty",
+      "term3": "We are not liable for any damages arising from use",
+      "term4": "Service content may be changed or terminated without notice",
+      "codeOfConduct": "Code of Conduct",
+      "conductDescription": "The Drowse Lab community requires all participants to treat each other with respect.",
+      "conduct1": "Please strive for constructive and kind communication",
+      "conduct2": "Please respect different opinions and experiences",
+      "conduct3": "Harassment and discriminatory behavior will not be tolerated",
+      "conduct4": "Actions that contribute to community development are encouraged"
     },
     "encrypt": {
       "title": "File Encryption/Decryption",

@@ -9,12 +9,24 @@ class LanguageManager {
     async init() {
         // 翻訳データを読み込み
         try {
-            const response = await fetch('/assets/data/translations.json');
+            // baseurl を考慮したパスを使用
+            const baseUrl = document.querySelector('base')?.href || '';
+            const translationPath = baseUrl ? `${baseUrl}/assets/data/translations.json` : '/Drowse-Lab/assets/data/translations.json';
+            const response = await fetch(translationPath);
             this.translations = await response.json();
             this.applyTranslations();
             this.setupLanguageToggle();
         } catch (error) {
             console.error('Failed to load translations:', error);
+            // フォールバックとして別のパスを試す
+            try {
+                const response = await fetch('/Drowse-Lab/assets/data/translations.json');
+                this.translations = await response.json();
+                this.applyTranslations();
+                this.setupLanguageToggle();
+            } catch (fallbackError) {
+                console.error('Failed to load translations from fallback path:', fallbackError);
+            }
         }
     }
 
@@ -36,9 +48,15 @@ class LanguageManager {
         document.documentElement.lang = this.currentLang;
         
         // 言語切り替えボタンのテキストを更新
-        const langToggle = document.getElementById('langToggle');
-        if (langToggle) {
-            langToggle.textContent = this.currentLang === 'ja' ? 'EN' : '日本語';
+        const langToggleTop = document.getElementById('langToggle');
+        const langToggleBottom = document.getElementById('langToggleBottom');
+        
+        if (langToggleTop) {
+            langToggleTop.textContent = this.currentLang === 'ja' ? 'EN' : '日本語';
+        }
+        
+        if (langToggleBottom) {
+            langToggleBottom.textContent = this.currentLang === 'ja' ? 'English' : '日本語';
         }
     }
 
@@ -64,9 +82,18 @@ class LanguageManager {
     }
 
     setupLanguageToggle() {
-        const langToggle = document.getElementById('langToggle');
-        if (langToggle) {
-            langToggle.addEventListener('click', () => {
+        // 上部と下部の言語切り替えボタンを取得
+        const langToggleTop = document.getElementById('langToggle');
+        const langToggleBottom = document.getElementById('langToggleBottom');
+        
+        if (langToggleTop) {
+            langToggleTop.addEventListener('click', () => {
+                this.toggleLanguage();
+            });
+        }
+        
+        if (langToggleBottom) {
+            langToggleBottom.addEventListener('click', () => {
                 this.toggleLanguage();
             });
         }

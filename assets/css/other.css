@@ -95,25 +95,6 @@
     color: #999;
 }
 
-/* 言語切り替えボタン */
-.lang-toggle {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background-color: #333;
-    color: white;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-    font-size: 14px;
-    z-index: 1000;
-    transition: background-color 0.3s;
-}
-
-.lang-toggle:hover {
-    background-color: #555;
-}
 
 /* レスポンシブ対応 */
 @media (max-width: 768px) {

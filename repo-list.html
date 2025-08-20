@@ -29,7 +29,6 @@
 </head>
 
 <body>
-  <button id="langToggle" class="lang-toggle">EN</button>
   <nav>
     <ul>
       <li><a href="index.html" data-i18n="nav.home">ホーム</a></li>
@@ -45,6 +44,15 @@
     <div id="repo-list">
       <!-- リポジトリ情報がここに動的に追加されます -->
     </div>
+    <!-- フッターナビゲーション -->
+    <nav class="footer-nav">
+        <ul>
+            <li><a href="https://forms.gle/QhDj4tNpKoSeY9Au7" target="_blank" data-i18n="footer.contactPolicy">お問い合わせ・ポリシー</a></li>
+            <li class="divider"></li>
+            <li><button id="langToggleBottom" class="lang-toggle-bottom">Language</button></li>
+        </ul>
+    </nav>
+    
     <script src="assets/js/language.js"></script>
     <script src="assets/js/repo-list.js"></script>
   </body>

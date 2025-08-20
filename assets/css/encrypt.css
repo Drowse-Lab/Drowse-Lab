@@ -234,18 +234,3 @@
     background-color: #555;
 }
 
-/* 言語切り替えボタン */
-.lang-toggle {
-    float: right;
-    background-color: #333;
-    color: white;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.lang-toggle:hover {
-    background-color: #555;
-}

@@ -7,6 +7,10 @@
       "repositories": "リポジトリ紹介",
       "other": "その他"
     },
+    "footer": {
+      "contactPolicy": "お問い合わせ・ポリシー",
+      "language": "言語"
+    },
     "home": {
       "welcome": "ようこそ、Drowse Labへ",
       "about": "このOrganizationについて",
@@ -76,6 +80,10 @@
       "members": "Members",
       "repositories": "Repositories",
       "other": "Other"
+    },
+    "footer": {
+      "contactPolicy": "Contact & Policy",
+      "language": "Language"
     },
     "home": {
       "welcome": "Welcome to Drowse Lab",

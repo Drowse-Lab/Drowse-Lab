@@ -42,11 +42,20 @@
     {% include analytics.html %}
   {% endif %}
 
-
+  <script src="{{ '/assets/js/language.js' | relative_url }}" defer></script>
+<script src="{{ '/assets/js/footer-nav.js' | relative_url }}" defer></script>
+  
+<nav class="footer-nav">
+    <ul>
+        <li><a href="/Drowse-Lab/contactpolicy.html" data-i18n="footer.contactPolicy">お問い合わせ・ポリシー</a></li>
+        <li class="divider"></li>
+        <li><button id="langToggleBottom" class="lang-toggle-bottom">Language</button></li>
+    </ul>
+</nav>
+  
 {% if page.model_path %}
 <!-- <div id="model-viewer-container" style="width:100%; height:500px; margin-top:1em;"></div> -->
-<script src="{{ '/assets/js/language.js' | relative_url }}" defer></script>
-<script src="{{ '/assets/js/footer-nav.js' | relative_url }}" defer></script>
+
 <!-- import map + es-module-shims の追加 -->
 <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
 <script type="importmap">
@@ -158,9 +167,17 @@ document.addEventListener('DOMContentLoaded', init);
 </script>
 {% endif %}
 
-    
+  
+<nav class="footer-nav">
+  <ul>
+    <li><a href="contactpolicy.html" data-i18n="footer.contactPolicy">お問い合わせ・ポリシー</a></li>
+    <li class="divider"></li>
+    <li><button id="langToggleBottom" class="lang-toggle-bottom">Language</button></li>
+  </ul>
+</nav>
 </body>
 </html>
+
 
 
 

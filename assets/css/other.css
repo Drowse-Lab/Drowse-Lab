@@ -62,6 +62,36 @@
     font-size: 14px;
     color: #666;
     line-height: 1.4;
+    margin-bottom: 10px;
+}
+
+.feature-author {
+    font-size: 12px;
+    color: #999;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+}
+
+.feature-author > span {
+    font-style: italic;
+}
+
+.feature-author .author-names {
+    font-style: normal;
+}
+
+.feature-author .author-name {
+    color: #666;
+    font-weight: 600;
+    font-style: normal;
+    display: inline-block;
+}
+
+.feature-author .author-separator {
+    color: #999;
+    font-style: normal;
+    margin: 0 2px;
 }
 
 /* 暗号化カード */

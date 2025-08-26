@@ -33,6 +33,11 @@
       "officialSite": "公式ウェブサイト",
       "visitSite": "をご覧ください。"
     },
+    "pageTitle": {
+      "other": "その他の機能",
+      "blog": "ブログ",
+      "encrypt": "ファイルの暗号化"
+    },
     "other": {
       "title": "その他の機能",
       "description": "便利なツールと機能を提供しています。",
@@ -40,6 +45,7 @@
       "encryptDescription": "ファイルを安全に暗号化・復号化します",
       "authorLabel": "作成者: ",
       "dataAnalysis": "データ分析",
+      "dataAnalysisDescription": "データを可視化・分析します",
       "imageEditor": "画像編集",
       "textConverter": "テキスト変換",
       "comingSoon": "近日公開予定"
@@ -69,6 +75,12 @@
       "conduct3": "ハラスメントや差別的な行為は容認されません",
       "conduct4": "コミュニティの発展に貢献する行動を推奨します"
     },
+    "blog": {
+      "title": "ブログ一覧",
+      "filterByDate": "日付で絞り込み",
+      "filterByTags": "タグで絞り込み",
+      "filterByAuthor": "投稿者で絞り込み"
+    },
     "encrypt": {
       "title": "ファイルの暗号化・復号化",
       "back": "戻る",
@@ -96,7 +108,12 @@
       "multipleKeys": "複数キー暗号化:",
       "saveConfig": "設定を保存 (JSON)",
       "loadConfig": "設定を読み込み (JSON)",
-      "resetConfig": "デフォルトに戻す"
+      "resetConfig": "デフォルトに戻す",
+      "aesGcm": "AES-GCM (推奨)",
+      "aesCbc": "AES-CBC",
+      "aesCtr": "AES-CTR",
+      "bits128": "128ビット",
+      "bits256": "256ビット"
     }
   },
   "en": {
@@ -132,6 +149,11 @@
       "moreInfo": "For more information and latest updates about Drowse Lab, please visit our ",
       "officialSite": "official website",
       "visitSite": "."
+    },
+    "pageTitle": {
+      "other": "Other Features",
+      "blog": "Blog",
+      "encrypt": "File Encryption"
     },
     "other": {
       "title": "Other Features",
@@ -169,6 +191,12 @@
       "conduct3": "Harassment and discriminatory behavior will not be tolerated",
       "conduct4": "Actions that contribute to community development are encouraged"
     },
+    "blog": {
+      "title": "Blog Posts",
+      "filterByDate": "Filter by Date",
+      "filterByTags": "Filter by Tags",
+      "filterByAuthor": "Filter by Author"
+    },
     "encrypt": {
       "title": "File Encryption/Decryption",
       "back": "Back",
@@ -196,7 +224,12 @@
       "multipleKeys": "Multiple Key Encryption:",
       "saveConfig": "Save Settings (JSON)",
       "loadConfig": "Load Settings (JSON)",
-      "resetConfig": "Reset to Default"
+      "resetConfig": "Reset to Default",
+      "aesGcm": "AES-GCM (Recommended)",
+      "aesCbc": "AES-CBC",
+      "aesCtr": "AES-CTR",
+      "bits128": "128 bits",
+      "bits256": "256 bits"
     }
   }
 }

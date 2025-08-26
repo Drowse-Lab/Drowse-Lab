@@ -38,6 +38,8 @@ class LanguageManager {
             if (translation) {
                 if (element.tagName === 'INPUT' && element.hasAttribute('placeholder')) {
                     element.placeholder = translation;
+                } else if (element.tagName === 'OPTION') {
+                    element.textContent = translation;
                 } else {
                     element.textContent = translation;
                 }

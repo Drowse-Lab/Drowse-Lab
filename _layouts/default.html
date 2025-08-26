@@ -23,11 +23,12 @@
   <header class="site-header">
     <nav>
       <ul>
-        <li><a href="{{ '/index.html' | relative_url }}">ホーム</a></li>
-        <li><a href="{{ '/blog.html' | relative_url }}">ブログ</a></li>
-        <li><a href="{{ '/contributors.html' | relative_url }}">メンバー紹介</a></li>
-        <li><a href="{{ '/repo-list.html' | relative_url }}">リポジトリ紹介</a></li>
-        <li><a href="{{ '/other.html' | relative_url }}">その他</a></li>
+        <li><a href="{{ '/index.html' | relative_url }}" data-i18n="nav.home">ホーム</a></li>
+        <li><a href="{{ '/blog.html' | relative_url }}" data-i18n="nav.blog">ブログ</a></li>
+        <li><a href="{{ '/contributors.html' | relative_url }}" data-i18n="nav.members">メンバー紹介</a></li>
+        <li><a href="{{ '/repo-list.html' | relative_url }}" data-i18n="nav.repositories">リポジトリ紹介</a></li>
+        <li><a href="{{ '/other.html' | relative_url }}" data-i18n="nav.other">その他</a></li>
+        <li><button id="langToggle" class="lang-toggle">EN</button></li>
       </ul>
     </nav>
   </header>
@@ -167,14 +168,6 @@ document.addEventListener('DOMContentLoaded', init);
 </script>
 {% endif %}
 
-  
-<nav class="footer-nav">
-  <ul>
-    <li><a href="contactpolicy.html" data-i18n="footer.contactPolicy">お問い合わせ・ポリシー</a></li>
-    <li class="divider"></li>
-    <li><button id="langToggleBottom" class="lang-toggle-bottom">Language</button></li>
-  </ul>
-</nav>
 </body>
 </html>
 

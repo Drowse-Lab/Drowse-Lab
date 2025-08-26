@@ -42,6 +42,22 @@ nav ul li a:hover {
     color: #ffeb3b; /* ホバー時の文字色変更 */
 }
 
+/* Language toggle button in top navigation */
+nav ul li .lang-toggle {
+    background-color: #007BFF;
+    color: white;
+    padding: 5px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s;
+}
+
+nav ul li .lang-toggle:hover {
+    background-color: #0056b3;
+}
+
 /* フッターナビゲーション（下部） */
 .footer-nav {
     position: fixed;

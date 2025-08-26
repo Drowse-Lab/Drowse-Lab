@@ -2,7 +2,7 @@
 layout: page
 title: ファイルの暗号化
 permalink: /encrypt.html
-
+hide_title: true
 ---
 
 <link rel="stylesheet" href="/Drowse-Lab/assets/css/encrypt.css">
@@ -50,17 +50,17 @@ permalink: /encrypt.html
             <div class="setting-item">
                 <label for="algorithm" data-i18n="encrypt.algorithm">暗号化アルゴリズム:</label>
                 <select id="algorithm">
-                    <option value="AES-GCM">AES-GCM (推奨)</option>
-                    <option value="AES-CBC">AES-CBC</option>
-                    <option value="AES-CTR">AES-CTR</option>
+                    <option value="AES-GCM" data-i18n="encrypt.aesGcm">AES-GCM (推奨)</option>
+                    <option value="AES-CBC" data-i18n="encrypt.aesCbc">AES-CBC</option>
+                    <option value="AES-CTR" data-i18n="encrypt.aesCtr">AES-CTR</option>
                 </select>
             </div>
             
             <div class="setting-item">
                 <label for="keySize" data-i18n="encrypt.keySize">キーサイズ:</label>
                 <select id="keySize">
-                    <option value="128">128ビット</option>
-                    <option value="256" selected>256ビット</option>
+                    <option value="128" data-i18n="encrypt.bits128">128ビット</option>
+                    <option value="256" selected data-i18n="encrypt.bits256">256ビット</option>
                 </select>
             </div>
             

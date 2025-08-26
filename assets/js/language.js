@@ -40,6 +40,9 @@ class LanguageManager {
                     element.placeholder = translation;
                 } else if (element.tagName === 'OPTION') {
                     element.textContent = translation;
+                } else if (key.includes('feature')) {
+                    // 機能リストの項目はHTMLを含む可能性がある
+                    element.innerHTML = translation;
                 } else {
                     element.textContent = translation;
                 }

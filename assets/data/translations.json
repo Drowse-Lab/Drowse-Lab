@@ -30,7 +30,7 @@
       "contributionStep4": "プルリクエストを作成する",
       "license": "ライセンス",
       "moreInfo": "Drowse Labに関する詳細情報や最新の更新情報については、",
-      "officialSite": "公式ウェブサイト",
+      "github": "GitHub",
       "visitSite": "をご覧ください。"
     },
     "pageTitle": {
@@ -147,7 +147,7 @@
       "contributionStep4": "Create a pull request",
       "license": "License",
       "moreInfo": "For more information and latest updates about Drowse Lab, please visit our ",
-      "officialSite": "official website",
+      "github": "GitHub",
       "visitSite": "."
     },
     "pageTitle": {

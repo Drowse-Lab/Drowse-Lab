@@ -48,7 +48,9 @@
       "dataAnalysisDescription": "データを可視化・分析します",
       "imageEditor": "画像編集",
       "textConverter": "テキスト変換",
-      "comingSoon": "近日公開予定"
+      "comingSoon": "近日公開予定",
+      "downloadFile": "ファイルダウンロード",
+      "downloadDescription": "URLからファイルをダウンロードします"
     },
     "common": {
       "backToHome": "ホームに戻る"
@@ -114,6 +116,39 @@
       "aesCtr": "AES-CTR",
       "bits128": "128ビット",
       "bits256": "256ビット"
+    },
+    "download": {
+      "back": "← 戻る",
+      "title": "ファイルダウンロード",
+      "subtitle": "URLからファイルをダウンロードします",
+      "howToUse": "使い方",
+      "instruction1": "ダウンロードしたいファイルのURLを入力してください",
+      "instruction2": "ファイル名を指定できます（省略可）",
+      "instruction3": "ダウンロードボタンをクリックしてファイルを保存します",
+      "urlLabel": "ファイルURL",
+      "urlPlaceholder": "https://example.com/file.pdf",
+      "filenameLabel": "保存ファイル名（オプション）",
+      "filenamePlaceholder": "file.pdf",
+      "downloadButton": "ダウンロード",
+      "downloading": "ダウンロード中",
+      "enhanceQuality": "画質を向上させる（画像のみ）",
+      "qualityInfo": "画像をアップスケーリングして画質を改善します",
+      "resolution": "解像度を選択:",
+      "resAuto": "自動（最適な解像度）",
+      "res4k": "4K (3840×2160)",
+      "res1440p": "1440p (2560×1440)",
+      "res1080p": "1080p (1920×1080)",
+      "res720p": "720p (1280×720)",
+      "resOriginal": "オリジナルサイズ（画質向上のみ）",
+      "format": "フォーマット:",
+      "formatVideo": "動画 (MP4)",
+      "formatAudio": "音声のみ (MP3)",
+      "videoQuality": "動画品質:",
+      "qualityHighest": "最高品質",
+      "youtubeWarning": "注意:",
+      "youtubeWarningText": "YouTube動画のダウンロードは利用規約に注意してください。個人利用のみで、著作権を尊重してください。",
+      "tip": "ヒント:",
+      "tipContent": "Fandom Wikiの画像は、画像を右クリックして「画像アドレスをコピー」で直接URLを取得するか、WikiページのURLをそのまま入力してください。"
     }
   },
   "en": {
@@ -164,7 +199,9 @@
       "dataAnalysis": "Data Analysis",
       "imageEditor": "Image Editor",
       "textConverter": "Text Converter",
-      "comingSoon": "Coming Soon"
+      "comingSoon": "Coming Soon",
+      "downloadFile": "File Download",
+      "downloadDescription": "Download files from URL"
     },
     "common": {
       "backToHome": "Back to Home"
@@ -230,6 +267,39 @@
       "aesCtr": "AES-CTR",
       "bits128": "128 bits",
       "bits256": "256 bits"
+    },
+    "download": {
+      "back": "← Back",
+      "title": "File Download",
+      "subtitle": "Download files from URL",
+      "howToUse": "How to Use",
+      "instruction1": "Enter the URL of the file you want to download",
+      "instruction2": "You can specify a filename (optional)",
+      "instruction3": "Click the download button to save the file",
+      "urlLabel": "File URL",
+      "urlPlaceholder": "https://example.com/file.pdf",
+      "filenameLabel": "Save as (Optional)",
+      "filenamePlaceholder": "file.pdf",
+      "downloadButton": "Download",
+      "downloading": "Downloading",
+      "enhanceQuality": "Enhance Quality (Images Only)",
+      "qualityInfo": "Upscale and improve image quality",
+      "resolution": "Select Resolution:",
+      "resAuto": "Auto (Optimal Resolution)",
+      "res4k": "4K (3840×2160)",
+      "res1440p": "1440p (2560×1440)",
+      "res1080p": "1080p (1920×1080)",
+      "res720p": "720p (1280×720)",
+      "resOriginal": "Original Size (Quality Enhancement Only)",
+      "format": "Format:",
+      "formatVideo": "Video (MP4)",
+      "formatAudio": "Audio Only (MP3)",
+      "videoQuality": "Video Quality:",
+      "qualityHighest": "Highest Quality",
+      "youtubeWarning": "Notice:",
+      "youtubeWarningText": "Please be aware of YouTube terms of service when downloading videos. For personal use only, respect copyrights.",
+      "tip": "Tip:",
+      "tipContent": "For Fandom Wiki images, right-click the image and copy the image address for direct URL, or input the Wiki page URL directly."
     }
   }
 }

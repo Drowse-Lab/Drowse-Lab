@@ -124,17 +124,6 @@ hide_title: true
         100% { transform: rotate(360deg); }
     }
 
-    .back-link {
-        display: inline-block;
-        margin-bottom: 20px;
-        color: #4CAF50;
-        text-decoration: none;
-        font-weight: 500;
-    }
-
-    .back-link:hover {
-        text-decoration: underline;
-    }
 
     .instructions {
         background: #f8f9fa;
@@ -195,7 +184,7 @@ hide_title: true
 </style>
 
 <div class="download-container">
-    <a href="/Drowse-Lab/other.html" class="back-button" data-i18n="encrypt.back">← 戻る</a>
+    <a href="/Drowse-Lab/other.html" class="back-button" data-i18n="download.back">← 戻る</a>
     
     <div class="download-header">
         <h1 data-i18n="download.title">ファイルダウンロード</h1>
@@ -846,6 +835,86 @@ document.addEventListener('DOMContentLoaded', function() {
         return url;
     }
 
+    async function getYouTubeVideoInfo(videoId) {
+        try {
+            // YouTube Player APIを使用して動画情報を取得
+            const infoUrl = `https://www.youtube.com/get_video_info?video_id=${videoId}&el=embedded&ps=default&eurl=&hl=en`;
+            
+            // CORSプロキシ経由で取得
+            const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(infoUrl);
+            const response = await fetch(proxyUrl);
+            const text = await response.text();
+            
+            // URLパラメータをパース
+            const params = new URLSearchParams(text);
+            const playerResponse = params.get('player_response');
+            
+            if (playerResponse) {
+                return JSON.parse(playerResponse);
+            }
+            
+            // 代替方法: YouTube oEmbed API
+            const oembedUrl = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`;
+            const oembedResponse = await fetch('https://corsproxy.io/?' + encodeURIComponent(oembedUrl));
+            const oembedData = await oembedResponse.json();
+            
+            return {
+                videoDetails: {
+                    title: oembedData.title,
+                    author: oembedData.author_name,
+                    videoId: videoId
+                }
+            };
+        } catch (error) {
+            console.error('Failed to get video info:', error);
+            return null;
+        }
+    }
+    
+    async function getYouTubeStreams(videoId) {
+        try {
+            // YouTube動画ページから直接ストリーム情報を取得
+            const videoPageUrl = `https://www.youtube.com/watch?v=${videoId}`;
+            const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(videoPageUrl);
+            
+            showStatus('動画情報を解析中...', 'info');
+            const response = await fetch(proxyUrl);
+            const html = await response.text();
+            
+            // ytInitialPlayerResponseを探す
+            const ytConfigMatch = html.match(/ytInitialPlayerResponse\s*=\s*({.+?});/);
+            if (ytConfigMatch) {
+                const playerResponse = JSON.parse(ytConfigMatch[1]);
+                
+                if (playerResponse.streamingData) {
+                    const formats = [
+                        ...(playerResponse.streamingData.formats || []),
+                        ...(playerResponse.streamingData.adaptiveFormats || [])
+                    ];
+                    
+                    return formats.map(format => ({
+                        itag: format.itag,
+                        url: format.url || format.signatureCipher,
+                        mimeType: format.mimeType,
+                        quality: format.quality,
+                        qualityLabel: format.qualityLabel,
+                        hasAudio: format.audioQuality ? true : false,
+                        hasVideo: format.width ? true : false,
+                        width: format.width,
+                        height: format.height,
+                        contentLength: format.contentLength,
+                        audioQuality: format.audioQuality
+                    }));
+                }
+            }
+            
+            return [];
+        } catch (error) {
+            console.error('Failed to get streams:', error);
+            return [];
+        }
+    }
+    
     async function downloadYouTubeVideo(url, format, quality) {
         const videoId = extractYouTubeId(url);
         if (!videoId) {
@@ -854,30 +923,111 @@ document.addEventListener('DOMContentLoaded', function() {
         
         showStatus('YouTube動画情報を取得中...', 'info');
         
-        // YouTube動画ダウンロード用のサービス（複数の選択肢）
-        const services = [
-            {
-                name: 'y2mate',
-                getUrl: (id, fmt) => `https://www.y2mate.com/mates/analyzeV2/ajax`,
-                needsProxy: true
-            },
-            {
-                name: 'savefrom',
-                getUrl: (id) => `https://www.savefrom.net/download?url=https://www.youtube.com/watch?v=${id}`,
-                needsProxy: true
+        try {
+            // 動画情報を取得
+            const videoInfo = await getYouTubeVideoInfo(videoId);
+            const streams = await getYouTubeStreams(videoId);
+            
+            if (!streams || streams.length === 0) {
+                throw new Error('動画ストリームが見つかりません');
             }
-        ];
-        
-        // 簡易的な実装：外部サービスのページを開く
-        const y2mateUrl = `https://www.y2mate.com/youtube/${videoId}`;
-        const saveFromUrl = `https://www.savefrom.net/download?url=https://www.youtube.com/watch?v=${videoId}`;
-        
-        showStatus('外部サービスのページを開きます...', 'info');
-        
-        // 新しいタブで開く
-        window.open(format === 'audio' ? y2mateUrl : saveFromUrl, '_blank');
-        
-        throw new Error('YouTube動画は外部サービスを使用してダウンロードしてください。新しいタブが開きました。');
+            
+            // フォーマットに応じてストリームを選択
+            let selectedStream = null;
+            
+            if (format === 'audio') {
+                // 音声のみ - 最高品質のオーディオストリームを選択
+                const audioStreams = streams.filter(s => s.hasAudio && !s.hasVideo);
+                selectedStream = audioStreams.find(s => s.audioQuality === 'AUDIO_QUALITY_HIGH') ||
+                                audioStreams.find(s => s.audioQuality === 'AUDIO_QUALITY_MEDIUM') ||
+                                audioStreams[0];
+            } else {
+                // 動画 - 指定された品質のストリームを選択
+                const videoStreams = streams.filter(s => s.hasVideo && s.hasAudio);
+                
+                if (quality === 'highest') {
+                    selectedStream = videoStreams.sort((a, b) => (b.height || 0) - (a.height || 0))[0];
+                } else {
+                    const targetHeight = parseInt(quality.replace('p', ''));
+                    selectedStream = videoStreams.find(s => s.height === targetHeight) ||
+                                   videoStreams.find(s => s.height <= targetHeight) ||
+                                   videoStreams[0];
+                }
+            }
+            
+            if (!selectedStream || !selectedStream.url) {
+                // ストリームが暗号化されている場合、直接ダウンロードは困難
+                showStatus('動画の直接ダウンロードができません。代替方法を使用します...', 'info');
+                
+                // 代替方法: cobalt.toolsを使用
+                const cobaltUrl = `https://cobalt.tools/api/json`;
+                const cobaltRequest = {
+                    url: `https://www.youtube.com/watch?v=${videoId}`,
+                    vQuality: quality === 'highest' ? 'max' : quality,
+                    aFormat: format === 'audio' ? 'mp3' : 'best',
+                    isAudioOnly: format === 'audio',
+                    disableMetadata: false
+                };
+                
+                try {
+                    const cobaltResponse = await fetch('https://corsproxy.io/?' + encodeURIComponent(cobaltUrl), {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(cobaltRequest)
+                    });
+                    
+                    const cobaltData = await cobaltResponse.json();
+                    
+                    if (cobaltData.url) {
+                        // ダウンロードリンクを開く
+                        window.open(cobaltData.url, '_blank');
+                        showStatus('ダウンロードリンクを新しいタブで開きました', 'success');
+                        return;
+                    }
+                } catch (cobaltError) {
+                    console.error('Cobalt API failed:', cobaltError);
+                }
+                
+                // 最終手段: ユーザーに手動ダウンロードを促す
+                const manualUrl = `https://www.y2mate.com/youtube/${videoId}`;
+                window.open(manualUrl, '_blank');
+                throw new Error('自動ダウンロードができませんでした。開いたページから手動でダウンロードしてください。');
+            }
+            
+            // ストリームURLが取得できた場合
+            showStatus('ダウンロードを開始します...', 'info');
+            
+            // ファイル名を生成
+            const title = videoInfo?.videoDetails?.title || `youtube_${videoId}`;
+            const extension = format === 'audio' ? 'mp3' : 'mp4';
+            const fileName = `${title.replace(/[^\w\s]/gi, '')}.${extension}`;
+            
+            // ダウンロードリンクを作成
+            const downloadLink = document.createElement('a');
+            downloadLink.href = selectedStream.url;
+            downloadLink.download = fileName;
+            downloadLink.target = '_blank';
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+            
+            showStatus('ダウンロードが開始されました', 'success');
+            
+        } catch (error) {
+            console.error('YouTube download error:', error);
+            showStatus(`エラー: ${error.message}`, 'error');
+            
+            // エラー時は外部サービスにフォールバック
+            const fallbackUrl = format === 'audio' 
+                ? `https://www.y2mate.com/youtube/${videoId}`
+                : `https://cobalt.tools/`;
+            
+            window.open(fallbackUrl, '_blank');
+            throw new Error('自動ダウンロードに失敗しました。開いたページをご利用ください。');
+        }
     }
     
     async function downloadFile(url, filename) {

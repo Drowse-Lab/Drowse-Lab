@@ -1,0 +1,378 @@
+---
+layout: page
+title: ファイルダウンロード
+permalink: /download.html
+hide_title: true
+---
+
+<style>
+    .download-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    .download-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .download-header h1 {
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .download-header p {
+        color: #666;
+    }
+
+    .download-form {
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 30px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+        transition: border-color 0.3s;
+    }
+
+    .form-group input:focus {
+        outline: none;
+        border-color: #4CAF50;
+        box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
+    }
+
+    .download-button {
+        width: 100%;
+        padding: 14px;
+        background: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    .download-button:hover {
+        background: #45a049;
+    }
+
+    .download-button:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+    }
+
+    .status-message {
+        margin-top: 20px;
+        padding: 12px;
+        border-radius: 4px;
+        display: none;
+    }
+
+    .status-message.success {
+        background: #d4edda;
+        border: 1px solid #c3e6cb;
+        color: #155724;
+    }
+
+    .status-message.error {
+        background: #f8d7da;
+        border: 1px solid #f5c6cb;
+        color: #721c24;
+    }
+
+    .status-message.info {
+        background: #d1ecf1;
+        border: 1px solid #bee5eb;
+        color: #0c5460;
+    }
+
+    .loading {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #4CAF50;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-left: 10px;
+        vertical-align: middle;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .back-link {
+        display: inline-block;
+        margin-bottom: 20px;
+        color: #4CAF50;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .back-link:hover {
+        text-decoration: underline;
+    }
+
+    .instructions {
+        background: #f8f9fa;
+        border-left: 4px solid #4CAF50;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .instructions h3 {
+        margin-top: 0;
+        color: #333;
+    }
+
+    .instructions ul {
+        margin: 10px 0;
+        padding-left: 20px;
+    }
+
+    .instructions li {
+        margin-bottom: 5px;
+        color: #666;
+    }
+</style>
+
+<div class="download-container">
+    <a href="/Drowse-Lab/other.html" class="back-link" data-i18n="download.back">← その他の機能に戻る</a>
+    
+    <div class="download-header">
+        <h1 data-i18n="download.title">ファイルダウンロード</h1>
+        <p data-i18n="download.subtitle">URLからファイルをダウンロードします</p>
+    </div>
+
+    <div class="instructions">
+        <h3 data-i18n="download.howToUse">使い方</h3>
+        <ul>
+            <li data-i18n="download.instruction1">ダウンロードしたいファイルのURLを入力してください</li>
+            <li data-i18n="download.instruction2">ファイル名を指定できます（省略可）</li>
+            <li data-i18n="download.instruction3">ダウンロードボタンをクリックしてファイルを保存します</li>
+        </ul>
+    </div>
+
+    <div class="download-form">
+        <div class="form-group">
+            <label for="urlInput" data-i18n="download.urlLabel">ファイルURL</label>
+            <input 
+                type="url" 
+                id="urlInput" 
+                placeholder="https://example.com/file.pdf" 
+                data-i18n-placeholder="download.urlPlaceholder"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="filenameInput" data-i18n="download.filenameLabel">保存ファイル名（オプション）</label>
+            <input 
+                type="text" 
+                id="filenameInput" 
+                placeholder="file.pdf" 
+                data-i18n-placeholder="download.filenamePlaceholder"
+            >
+        </div>
+
+        <button id="downloadBtn" class="download-button" data-i18n="download.downloadButton">ダウンロード</button>
+
+        <div id="statusMessage" class="status-message"></div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const urlInput = document.getElementById('urlInput');
+    const filenameInput = document.getElementById('filenameInput');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const statusMessage = document.getElementById('statusMessage');
+
+    function showStatus(message, type) {
+        statusMessage.textContent = message;
+        statusMessage.className = `status-message ${type}`;
+        statusMessage.style.display = 'block';
+    }
+
+    function hideStatus() {
+        statusMessage.style.display = 'none';
+    }
+
+    function extractFilenameFromUrl(url) {
+        try {
+            const urlObj = new URL(url);
+            const pathname = urlObj.pathname;
+            const filename = pathname.split('/').pop();
+            
+            // URLにファイル名が含まれていない場合
+            if (!filename || filename === '') {
+                return 'download';
+            }
+            
+            // クエリパラメータを除去
+            return filename.split('?')[0];
+        } catch (e) {
+            return 'download';
+        }
+    }
+
+    async function downloadFile(url, filename) {
+        try {
+            downloadBtn.disabled = true;
+            downloadBtn.innerHTML = `<span data-i18n="download.downloading">ダウンロード中</span><span class="loading"></span>`;
+            
+            // CORS対応のためプロキシを使用する場合のコード
+            // 実際の実装では、サーバーサイドでプロキシを設定するか、
+            // CORS対応のAPIを使用する必要があります
+            
+            const response = await fetch(url, {
+                mode: 'cors',
+                credentials: 'omit'
+            }).catch(async (error) => {
+                // CORS エラーの場合、別の方法を試す
+                console.log('Direct fetch failed, trying alternative method');
+                
+                // 代替方法: 新しいタブで開く
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = filename || extractFilenameFromUrl(url);
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                throw new Error('CORS制限により直接ダウンロードできません。新しいタブで開きます。');
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const blob = await response.blob();
+            const downloadUrl = window.URL.createObjectURL(blob);
+            
+            const link = document.createElement('a');
+            link.href = downloadUrl;
+            link.download = filename || extractFilenameFromUrl(url);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Clean up
+            setTimeout(() => {
+                window.URL.revokeObjectURL(downloadUrl);
+            }, 100);
+            
+            showStatus('ダウンロードが完了しました！', 'success');
+        } catch (error) {
+            console.error('Download error:', error);
+            
+            if (error.message.includes('CORS')) {
+                showStatus(error.message, 'info');
+            } else {
+                showStatus(`エラー: ${error.message}`, 'error');
+            }
+        } finally {
+            downloadBtn.disabled = false;
+            downloadBtn.innerHTML = '<span data-i18n="download.downloadButton">ダウンロード</span>';
+        }
+    }
+
+    downloadBtn.addEventListener('click', async function() {
+        const url = urlInput.value.trim();
+        const filename = filenameInput.value.trim();
+        
+        if (!url) {
+            showStatus('URLを入力してください', 'error');
+            return;
+        }
+        
+        // URL検証
+        try {
+            new URL(url);
+        } catch (e) {
+            showStatus('有効なURLを入力してください', 'error');
+            return;
+        }
+        
+        hideStatus();
+        await downloadFile(url, filename);
+    });
+
+    // Enterキーでダウンロード
+    urlInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            downloadBtn.click();
+        }
+    });
+    
+    filenameInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            downloadBtn.click();
+        }
+    });
+});
+
+// 国際化対応
+const translations = {
+    ja: {
+        'download.back': '← その他の機能に戻る',
+        'download.title': 'ファイルダウンロード',
+        'download.subtitle': 'URLからファイルをダウンロードします',
+        'download.howToUse': '使い方',
+        'download.instruction1': 'ダウンロードしたいファイルのURLを入力してください',
+        'download.instruction2': 'ファイル名を指定できます（省略可）',
+        'download.instruction3': 'ダウンロードボタンをクリックしてファイルを保存します',
+        'download.urlLabel': 'ファイルURL',
+        'download.urlPlaceholder': 'https://example.com/file.pdf',
+        'download.filenameLabel': '保存ファイル名（オプション）',
+        'download.filenamePlaceholder': 'file.pdf',
+        'download.downloadButton': 'ダウンロード',
+        'download.downloading': 'ダウンロード中'
+    },
+    en: {
+        'download.back': '← Back to Other Features',
+        'download.title': 'File Download',
+        'download.subtitle': 'Download files from URL',
+        'download.howToUse': 'How to Use',
+        'download.instruction1': 'Enter the URL of the file you want to download',
+        'download.instruction2': 'You can specify a filename (optional)',
+        'download.instruction3': 'Click the download button to save the file',
+        'download.urlLabel': 'File URL',
+        'download.urlPlaceholder': 'https://example.com/file.pdf',
+        'download.filenameLabel': 'Save as (Optional)',
+        'download.filenamePlaceholder': 'file.pdf',
+        'download.downloadButton': 'Download',
+        'download.downloading': 'Downloading'
+    }
+};
+
+// 言語切り替え機能との統合
+if (typeof window.loadLanguage === 'function') {
+    window.loadLanguage();
+}
+</script>

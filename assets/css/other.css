@@ -108,6 +108,20 @@
     color: #2e7d32;
 }
 
+/* ダウンロードカード */
+.download-card {
+    border-color: #2196F3;
+}
+
+.download-card:hover {
+    border-color: #1976D2;
+    background-color: #f3f9ff;
+}
+
+.download-card .feature-title {
+    color: #1565C0;
+}
+
 /* 近日公開カード */
 .coming-soon {
     background: #f5f5f5;

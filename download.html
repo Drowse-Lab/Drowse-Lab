@@ -177,10 +177,25 @@ hide_title: true
         color: #666;
         padding-left: 24px;
     }
+    /* 戻るボタン */
+    .back-button {
+        display: inline-block;
+        margin-bottom: 20px;
+        padding: 8px 16px;
+        background-color: #666;
+        color: white;
+        text-decoration: none;
+        border-radius: 3px;
+        transition: background-color 0.3s;
+    }
+
+    .back-button:hover {
+        background-color: #555;
+    }
 </style>
 
 <div class="download-container">
-    <a href="/Drowse-Lab/other.html" class="back-link" data-i18n="download.back">← その他の機能に戻る</a>
+    <a href="/Drowse-Lab/other.html" class="back-button" data-i18n="encrypt.back">← 戻る</a>
     
     <div class="download-header">
         <h1 data-i18n="download.title">ファイルダウンロード</h1>

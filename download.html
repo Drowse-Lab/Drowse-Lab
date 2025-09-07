@@ -194,6 +194,10 @@ hide_title: true
             <li data-i18n="download.instruction2">ファイル名を指定できます（省略可）</li>
             <li data-i18n="download.instruction3">ダウンロードボタンをクリックしてファイルを保存します</li>
         </ul>
+        <p style="margin-top: 15px; font-size: 13px; color: #666;">
+            <strong data-i18n="download.tip">ヒント:</strong>
+            <span data-i18n="download.tipContent">Fandom Wikiの画像は、画像を右クリックして「画像アドレスをコピー」で直接URLを取得するか、WikiページのURLをそのまま入力してください。</span>
+        </p>
     </div>
 
     <div class="download-form">
@@ -473,10 +477,110 @@ document.addEventListener('DOMContentLoaded', function() {
         return blob;
     }
 
+    // FandomのようなWikiサイトから実際の画像URLを取得
+    async function extractActualImageUrl(url) {
+        // FandomのWikiページの場合
+        if (url.includes('fandom.com') && url.includes('wiki')) {
+            try {
+                showStatus('Wikiページから画像を取得しています...', 'info');
+                
+                // URLからファイル名を抽出
+                const urlObj = new URL(url);
+                const fileParam = urlObj.searchParams.get('file');
+                
+                if (fileParam) {
+                    // Wikiページをフェッチして実際の画像URLを探す
+                    try {
+                        // CORSプロキシ経由でページを取得
+                        const pageUrl = url.split('?')[0]; // クエリパラメータを除去
+                        const proxyPageUrl = 'https://corsproxy.io/?' + encodeURIComponent(url);
+                        
+                        const pageResponse = await fetch(proxyPageUrl);
+                        if (pageResponse.ok) {
+                            const pageText = await pageResponse.text();
+                            
+                            // 画像URLを正規表現で探す
+                            // パターン1: static.wikia.nocookie.net のURL
+                            const imgUrlPattern = /https:\/\/static\.wikia\.nocookie\.net\/[^"'\s]+\.gif/gi;
+                            const matches = pageText.match(imgUrlPattern);
+                            
+                            if (matches && matches.length > 0) {
+                                // ファイル名に一致する画像URLを探す
+                                const targetFilename = fileParam.toLowerCase();
+                                for (const match of matches) {
+                                    if (match.toLowerCase().includes(targetFilename.replace(/_/g, ''))) {
+                                        console.log('Found actual image URL:', match);
+                                        // /revision/latest を削除してオリジナル画像を取得
+                                        const cleanUrl = match.split('/revision/')[0];
+                                        return cleanUrl;
+                                    }
+                                }
+                                
+                                // 一致するものが見つからない場合は最初のGIFを使用
+                                console.log('Using first GIF found:', matches[0]);
+                                return matches[0].split('/revision/')[0];
+                            }
+                        }
+                    } catch (e) {
+                        console.log('Failed to fetch Wiki page:', e);
+                    }
+                    
+                    // フォールバック: 直接URLを推測
+                    showStatus('画像URLを推測しています...', 'info');
+                    
+                    // 実際のMinecraft WikiのGIF URLの例:
+                    // https://static.wikia.nocookie.net/minecraft_gamepedia/images/e/ed/Enchanted_Stone_Sword.gif
+                    const wikiName = url.match(/https?:\/\/([^.]+)\.fandom\.com/)?.[1] || 'minecraft';
+                    
+                    // よく使われるハッシュパターン
+                    const hashes = ['e/ed', 'a/ab', '1/1a', '2/2b', '3/3c', '4/4d', '5/5e', '6/6f', '7/7a', '8/8b', '9/9c', '0/0a', 'b/bc', 'c/cd', 'd/de', 'f/fa'];
+                    
+                    for (const hash of hashes) {
+                        const testUrl = `https://static.wikia.nocookie.net/${wikiName}_gamepedia/images/${hash}/${fileParam}`;
+                        console.log('Trying URL pattern:', testUrl);
+                        
+                        // URLが有効か確認
+                        try {
+                            const testResponse = await fetch('https://corsproxy.io/?' + encodeURIComponent(testUrl), {
+                                method: 'HEAD'
+                            });
+                            if (testResponse.ok) {
+                                console.log('Found working URL:', testUrl);
+                                return testUrl;
+                            }
+                        } catch (e) {
+                            // 次のパターンを試す
+                        }
+                    }
+                }
+            } catch (e) {
+                console.log('Failed to extract Fandom image URL:', e);
+            }
+        }
+        
+        // 他の画像直接URLの場合はそのまま返す
+        if (url.includes('static.wikia.nocookie.net') || 
+            url.includes('.gif') || 
+            url.includes('.jpg') || 
+            url.includes('.png') ||
+            url.includes('.webp')) {
+            return url;
+        }
+        
+        return url;
+    }
+
     async function downloadFile(url, filename) {
         try {
             downloadBtn.disabled = true;
             downloadBtn.innerHTML = `<span data-i18n="download.downloading">ダウンロード中</span><span class="loading"></span>`;
+            
+            // FandomのようなWikiサイトの場合、実際の画像URLを取得
+            const actualUrl = await extractActualImageUrl(url);
+            if (actualUrl !== url) {
+                console.log('Using actual image URL:', actualUrl);
+                url = actualUrl;
+            }
             
             // まずHEADリクエストでMIMEタイプを確認
             let mimeType = null;
@@ -507,6 +611,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 } catch (proxyError) {
                     console.log('Proxy also failed');
+                }
+                
+                // WikiページのURLの場合、直接画像を開くリンクを提供
+                if (url.includes('wiki') && (url.includes('file=') || url.includes('File:'))) {
+                    showStatus('Wikiページです。画像を直接開くには、ページ内の画像を右クリックして「画像を新しいタブで開く」を選択し、その画像URLをここに貼り付けてください。', 'info');
+                    throw new Error('Wikiページから直接ダウンロードできません。画像の直接URLが必要です。');
                 }
                 
                 // 最終手段: 新しいタブで開く
@@ -669,7 +779,9 @@ const translations = {
         'download.downloadButton': 'ダウンロード',
         'download.downloading': 'ダウンロード中',
         'download.enhanceQuality': '画質を向上させる（画像のみ）',
-        'download.qualityInfo': '画像をアップスケーリングして画質を改善します'
+        'download.qualityInfo': '画像をアップスケーリングして画質を改善します',
+        'download.tip': 'ヒント:',
+        'download.tipContent': 'Fandom Wikiの画像は、画像を右クリックして「画像アドレスをコピー」で直接URLを取得するか、WikiページのURLをそのまま入力してください。'
     },
     en: {
         'download.back': '← Back to Other Features',
@@ -686,7 +798,9 @@ const translations = {
         'download.downloadButton': 'Download',
         'download.downloading': 'Downloading',
         'download.enhanceQuality': 'Enhance Quality (Images Only)',
-        'download.qualityInfo': 'Upscale and improve image quality'
+        'download.qualityInfo': 'Upscale and improve image quality',
+        'download.tip': 'Tip:',
+        'download.tipContent': 'For Fandom Wiki images, right-click the image and copy the image address for direct URL, or input the Wiki page URL directly.'
     }
 };
 

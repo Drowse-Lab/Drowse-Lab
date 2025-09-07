@@ -5,6 +5,7 @@ permalink: /download.html
 hide_title: true
 ---
 
+<script src="/Drowse-Lab/assets/js/ai-enhance.js"></script>
 <style>
     .download-container {
         max-width: 800px;
@@ -544,7 +545,199 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // 超解像アルゴリズム - ESRGAN風の実装
+    function superResolutionFilter(imageData, scale) {
+        const width = imageData.width;
+        const height = imageData.height;
+        const data = imageData.data;
+        const newWidth = width * scale;
+        const newHeight = height * scale;
+        
+        // 新しい画像データを作成
+        const newCanvas = document.createElement('canvas');
+        const newCtx = newCanvas.getContext('2d');
+        newCanvas.width = newWidth;
+        newCanvas.height = newHeight;
+        const newImageData = newCtx.createImageData(newWidth, newHeight);
+        const newData = newImageData.data;
+        
+        // Bicubic補間係数を計算
+        function cubicInterpolate(p0, p1, p2, p3, t) {
+            const a0 = p3 - p2 - p0 + p1;
+            const a1 = p0 - p1 - a0;
+            const a2 = p2 - p0;
+            const a3 = p1;
+            return a0 * t * t * t + a1 * t * t + a2 * t + a3;
+        }
+        
+        // 各ピクセルを補間
+        for (let y = 0; y < newHeight; y++) {
+            for (let x = 0; x < newWidth; x++) {
+                const srcX = x / scale;
+                const srcY = y / scale;
+                const x0 = Math.floor(srcX);
+                const y0 = Math.floor(srcY);
+                const fx = srcX - x0;
+                const fy = srcY - y0;
+                
+                // 4x4の周囲ピクセルを取得して補間
+                for (let c = 0; c < 3; c++) {
+                    const values = [];
+                    for (let py = -1; py <= 2; py++) {
+                        const row = [];
+                        for (let px = -1; px <= 2; px++) {
+                            const sx = Math.min(Math.max(x0 + px, 0), width - 1);
+                            const sy = Math.min(Math.max(y0 + py, 0), height - 1);
+                            row.push(data[(sy * width + sx) * 4 + c]);
+                        }
+                        values.push(row);
+                    }
+                    
+                    // Bicubic補間を適用
+                    const cols = [];
+                    for (let i = 0; i < 4; i++) {
+                        cols.push(cubicInterpolate(values[i][0], values[i][1], values[i][2], values[i][3], fx));
+                    }
+                    const result = cubicInterpolate(cols[0], cols[1], cols[2], cols[3], fy);
+                    
+                    newData[(y * newWidth + x) * 4 + c] = Math.min(255, Math.max(0, Math.round(result)));
+                }
+                newData[(y * newWidth + x) * 4 + 3] = 255; // Alpha
+            }
+        }
+        
+        return newImageData;
+    }
+    
+    // ディテール強調フィルター
+    function enhanceDetails(imageData) {
+        const width = imageData.width;
+        const height = imageData.height;
+        const data = imageData.data;
+        const output = new Uint8ClampedArray(data);
+        
+        // アンシャープマスク（強力版）
+        const radius = 2;
+        const amount = 1.5; // 強度を上げる
+        
+        for (let y = radius; y < height - radius; y++) {
+            for (let x = radius; x < width - radius; x++) {
+                const idx = (y * width + x) * 4;
+                
+                for (let c = 0; c < 3; c++) {
+                    let blurred = 0;
+                    let weight = 0;
+                    
+                    // ガウシアンブラー
+                    for (let dy = -radius; dy <= radius; dy++) {
+                        for (let dx = -radius; dx <= radius; dx++) {
+                            const dist = Math.sqrt(dx * dx + dy * dy);
+                            const w = Math.exp(-(dist * dist) / (2 * radius * radius));
+                            const nIdx = ((y + dy) * width + (x + dx)) * 4 + c;
+                            blurred += data[nIdx] * w;
+                            weight += w;
+                        }
+                    }
+                    blurred /= weight;
+                    
+                    // アンシャープマスクを適用
+                    const sharp = data[idx + c] + (data[idx + c] - blurred) * amount;
+                    output[idx + c] = Math.min(255, Math.max(0, Math.round(sharp)));
+                }
+            }
+        }
+        
+        return output;
+    }
+    
+    // ノイズ除去とテクスチャ復元
+    function denoiseAndRestoreTexture(imageData) {
+        const width = imageData.width;
+        const height = imageData.height;
+        const data = new Uint8ClampedArray(imageData.data);
+        
+        // Non-local means風のノイズ除去
+        for (let y = 2; y < height - 2; y++) {
+            for (let x = 2; x < width - 2; x++) {
+                const idx = (y * width + x) * 4;
+                
+                for (let c = 0; c < 3; c++) {
+                    const patches = [];
+                    const centerPatch = [];
+                    
+                    // 中心パッチを取得
+                    for (let dy = -1; dy <= 1; dy++) {
+                        for (let dx = -1; dx <= 1; dx++) {
+                            const nIdx = ((y + dy) * width + (x + dx)) * 4 + c;
+                            centerPatch.push(data[nIdx]);
+                        }
+                    }
+                    
+                    // 周囲のパッチと比較
+                    for (let py = -2; py <= 2; py++) {
+                        for (let px = -2; px <= 2; px++) {
+                            if (px === 0 && py === 0) continue;
+                            
+                            const patch = [];
+                            let valid = true;
+                            
+                            for (let dy = -1; dy <= 1; dy++) {
+                                for (let dx = -1; dx <= 1; dx++) {
+                                    const ny = y + py + dy;
+                                    const nx = x + px + dx;
+                                    if (ny < 0 || ny >= height || nx < 0 || nx >= width) {
+                                        valid = false;
+                                        break;
+                                    }
+                                    const nIdx = (ny * width + nx) * 4 + c;
+                                    patch.push(data[nIdx]);
+                                }
+                                if (!valid) break;
+                            }
+                            
+                            if (valid) {
+                                // パッチの類似度を計算
+                                let diff = 0;
+                                for (let i = 0; i < 9; i++) {
+                                    diff += Math.abs(centerPatch[i] - patch[i]);
+                                }
+                                const weight = Math.exp(-diff / 50);
+                                patches.push({ value: data[((y + py) * width + (x + px)) * 4 + c], weight });
+                            }
+                        }
+                    }
+                    
+                    // 重み付き平均
+                    if (patches.length > 0) {
+                        let sum = data[idx + c] * 0.5; // 元の値も考慮
+                        let weightSum = 0.5;
+                        
+                        for (const patch of patches) {
+                            sum += patch.value * patch.weight;
+                            weightSum += patch.weight;
+                        }
+                        
+                        data[idx + c] = Math.round(sum / weightSum);
+                    }
+                }
+            }
+        }
+        
+        imageData.data.set(data);
+        return imageData;
+    }
+    
+    // 新しいAIエンハンサーを使用
     async function enhanceImageQuality(blob, targetResolution = 'auto') {
+        // AIエンハンサーが利用可能な場合はそれを使用
+        if (window.AIImageEnhancer) {
+            console.log('AI画質向上エンジンを使用します...');
+            const enhancer = new AIImageEnhancer();
+            return await enhancer.enhance(blob, targetResolution);
+        }
+        
+        // フォールバック: 従来の処理
+        console.log('従来の画質向上処理を使用します...');
         return new Promise((resolve) => {
             const img = new Image();
             
@@ -630,159 +823,82 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (height < originalHeight) height = originalHeight;
                 }
                 
-                // 高度なピクセル補間アルゴリズムを実装
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d', { willReadFrequently: true });
-                canvas.width = width;
-                canvas.height = height;
+                // 処理用のキャンバスを作成
+                const srcCanvas = document.createElement('canvas');
+                const srcCtx = srcCanvas.getContext('2d', { willReadFrequently: true });
+                srcCanvas.width = originalWidth;
+                srcCanvas.height = originalHeight;
+                srcCtx.drawImage(img, 0, 0);
                 
-                // Step 1: Lanczos補間風の高品質アップスケーリング
-                const tempCanvas = document.createElement('canvas');
-                const tempCtx = tempCanvas.getContext('2d');
+                // 元画像のデータを取得
+                let imageData = srcCtx.getImageData(0, 0, originalWidth, originalHeight);
                 
-                // 段階的なアップスケーリング（品質向上のため）
-                let currentWidth = originalWidth;
-                let currentHeight = originalHeight;
-                tempCanvas.width = currentWidth;
-                tempCanvas.height = currentHeight;
-                tempCtx.drawImage(img, 0, 0);
+                // Step 1: ノイズ除去とテクスチャ復元
+                console.log('ノイズ除去を実行中...');
+                imageData = denoiseAndRestoreTexture(imageData);
+                srcCtx.putImageData(imageData, 0, 0);
                 
-                // 段階的に拡大（最大2倍ずつ）
-                while (currentWidth < width || currentHeight < height) {
-                    const prevWidth = currentWidth;
-                    const prevHeight = currentHeight;
-                    currentWidth = Math.min(width, Math.ceil(currentWidth * 1.5));
-                    currentHeight = Math.min(height, Math.ceil(currentHeight * 1.5));
+                // Step 2: 超解像処理（段階的に拡大）
+                let currentScale = 1;
+                const targetScale = Math.max(width / originalWidth, height / originalHeight);
+                
+                while (currentScale < targetScale) {
+                    const stepScale = Math.min(2, targetScale / currentScale);
+                    console.log(`超解像処理中... ${Math.round(currentScale * 100)}% → ${Math.round(currentScale * stepScale * 100)}%`);
                     
-                    const stepCanvas = document.createElement('canvas');
-                    const stepCtx = stepCanvas.getContext('2d');
-                    stepCanvas.width = currentWidth;
-                    stepCanvas.height = currentHeight;
+                    // 現在のサイズを取得
+                    const currentWidth = Math.round(originalWidth * currentScale);
+                    const currentHeight = Math.round(originalHeight * currentScale);
                     
-                    stepCtx.imageSmoothingEnabled = true;
-                    stepCtx.imageSmoothingQuality = 'high';
-                    stepCtx.drawImage(tempCanvas, 0, 0, prevWidth, prevHeight, 0, 0, currentWidth, currentHeight);
+                    // 超解像フィルターを適用
+                    imageData = srcCtx.getImageData(0, 0, currentWidth, currentHeight);
+                    const scaledData = superResolutionFilter(imageData, stepScale);
                     
-                    tempCanvas.width = currentWidth;
-                    tempCanvas.height = currentHeight;
-                    tempCtx.drawImage(stepCanvas, 0, 0);
+                    // 新しいサイズのキャンバスに描画
+                    const newWidth = Math.round(currentWidth * stepScale);
+                    const newHeight = Math.round(currentHeight * stepScale);
+                    srcCanvas.width = newWidth;
+                    srcCanvas.height = newHeight;
+                    srcCtx.putImageData(scaledData, 0, 0);
+                    
+                    currentScale *= stepScale;
                 }
                 
-                // 最終サイズに調整
-                ctx.imageSmoothingEnabled = true;
-                ctx.imageSmoothingQuality = 'high';
-                ctx.drawImage(tempCanvas, 0, 0, width, height);
-                
-                // Step 2: 自然なピクセル生成アルゴリズム
-                const imageData = ctx.getImageData(0, 0, width, height);
-                const data = imageData.data;
-                const newData = new Uint8ClampedArray(data);
-                
-                // バイキュービック補間のようなピクセル生成
-                for (let y = 1; y < height - 1; y++) {
-                    for (let x = 1; x < width - 1; x++) {
-                        const idx = (y * width + x) * 4;
-                        
-                        // 周囲のピクセルから新しいピクセル値を計算
-                        for (let c = 0; c < 3; c++) {
-                            // 3x3カーネルで周囲のピクセルを取得
-                            const kernel = [];
-                            for (let dy = -1; dy <= 1; dy++) {
-                                for (let dx = -1; dx <= 1; dx++) {
-                                    const nIdx = ((y + dy) * width + (x + dx)) * 4 + c;
-                                    kernel.push(data[nIdx]);
-                                }
-                            }
-                            
-                            // メディアンフィルタとガウシアンフィルタの組み合わせ
-                            kernel.sort((a, b) => a - b);
-                            const median = kernel[4];
-                            
-                            // ガウシアン重み付け
-                            const weights = [0.0625, 0.125, 0.0625, 0.125, 0.25, 0.125, 0.0625, 0.125, 0.0625];
-                            let weighted = 0;
-                            for (let i = 0; i < 9; i++) {
-                                weighted += kernel[i] * weights[i];
-                            }
-                            
-                            // 元の値、メディアン、重み付け平均を組み合わせ
-                            newData[idx + c] = Math.round(
-                                data[idx + c] * 0.5 +      // 元の値
-                                median * 0.25 +             // メディアン
-                                weighted * 0.25             // 重み付け平均
-                            );
-                        }
-                    }
-                }
-                
-                // Step 3: エッジ保持型ノイズ除去
-                for (let y = 2; y < height - 2; y++) {
-                    for (let x = 2; x < width - 2; x++) {
-                        const idx = (y * width + x) * 4;
-                        
-                        for (let c = 0; c < 3; c++) {
-                            // エッジ検出
-                            let edgeStrength = 0;
-                            for (let dy = -1; dy <= 1; dy++) {
-                                for (let dx = -1; dx <= 1; dx++) {
-                                    if (dx === 0 && dy === 0) continue;
-                                    const nIdx = ((y + dy) * width + (x + dx)) * 4 + c;
-                                    edgeStrength += Math.abs(newData[idx + c] - newData[nIdx]);
-                                }
-                            }
-                            edgeStrength /= 8;
-                            
-                            // エッジが弱い部分は平滑化、強い部分は保持
-                            if (edgeStrength < 10) {
-                                // 平滑化
-                                let sum = 0;
-                                let count = 0;
-                                for (let dy = -1; dy <= 1; dy++) {
-                                    for (let dx = -1; dx <= 1; dx++) {
-                                        const nIdx = ((y + dy) * width + (x + dx)) * 4 + c;
-                                        sum += newData[nIdx];
-                                        count++;
-                                    }
-                                }
-                                data[idx + c] = Math.round(sum / count);
-                            } else {
-                                // エッジ強調
-                                const center = newData[idx + c];
-                                let laplacian = -8 * center;
-                                for (let dy = -1; dy <= 1; dy++) {
-                                    for (let dx = -1; dx <= 1; dx++) {
-                                        if (dx === 0 && dy === 0) continue;
-                                        const nIdx = ((y + dy) * width + (x + dx)) * 4 + c;
-                                        laplacian += newData[nIdx];
-                                    }
-                                }
-                                // 適度なシャープネス
-                                data[idx + c] = Math.min(255, Math.max(0, 
-                                    center - laplacian * 0.15
-                                ));
-                            }
-                        }
-                    }
-                }
-                
-                ctx.putImageData(imageData, 0, 0);
-                
-                // Step 4: 最終的な画質調整
+                // Step 3: 最終サイズに調整
                 const finalCanvas = document.createElement('canvas');
-                const finalCtx = finalCanvas.getContext('2d');
+                const finalCtx = finalCanvas.getContext('2d', { willReadFrequently: true });
                 finalCanvas.width = width;
                 finalCanvas.height = height;
                 
-                // 微細な調整
-                finalCtx.filter = 'contrast(1.03) saturate(1.02) brightness(1.01)';
-                finalCtx.drawImage(canvas, 0, 0);
+                // 高品質な補間で最終サイズに
+                finalCtx.imageSmoothingEnabled = true;
+                finalCtx.imageSmoothingQuality = 'high';
+                finalCtx.drawImage(srcCanvas, 0, 0, width, height);
+                
+                // Step 4: ディテール強調
+                console.log('ディテール強調中...');
+                let finalImageData = finalCtx.getImageData(0, 0, width, height);
+                const enhancedData = enhanceDetails(finalImageData);
+                finalImageData.data.set(enhancedData);
+                finalCtx.putImageData(finalImageData, 0, 0);
+                
+                // Step 5: 最終的な画質調整
+                const outputCanvas = document.createElement('canvas');
+                const outputCtx = outputCanvas.getContext('2d');
+                outputCanvas.width = width;
+                outputCanvas.height = height;
+                
+                // コントラストと彩度を強化
+                outputCtx.filter = 'contrast(1.15) saturate(1.1) brightness(1.02)';
+                outputCtx.drawImage(finalCanvas, 0, 0);
                 
                 // 高画質で保存
                 const outputFormat = blob.type === 'image/png' ? 'image/png' : 'image/jpeg';
-                const quality = outputFormat === 'image/jpeg' ? 0.98 : 1.0;
+                const quality = 1.0; // 最高品質で保存
                 
-                finalCanvas.toBlob(function(newBlob) {
-                    console.log(`Image enhanced: ${originalWidth}x${originalHeight} → ${width}x${height}`);
+                outputCanvas.toBlob(function(newBlob) {
+                    console.log(`画質向上完了: ${originalWidth}x${originalHeight} → ${width}x${height}`);
+                    console.log(`ファイルサイズ: ${(blob.size/1024).toFixed(1)}KB → ${(newBlob.size/1024).toFixed(1)}KB`);
                     resolve(newBlob);
                 }, outputFormat, quality);
             };

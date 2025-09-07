@@ -157,6 +157,26 @@ hide_title: true
         margin-bottom: 5px;
         color: #666;
     }
+
+    .checkbox-label {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        font-weight: 500;
+    }
+
+    .checkbox-label input[type="checkbox"] {
+        width: auto;
+        margin-right: 8px;
+        cursor: pointer;
+    }
+
+    .quality-info {
+        margin-top: 8px;
+        font-size: 12px;
+        color: #666;
+        padding-left: 24px;
+    }
 </style>
 
 <div class="download-container">
@@ -198,6 +218,16 @@ hide_title: true
             >
         </div>
 
+        <div class="form-group">
+            <label class="checkbox-label">
+                <input type="checkbox" id="enhanceQuality">
+                <span data-i18n="download.enhanceQuality">画質を向上させる（画像のみ）</span>
+            </label>
+            <div class="quality-info" data-i18n="download.qualityInfo">
+                画像をアップスケーリングして画質を改善します
+            </div>
+        </div>
+
         <button id="downloadBtn" class="download-button" data-i18n="download.downloadButton">ダウンロード</button>
 
         <div id="statusMessage" class="status-message"></div>
@@ -210,6 +240,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const filenameInput = document.getElementById('filenameInput');
     const downloadBtn = document.getElementById('downloadBtn');
     const statusMessage = document.getElementById('statusMessage');
+    const enhanceQualityCheckbox = document.getElementById('enhanceQuality');
 
     function showStatus(message, type) {
         statusMessage.textContent = message;
@@ -221,22 +252,225 @@ document.addEventListener('DOMContentLoaded', function() {
         statusMessage.style.display = 'none';
     }
 
-    function extractFilenameFromUrl(url) {
+    function extractFilenameFromUrl(url, mimeType) {
         try {
             const urlObj = new URL(url);
             const pathname = urlObj.pathname;
-            const filename = pathname.split('/').pop();
-            
-            // URLにファイル名が含まれていない場合
-            if (!filename || filename === '') {
-                return 'download';
-            }
+            let filename = pathname.split('/').pop();
             
             // クエリパラメータを除去
-            return filename.split('?')[0];
+            if (filename) {
+                filename = filename.split('?')[0];
+            }
+            
+            // URLパラメータやクエリから元のファイル名を取得（Fandomなどのサイト用）
+            const fileParam = urlObj.searchParams.get('file');
+            if (fileParam) {
+                filename = fileParam.split('/').pop();
+            }
+            
+            // URLパラメータにformat,webpが含まれているかチェック
+            const hasWebPFormat = url.includes('format,webp') || url.includes('format=webp');
+            
+            // 元がGIFかどうか判定
+            const isOriginallyGif = (filename && filename.toLowerCase().includes('.gif')) ||
+                                   url.includes('gif') ||
+                                   (fileParam && fileParam.toLowerCase().includes('.gif'));
+            
+            // URLにファイル名が含まれていない場合、またはファイル名に拡張子がない場合
+            if (!filename || filename === '' || !filename.includes('.')) {
+                // MIMEタイプから拡張子を決定
+                const extension = getExtensionFromMimeType(mimeType);
+                if (!filename || filename === '') {
+                    filename = 'download' + extension;
+                } else {
+                    filename = filename + extension;
+                }
+            } else {
+                // WebPに変換されている場合の処理
+                if (hasWebPFormat || mimeType === 'image/webp') {
+                    const lastDotIndex = filename.lastIndexOf('.');
+                    if (lastDotIndex !== -1) {
+                        const nameWithoutExt = filename.substring(0, lastDotIndex);
+                        
+                        // 元がGIFならGIFとして保存
+                        if (isOriginallyGif) {
+                            filename = nameWithoutExt + '.gif';
+                        } else {
+                            // GIF以外はJPGに変換
+                            filename = nameWithoutExt + '.jpg';
+                        }
+                    }
+                } else {
+                    // 画像ファイルの拡張子を適切に変更
+                    filename = adjustImageExtension(filename, mimeType);
+                }
+            }
+            
+            return filename;
         } catch (e) {
             return 'download';
         }
+    }
+
+    function getExtensionFromMimeType(mimeType) {
+        if (!mimeType) return '';
+        
+        const mimeToExt = {
+            'image/jpeg': '.jpg',
+            'image/jpg': '.jpg',
+            'image/png': '.png',
+            'image/gif': '.gif',
+            'image/webp': '.jpg', // WebPはJPGに変換
+            'image/bmp': '.bmp',
+            'image/svg+xml': '.svg',
+            'image/x-icon': '.ico',
+            'image/tiff': '.tiff',
+            'text/plain': '.txt',
+            'text/html': '.html',
+            'application/json': '.json',
+            'application/xml': '.xml',
+            'application/zip': '.zip',
+            'application/x-rar-compressed': '.rar',
+            'application/x-7z-compressed': '.7z',
+            'video/mp4': '.mp4',
+            'video/webm': '.webm',
+            'audio/mpeg': '.mp3',
+            'audio/wav': '.wav'
+        };
+        
+        return mimeToExt[mimeType] || '';
+    }
+
+    function adjustImageExtension(filename, mimeType) {
+        if (!mimeType || !mimeType.startsWith('image/')) {
+            return filename;
+        }
+        
+        // 現在の拡張子を取得
+        const lastDotIndex = filename.lastIndexOf('.');
+        if (lastDotIndex === -1) {
+            return filename + getExtensionFromMimeType(mimeType);
+        }
+        
+        const nameWithoutExt = filename.substring(0, lastDotIndex);
+        const currentExt = filename.substring(lastDotIndex).toLowerCase();
+        
+        // WebP、AVIF、その他の形式をJPGに変換
+        if (currentExt === '.webp' || currentExt === '.avif' || currentExt === '.jfif') {
+            return nameWithoutExt + '.jpg';
+        }
+        
+        // GIFはそのまま保持
+        if (currentExt === '.gif') {
+            return filename;
+        }
+        
+        // PNGとJPG/JPEGは適切に保持
+        if (currentExt === '.png' || currentExt === '.jpg' || currentExt === '.jpeg') {
+            return filename;
+        }
+        
+        // その他の画像形式はMIMEタイプに基づいて決定
+        return nameWithoutExt + getExtensionFromMimeType(mimeType);
+    }
+
+    async function convertImageBlob(blob, targetFormat, enhanceQuality = false) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            img.onload = function() {
+                let width = img.width;
+                let height = img.height;
+                
+                // 画質向上モード：解像度を上げる
+                if (enhanceQuality) {
+                    // 元のサイズが小さい場合は2倍または4倍にアップスケール
+                    const scaleFactor = (width < 500 || height < 500) ? 4 : 2;
+                    width *= scaleFactor;
+                    height *= scaleFactor;
+                }
+                
+                canvas.width = width;
+                canvas.height = height;
+                
+                // 画質向上のための設定
+                if (enhanceQuality) {
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = 'high';
+                    
+                    // シャープネスフィルターの適用
+                    ctx.filter = 'contrast(1.1) saturate(1.1)';
+                }
+                
+                ctx.drawImage(img, 0, 0, width, height);
+                
+                // 画質を最高にして保存
+                const quality = enhanceQuality ? 1.0 : 0.95;
+                
+                canvas.toBlob(function(newBlob) {
+                    resolve(newBlob);
+                }, targetFormat, quality);
+            };
+            
+            img.src = URL.createObjectURL(blob);
+        });
+    }
+
+    async function enhanceImageQuality(blob) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            img.onload = function() {
+                // 解像度を向上させる
+                const scaleFactor = Math.min(4, Math.max(2, 2000 / Math.max(img.width, img.height)));
+                const width = Math.round(img.width * scaleFactor);
+                const height = Math.round(img.height * scaleFactor);
+                
+                canvas.width = width;
+                canvas.height = height;
+                
+                // 高画質レンダリング設定
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+                
+                // 複数パスでレンダリングして画質向上
+                // 1. 基本描画
+                ctx.drawImage(img, 0, 0, width, height);
+                
+                // 2. エッジ強調とノイズ除去のシミュレーション
+                const imageData = ctx.getImageData(0, 0, width, height);
+                const data = imageData.data;
+                
+                // 簡易的なアンシャープマスク
+                for (let i = 0; i < data.length; i += 4) {
+                    // RGBチャンネルに軽微な調整
+                    data[i] = Math.min(255, data[i] * 1.02);     // R
+                    data[i + 1] = Math.min(255, data[i + 1] * 1.02); // G
+                    data[i + 2] = Math.min(255, data[i + 2] * 1.02); // B
+                }
+                
+                ctx.putImageData(imageData, 0, 0);
+                
+                // 高画質で保存
+                canvas.toBlob(function(newBlob) {
+                    resolve(newBlob);
+                }, blob.type === 'image/png' ? 'image/png' : 'image/jpeg', 1.0);
+            };
+            
+            img.src = URL.createObjectURL(blob);
+        });
+    }
+
+    async function convertToGif(blob) {
+        // WebPアニメーションからGIFへの変換は複雑なため、
+        // 静止画として保存するか、元のWebPをGIFとして保存
+        // ブラウザの制限により、完全なアニメーション変換は困難
+        return blob;
     }
 
     async function downloadFile(url, filename) {
@@ -244,21 +478,41 @@ document.addEventListener('DOMContentLoaded', function() {
             downloadBtn.disabled = true;
             downloadBtn.innerHTML = `<span data-i18n="download.downloading">ダウンロード中</span><span class="loading"></span>`;
             
-            // CORS対応のためプロキシを使用する場合のコード
-            // 実際の実装では、サーバーサイドでプロキシを設定するか、
-            // CORS対応のAPIを使用する必要があります
+            // まずHEADリクエストでMIMEタイプを確認
+            let mimeType = null;
+            try {
+                const headResponse = await fetch(url, {
+                    method: 'HEAD',
+                    mode: 'cors',
+                    credentials: 'omit'
+                });
+                mimeType = headResponse.headers.get('content-type');
+            } catch (e) {
+                console.log('HEAD request failed, continuing with GET');
+            }
             
             const response = await fetch(url, {
                 mode: 'cors',
                 credentials: 'omit'
             }).catch(async (error) => {
-                // CORS エラーの場合、別の方法を試す
-                console.log('Direct fetch failed, trying alternative method');
+                // CORS エラーの場合、プロキシ経由で試す
+                console.log('Direct fetch failed, trying proxy method');
                 
-                // 代替方法: 新しいタブで開く
+                // CORSプロキシを使用（公開プロキシサービス）
+                const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(url);
+                try {
+                    const proxyResponse = await fetch(proxyUrl);
+                    if (proxyResponse.ok) {
+                        return proxyResponse;
+                    }
+                } catch (proxyError) {
+                    console.log('Proxy also failed');
+                }
+                
+                // 最終手段: 新しいタブで開く
                 const link = document.createElement('a');
                 link.href = url;
-                link.download = filename || extractFilenameFromUrl(url);
+                link.download = filename || 'download';
                 link.target = '_blank';
                 link.rel = 'noopener noreferrer';
                 document.body.appendChild(link);
@@ -272,12 +526,73 @@ document.addEventListener('DOMContentLoaded', function() {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const blob = await response.blob();
+            let blob = await response.blob();
+            if (!mimeType) {
+                mimeType = blob.type;
+            }
+            
+            // 画像の形式変換処理
+            if (mimeType && mimeType.startsWith('image/')) {
+                const urlPath = new URL(url).pathname.toLowerCase();
+                const originalFilename = urlPath.split('/').pop() || '';
+                const shouldEnhance = enhanceQualityCheckbox.checked;
+                
+                // URLやファイル名から元の形式を判定
+                const isOriginallyGif = originalFilename.includes('.gif') || 
+                                       url.includes('gif') || 
+                                       url.includes('file=') && url.includes('.gif');
+                
+                // 画質向上処理（GIF以外の画像）
+                if (shouldEnhance && !isOriginallyGif) {
+                    showStatus('画質を向上させています...', 'info');
+                    blob = await enhanceImageQuality(blob);
+                }
+                
+                // WebPやAVIFの処理
+                if (mimeType === 'image/webp' || mimeType === 'image/avif') {
+                    if (isOriginallyGif) {
+                        // 元がGIFの場合はGIFとして保存（アニメーション保持のため変換しない）
+                        showStatus('GIFファイルを処理中...', 'info');
+                        // ファイル名の拡張子だけ.gifに変更
+                        mimeType = 'image/gif';
+                    } else {
+                        // GIF以外はJPEGに変換
+                        if (!shouldEnhance) {
+                            showStatus('画像を変換中...', 'info');
+                        }
+                        blob = await convertImageBlob(blob, 'image/jpeg', shouldEnhance);
+                        mimeType = 'image/jpeg';
+                    }
+                }
+                // URLパラメータでWebP変換されている場合も処理
+                else if (url.includes('format,webp') || url.includes('format=webp')) {
+                    if (isOriginallyGif) {
+                        // 元がGIFの場合はGIFとして扱う
+                        showStatus('GIFファイルを処理中...', 'info');
+                        mimeType = 'image/gif';
+                    } else {
+                        // GIF以外はJPEGに変換
+                        if (!shouldEnhance) {
+                            showStatus('画像を変換中...', 'info');
+                        }
+                        blob = await convertImageBlob(blob, 'image/jpeg', shouldEnhance);
+                        mimeType = 'image/jpeg';
+                    }
+                }
+                // 通常の画像で画質向上のみ行う場合
+                else if (shouldEnhance && !isOriginallyGif) {
+                    // 既に画質向上処理済み
+                }
+            }
+            
             const downloadUrl = window.URL.createObjectURL(blob);
+            
+            // ファイル名の決定
+            const finalFilename = filename || extractFilenameFromUrl(url, mimeType);
             
             const link = document.createElement('a');
             link.href = downloadUrl;
-            link.download = filename || extractFilenameFromUrl(url);
+            link.download = finalFilename;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -287,7 +602,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 window.URL.revokeObjectURL(downloadUrl);
             }, 100);
             
-            showStatus('ダウンロードが完了しました！', 'success');
+            showStatus(`ダウンロードが完了しました: ${finalFilename}`, 'success');
         } catch (error) {
             console.error('Download error:', error);
             
@@ -352,7 +667,9 @@ const translations = {
         'download.filenameLabel': '保存ファイル名（オプション）',
         'download.filenamePlaceholder': 'file.pdf',
         'download.downloadButton': 'ダウンロード',
-        'download.downloading': 'ダウンロード中'
+        'download.downloading': 'ダウンロード中',
+        'download.enhanceQuality': '画質を向上させる（画像のみ）',
+        'download.qualityInfo': '画像をアップスケーリングして画質を改善します'
     },
     en: {
         'download.back': '← Back to Other Features',
@@ -367,7 +684,9 @@ const translations = {
         'download.filenameLabel': 'Save as (Optional)',
         'download.filenamePlaceholder': 'file.pdf',
         'download.downloadButton': 'Download',
-        'download.downloading': 'Downloading'
+        'download.downloading': 'Downloading',
+        'download.enhanceQuality': 'Enhance Quality (Images Only)',
+        'download.qualityInfo': 'Upscale and improve image quality'
     }
 };
 

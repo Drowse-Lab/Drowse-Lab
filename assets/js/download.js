@@ -1121,6 +1121,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 
                 // 最終手段: 新しいタブで開く
+                // Validate protocol for security before creating download link
+                let safe = false;
+                try {
+                    const parsedUrl = new URL(url);
+                    const allowedProtocols = ['http:', 'https:', 'ftp:'];
+                    safe = allowedProtocols.includes(parsedUrl.protocol);
+                } catch (e) {
+                    safe = false;
+                }
+                if (!safe) {
+                    showStatus('ダウンロードできないURLです（許可されていないプロトコル: ' + url + '）', 'error');
+                    throw new Error('Unsafe protocol for direct download');
+                }
                 const link = document.createElement('a');
                 link.href = url;
                 link.download = filename || 'download';

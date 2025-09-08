@@ -1146,7 +1146,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     throw new Error('Unsafe protocol for direct download');
                 }
                 const link = document.createElement('a');
-                link.href = url;
+                // 追加の安全プロトコルチェック (http/https のみ許可)
+                let parsedUrl;
+                try {
+                    parsedUrl = new URL(url);
+                } catch (e) {
+                    showStatus('無効なURLです。', 'error');
+                    throw new Error('Invalid URL');
+                }
+                if (parsedUrl.protocol !== 'http:' && parsedUrl.protocol !== 'https:') {
+                    showStatus('許可されていないプロトコルです。', 'error');
+                    throw new Error('Disallowed protocol');
+                }
+                link.href = parsedUrl.href;
                 link.download = filename || 'download';
                 link.target = '_blank';
                 link.rel = 'noopener noreferrer';

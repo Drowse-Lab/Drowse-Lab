@@ -1011,7 +1011,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // 手動ダウンロード用のUI表示
+    function escapeHTML(str) {
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;')
+            .replace(/\//g, '&#x2F;');
+    }
+
     function showManualDownloadUI(videoId) {
+        const escapedVideoId = escapeHTML(videoId);
         const modalHtml = `
             <div id="ytDownloadModal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
                 background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
@@ -1023,7 +1034,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <li>デスクトップアプリ（youtube-dl、yt-dlp）を使用する</li>
                     <li>オンラインサービスを利用する</li>
                 </ol>
-                <p>動画ID: <code>${videoId}</code></p>
+                <p>動画ID: <code>${escapedVideoId}</code></p>
                 <button onclick="document.getElementById('ytDownloadModal').remove()" 
                     style="background: #4CAF50; color: white; border: none; padding: 10px 20px; 
                     border-radius: 4px; cursor: pointer;">閉じる</button>

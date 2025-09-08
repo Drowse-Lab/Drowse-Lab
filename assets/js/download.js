@@ -696,12 +696,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // 他の画像直接URLの場合はそのまま返す
-        if (url.includes('static.wikia.nocookie.net') || 
-            url.includes('.gif') || 
-            url.includes('.jpg') || 
-            url.includes('.png') ||
-            url.includes('.webp')) {
-            return url;
+        // 安全なURLのホスト判定に置き換え
+        try {
+            const parsedUrl = new URL(url);
+            if (parsedUrl.hostname === 'static.wikia.nocookie.net' || 
+                url.includes('.gif') || 
+                url.includes('.jpg') || 
+                url.includes('.png') ||
+                url.includes('.webp')) {
+                return url;
+            }
+        } catch (e) {
+            // URLパース失敗時はfall through
         }
         
         return url;

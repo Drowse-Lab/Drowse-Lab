@@ -222,14 +222,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 canvas.width = width;
                 canvas.height = height;
                 
-                // 画質向上のための設定
+                // 画質向上のための設定（色は変えない）
                 if (enhanceQuality) {
                     ctx.imageSmoothingEnabled = true;
                     ctx.imageSmoothingQuality = 'high';
-                    
-                    // シャープネスフィルターの適用
-                    ctx.filter = 'contrast(1.1) saturate(1.1)';
                 }
+                // 彩度・コントラストは変更しない
+                ctx.filter = 'none';
                 
                 ctx.drawImage(img, 0, 0, width, height);
                 
@@ -250,6 +249,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const width = imageData.width;
         const height = imageData.height;
         const data = imageData.data;
+        theNewWidth = width * scale; // Keep var newWidth in code below to match usage
         const newWidth = width * scale;
         const newHeight = height * scale;
         
@@ -570,9 +570,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 finalCanvas.width = width;
                 finalCanvas.height = height;
                 
-                // 高品質な補間で最終サイズに
+                // 高品質な補間で最終サイズに（色は変えない）
                 finalCtx.imageSmoothingEnabled = true;
                 finalCtx.imageSmoothingQuality = 'high';
+                finalCtx.filter = 'none';
                 finalCtx.drawImage(srcCanvas, 0, 0, width, height);
                 
                 // Step 4: ディテール強調
@@ -582,14 +583,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 finalImageData.data.set(enhancedData);
                 finalCtx.putImageData(finalImageData, 0, 0);
                 
-                // Step 5: 最終的な画質調整
+                // Step 5: 最終的な画質調整（彩度・コントラスト変更なし）
                 const outputCanvas = document.createElement('canvas');
                 const outputCtx = outputCanvas.getContext('2d');
                 outputCanvas.width = width;
                 outputCanvas.height = height;
                 
-                // コントラストと彩度を強化
-                outputCtx.filter = 'contrast(1.15) saturate(1.1) brightness(1.02)';
+                // 彩度・明るさ・コントラストは変更しない
+                outputCtx.filter = 'none';
                 outputCtx.drawImage(finalCanvas, 0, 0);
                 
                 // 高画質で保存

@@ -1,0 +1,10 @@
+{
+  "name": "Drowse-Lab",
+  "icons": [
+    {
+      "src": "/assets/image/DrowseLabicon.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}

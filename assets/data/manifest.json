@@ -1,6 +1,17 @@
 {
   "name": "Drowse-Lab",
+  "short_name": "Drowse",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4CAF50",
+  "description": "なんとなく作っているwebである",
   "icons": [
+    {
+      "src": "/assets/image/DrowseLabicon.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
     {
       "src": "/assets/image/DrowseLabicon.png",
       "type": "image/png",

@@ -1,3 +1,4 @@
+// assets/js/download.js
 document.addEventListener('DOMContentLoaded', function() {
     const urlInput = document.getElementById('urlInput');
     const filenameInput = document.getElementById('filenameInput');
@@ -10,22 +11,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const formatSelect = document.getElementById('formatSelect');
     const videoQualityGroup = document.getElementById('videoQualityGroup');
     const videoQuality = document.getElementById('videoQuality');
-    
-    // 画質向上チェックボックスの変更イベント
+
+    // ---------- UI handlers ----------
     enhanceQualityCheckbox.addEventListener('change', function() {
         resolutionOptions.style.display = this.checked ? 'block' : 'none';
     });
-    
-    // フォーマット選択の変更イベント
+
     formatSelect.addEventListener('change', function() {
         videoQualityGroup.style.display = this.value === 'video' ? 'block' : 'none';
     });
-    
-    // URL入力の変更イベント（YouTube検出）
+
     urlInput.addEventListener('input', function() {
         const url = this.value;
         const isYouTube = isYouTubeUrl(url);
-        
         if (isYouTube) {
             youtubeOptions.style.display = 'block';
             enhanceQualityCheckbox.parentElement.parentElement.style.display = 'none';
@@ -34,33 +32,28 @@ document.addEventListener('DOMContentLoaded', function() {
             enhanceQualityCheckbox.parentElement.parentElement.style.display = 'block';
         }
     });
-    
-    // ファイル名入力で拡張子候補を動的に更新
+
     filenameInput.addEventListener('input', function() {
         const value = this.value;
         const lastDot = value.lastIndexOf('.');
         if (lastDot > -1) {
             const base = value.substring(0, lastDot);
             const datalist = document.getElementById('extensionList');
-            
-            // オプションを更新して、現在のファイル名に拡張子を追加
             Array.from(datalist.options).forEach(option => {
                 option.value = base + option.textContent;
             });
         }
     });
-    
+
+    // ---------- helpers ----------
     function isYouTubeUrl(url) {
-        return url.includes('youtube.com/watch') || 
-               url.includes('youtu.be/') || 
+        return url.includes('youtube.com/watch') ||
+               url.includes('youtu.be/') ||
                url.includes('youtube.com/shorts/');
     }
-    
+
     function extractYouTubeId(url) {
-        const patterns = [
-            /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)([^&\n?#]+)/,
-        ];
-        
+        const patterns = [/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)([^&\n?#]+)/];
         for (const pattern of patterns) {
             const match = url.match(pattern);
             if (match) return match[1];
@@ -73,9 +66,29 @@ document.addEventListener('DOMContentLoaded', function() {
         statusMessage.className = `status-message ${type}`;
         statusMessage.style.display = 'block';
     }
+    function hideStatus() { statusMessage.style.display = 'none'; }
 
-    function hideStatus() {
-        statusMessage.style.display = 'none';
+    function getExtensionFromMimeType(mimeType) {
+        if (!mimeType) return '';
+        const mimeToExt = {
+            'image/jpeg': '.jpg','image/jpg': '.jpg','image/png': '.png','image/gif': '.gif','image/webp': '.jpg',
+            'image/bmp': '.bmp','image/svg+xml': '.svg','image/x-icon': '.ico','image/tiff': '.tiff',
+            'text/plain': '.txt','text/html': '.html','application/json': '.json','application/xml': '.xml',
+            'application/zip': '.zip','application/x-rar-compressed': '.rar','application/x-7z-compressed': '.7z',
+            'video/mp4': '.mp4','video/webm': '.webm','audio/mpeg': '.mp3','audio/wav': '.wav'
+        };
+        return mimeToExt[mimeType] || '';
+    }
+
+    function adjustImageExtension(filename, mimeType) {
+        if (!mimeType || !mimeType.startsWith('image/')) return filename;
+        const lastDotIndex = filename.lastIndexOf('.');
+        if (lastDotIndex === -1) return filename + getExtensionFromMimeType(mimeType);
+        const nameWithoutExt = filename.substring(0, lastDotIndex);
+        const currentExt = filename.substring(lastDotIndex).toLowerCase();
+        if (currentExt === '.webp' || currentExt === '.avif' || currentExt === '.jfif') return nameWithoutExt + '.jpg';
+        if (currentExt === '.gif' || currentExt === '.png' || currentExt === '.jpg' || currentExt === '.jpeg') return filename;
+        return nameWithoutExt + getExtensionFromMimeType(mimeType);
     }
 
     function extractFilenameFromUrl(url, mimeType) {
@@ -83,719 +96,144 @@ document.addEventListener('DOMContentLoaded', function() {
             const urlObj = new URL(url);
             const pathname = urlObj.pathname;
             let filename = pathname.split('/').pop();
-            
-            // クエリパラメータを除去
-            if (filename) {
-                filename = filename.split('?')[0];
-            }
-            
-            // URLパラメータやクエリから元のファイル名を取得（Fandomなどのサイト用）
+            if (filename) filename = filename.split('?')[0];
             const fileParam = urlObj.searchParams.get('file');
-            if (fileParam) {
-                filename = fileParam.split('/').pop();
-            }
-            
-            // URLパラメータにformat,webpが含まれているかチェック
+            if (fileParam) filename = fileParam.split('/').pop();
+
             const hasWebPFormat = url.includes('format,webp') || url.includes('format=webp');
-            
-            // 元がGIFかどうか判定
             const isOriginallyGif = (filename && filename.toLowerCase().includes('.gif')) ||
-                                   url.includes('gif') ||
-                                   (fileParam && fileParam.toLowerCase().includes('.gif'));
-            
-            // URLにファイル名が含まれていない場合、またはファイル名に拡張子がない場合
-            if (!filename || filename === '' || !filename.includes('.')) {
-                // MIMEタイプから拡張子を決定
+                                    url.includes('gif') ||
+                                    (fileParam && fileParam.toLowerCase().includes('.gif'));
+
+            if (!filename || !filename.includes('.')) {
                 const extension = getExtensionFromMimeType(mimeType);
-                if (!filename || filename === '') {
-                    filename = 'download' + extension;
-                } else {
-                    filename = filename + extension;
-                }
+                filename = (filename || 'download') + extension;
             } else {
-                // WebPに変換されている場合の処理
                 if (hasWebPFormat || mimeType === 'image/webp') {
                     const lastDotIndex = filename.lastIndexOf('.');
                     if (lastDotIndex !== -1) {
                         const nameWithoutExt = filename.substring(0, lastDotIndex);
-                        
-                        // 元がGIFならGIFとして保存
-                        if (isOriginallyGif) {
-                            filename = nameWithoutExt + '.gif';
-                        } else {
-                            // GIF以外はJPGに変換
-                            filename = nameWithoutExt + '.jpg';
-                        }
+                        filename = nameWithoutExt + (isOriginallyGif ? '.gif' : '.jpg');
                     }
                 } else {
-                    // 画像ファイルの拡張子を適切に変更
                     filename = adjustImageExtension(filename, mimeType);
                 }
             }
-            
             return filename;
-        } catch (e) {
+        } catch {
             return 'download';
         }
     }
 
-    function getExtensionFromMimeType(mimeType) {
-        if (!mimeType) return '';
-        
-        const mimeToExt = {
-            'image/jpeg': '.jpg',
-            'image/jpg': '.jpg',
-            'image/png': '.png',
-            'image/gif': '.gif',
-            'image/webp': '.jpg', // WebPはJPGに変換
-            'image/bmp': '.bmp',
-            'image/svg+xml': '.svg',
-            'image/x-icon': '.ico',
-            'image/tiff': '.tiff',
-            'text/plain': '.txt',
-            'text/html': '.html',
-            'application/json': '.json',
-            'application/xml': '.xml',
-            'application/zip': '.zip',
-            'application/x-rar-compressed': '.rar',
-            'application/x-7z-compressed': '.7z',
-            'video/mp4': '.mp4',
-            'video/webm': '.webm',
-            'audio/mpeg': '.mp3',
-            'audio/wav': '.wav'
-        };
-        
-        return mimeToExt[mimeType] || '';
+    // DataURL <-> Blob
+    async function blobToDataURL(blob) {
+        return new Promise((resolve) => {
+            const r = new FileReader();
+            r.onload = () => resolve(r.result);
+            r.readAsDataURL(blob);
+        });
+    }
+    async function dataURLToBlob(dataURL) {
+        const res = await fetch(dataURL);
+        return await res.blob();
     }
 
-    function adjustImageExtension(filename, mimeType) {
-        if (!mimeType || !mimeType.startsWith('image/')) {
-            return filename;
+    // YCbCr（BT.601近似）: 彩度・色相を維持するための輝度マージ
+    function rgb2ycbcr(r,g,b){const Y=0.299*r+0.587*g+0.114*b;return{Y,Cb:128+0.564*(b-Y),Cr:128+0.713*(r-Y)};}
+    function ycbcr2rgb(Y,Cb,Cr){
+        const r=Y+1.403*(Cr-128), g=Y-0.344*(Cb-128)-0.714*(Cr-128), b=Y+1.773*(Cb-128);
+        return [
+            Math.max(0,Math.min(255,Math.round(r))),
+            Math.max(0,Math.min(255,Math.round(g))),
+            Math.max(0,Math.min(255,Math.round(b)))
+        ];
+    }
+    function mergeLuma(esrCanvas, baseCanvas){
+        const w=esrCanvas.width,h=esrCanvas.height;
+        const out=document.createElement('canvas'); out.width=w; out.height=h;
+        const octx=out.getContext('2d');
+        const ectx=esrCanvas.getContext('2d'); const bctx=baseCanvas.getContext('2d');
+        const e=ectx.getImageData(0,0,w,h), b=bctx.getImageData(0,0,w,h);
+        const d=e.data, bd=b.data;
+        for(let i=0;i<d.length;i+=4){
+            const {Cb,Cr}=rgb2ycbcr(bd[i],bd[i+1],bd[i+2]); // 色はベースから
+            const {Y}=rgb2ycbcr(d[i],d[i+1],d[i+2]);        // 輝度はESRGANから
+            const [r,g,bb]=ycbcr2rgb(Y,Cb,Cr);
+            d[i]=r; d[i+1]=g; d[i+2]=bb; // aはそのまま
         }
-        
-        // 現在の拡張子を取得
-        const lastDotIndex = filename.lastIndexOf('.');
-        if (lastDotIndex === -1) {
-            return filename + getExtensionFromMimeType(mimeType);
-        }
-        
-        const nameWithoutExt = filename.substring(0, lastDotIndex);
-        const currentExt = filename.substring(lastDotIndex).toLowerCase();
-        
-        // WebP、AVIF、その他の形式をJPGに変換
-        if (currentExt === '.webp' || currentExt === '.avif' || currentExt === '.jfif') {
-            return nameWithoutExt + '.jpg';
-        }
-        
-        // GIFはそのまま保持
-        if (currentExt === '.gif') {
-            return filename;
-        }
-        
-        // PNGとJPG/JPEGは適切に保持
-        if (currentExt === '.png' || currentExt === '.jpg' || currentExt === '.jpeg') {
-            return filename;
-        }
-        
-        // その他の画像形式はMIMEタイプに基づいて決定
-        return nameWithoutExt + getExtensionFromMimeType(mimeType);
+        octx.putImageData(e,0,0);
+        return out;
     }
 
+    // 画像の単純変換（色は変更しない）
     async function convertImageBlob(blob, targetFormat, enhanceQuality = false) {
         return new Promise((resolve) => {
             const img = new Image();
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
-            
+
             img.onload = function() {
-                let width = img.width;
-                let height = img.height;
-                
-                // 画質向上モード：解像度を上げる
+                let width = img.width, height = img.height;
                 if (enhanceQuality) {
-                    // 元のサイズが小さい場合は2倍または4倍にアップスケール
                     const scaleFactor = (width < 500 || height < 500) ? 4 : 2;
-                    width *= scaleFactor;
-                    height *= scaleFactor;
+                    width *= scaleFactor; height *= scaleFactor;
                 }
-                
-                canvas.width = width;
-                canvas.height = height;
-                
-                // 画質向上のための設定（色は変えない）
-                if (enhanceQuality) {
-                    ctx.imageSmoothingEnabled = true;
-                    ctx.imageSmoothingQuality = 'high';
-                }
-                // 彩度・コントラストは変更しない
-                ctx.filter = 'none';
-                
+
+                canvas.width = width; canvas.height = height;
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+                ctx.filter = 'none'; // 彩度・コントラストは触らない（MDNのfilter参照）
                 ctx.drawImage(img, 0, 0, width, height);
-                
-                // 画質を最高にして保存
+
                 const quality = enhanceQuality ? 1.0 : 0.95;
-                
-                canvas.toBlob(function(newBlob) {
-                    resolve(newBlob);
-                }, targetFormat, quality);
+                canvas.toBlob((newBlob)=>resolve(newBlob), targetFormat, quality);
             };
-            
             img.src = URL.createObjectURL(blob);
         });
     }
 
-    // 超解像アルゴリズム - ESRGAN風の実装
-    function superResolutionFilter(imageData, scale) {
-        const width = imageData.width;
-        const height = imageData.height;
-        const data = imageData.data;
-        theNewWidth = width * scale; // Keep var newWidth in code below to match usage
-        const newWidth = width * scale;
-        const newHeight = height * scale;
-        
-        // 新しい画像データを作成
-        const newCanvas = document.createElement('canvas');
-        const newCtx = newCanvas.getContext('2d');
-        newCanvas.width = newWidth;
-        newCanvas.height = newHeight;
-        const newImageData = newCtx.createImageData(newWidth, newHeight);
-        const newData = newImageData.data;
-        
-        // Bicubic補間係数を計算
-        function cubicInterpolate(p0, p1, p2, p3, t) {
-            const a0 = p3 - p2 - p0 + p1;
-            const a1 = p0 - p1 - a0;
-            const a2 = p2 - p0;
-            const a3 = p1;
-            return a0 * t * t * t + a1 * t * t + a2 * t + a3;
-        }
-        
-        // 各ピクセルを補間
-        for (let y = 0; y < newHeight; y++) {
-            for (let x = 0; x < newWidth; x++) {
-                const srcX = x / scale;
-                const srcY = y / scale;
-                const x0 = Math.floor(srcX);
-                const y0 = Math.floor(srcY);
-                const fx = srcX - x0;
-                const fy = srcY - y0;
-                
-                // 4x4の周囲ピクセルを取得して補間
-                for (let c = 0; c < 3; c++) {
-                    const values = [];
-                    for (let py = -1; py <= 2; py++) {
-                        const row = [];
-                        for (let px = -1; px <= 2; px++) {
-                            const sx = Math.min(Math.max(x0 + px, 0), width - 1);
-                            const sy = Math.min(Math.max(y0 + py, 0), height - 1);
-                            row.push(data[(sy * width + sx) * 4 + c]);
-                        }
-                        values.push(row);
-                    }
-                    
-                    // Bicubic補間を適用
-                    const cols = [];
-                    for (let i = 0; i < 4; i++) {
-                        cols.push(cubicInterpolate(values[i][0], values[i][1], values[i][2], values[i][3], fx));
-                    }
-                    const result = cubicInterpolate(cols[0], cols[1], cols[2], cols[3], fy);
-                    
-                    newData[(y * newWidth + x) * 4 + c] = Math.min(255, Math.max(0, Math.round(result)));
-                }
-                newData[(y * newWidth + x) * 4 + 3] = 255; // Alpha
-            }
-        }
-        
-        return newImageData;
-    }
-    
-    // ディテール強調フィルター
-    function enhanceDetails(imageData) {
-        const width = imageData.width;
-        const height = imageData.height;
-        const data = imageData.data;
-        const output = new Uint8ClampedArray(data);
-        
-        // アンシャープマスク（強力版）
-        const radius = 2;
-        const amount = 1.5; // 強度を上げる
-        
-        for (let y = radius; y < height - radius; y++) {
-            for (let x = radius; x < width - radius; x++) {
-                const idx = (y * width + x) * 4;
-                
-                for (let c = 0; c < 3; c++) {
-                    let blurred = 0;
-                    let weight = 0;
-                    
-                    // ガウシアンブラー
-                    for (let dy = -radius; dy <= radius; dy++) {
-                        for (let dx = -radius; dx <= radius; dx++) {
-                            const dist = Math.sqrt(dx * dx + dy * dy);
-                            const w = Math.exp(-(dist * dist) / (2 * radius * radius));
-                            const nIdx = ((y + dy) * width + (x + dx)) * 4 + c;
-                            blurred += data[nIdx] * w;
-                            weight += w;
-                        }
-                    }
-                    blurred /= weight;
-                    
-                    // アンシャープマスクを適用
-                    const sharp = data[idx + c] + (data[idx + c] - blurred) * amount;
-                    output[idx + c] = Math.min(255, Math.max(0, Math.round(sharp)));
-                }
-            }
-        }
-        
-        return output;
-    }
-    
-    // ノイズ除去とテクスチャ復元
-    function denoiseAndRestoreTexture(imageData) {
-        const width = imageData.width;
-        const height = imageData.height;
-        const data = new Uint8ClampedArray(imageData.data);
-        
-        // Non-local means風のノイズ除去
-        for (let y = 2; y < height - 2; y++) {
-            for (let x = 2; x < width - 2; x++) {
-                const idx = (y * width + x) * 4;
-                
-                for (let c = 0; c < 3; c++) {
-                    const patches = [];
-                    const centerPatch = [];
-                    
-                    // 中心パッチを取得
-                    for (let dy = -1; dy <= 1; dy++) {
-                        for (let dx = -1; dx <= 1; dx++) {
-                            const nIdx = ((y + dy) * width + (x + dx)) * 4 + c;
-                            centerPatch.push(data[nIdx]);
-                        }
-                    }
-                    
-                    // 周囲のパッチと比較
-                    for (let py = -2; py <= 2; py++) {
-                        for (let px = -2; px <= 2; px++) {
-                            if (px === 0 && py === 0) continue;
-                            
-                            const patch = [];
-                            let valid = true;
-                            
-                            for (let dy = -1; dy <= 1; dy++) {
-                                for (let dx = -1; dx <= 1; dx++) {
-                                    const ny = y + py + dy;
-                                    const nx = x + px + dx;
-                                    if (ny < 0 || ny >= height || nx < 0 || nx >= width) {
-                                        valid = false;
-                                        break;
-                                    }
-                                    const nIdx = (ny * width + nx) * 4 + c;
-                                    patch.push(data[nIdx]);
-                                }
-                                if (!valid) break;
-                            }
-                            
-                            if (valid) {
-                                // パッチの類似度を計算
-                                let diff = 0;
-                                for (let i = 0; i < 9; i++) {
-                                    diff += Math.abs(centerPatch[i] - patch[i]);
-                                }
-                                const weight = Math.exp(-diff / 50);
-                                patches.push({ value: data[((y + py) * width + (x + px)) * 4 + c], weight });
-                            }
-                        }
-                    }
-                    
-                    // 重み付き平均
-                    if (patches.length > 0) {
-                        let sum = data[idx + c] * 0.5; // 元の値も考慮
-                        let weightSum = 0.5;
-                        
-                        for (const patch of patches) {
-                            sum += patch.value * patch.weight;
-                            weightSum += patch.weight;
-                        }
-                        
-                        data[idx + c] = Math.round(sum / weightSum);
-                    }
-                }
-            }
-        }
-        
-        imageData.data.set(data);
-        return imageData;
-    }
-    
-    // 新しいAIエンハンサーを使用
-    async function enhanceImageQuality(blob, targetResolution = 'auto') {
-        // AIエンハンサーが利用可能な場合はそれを使用
-        if (window.AIImageEnhancer) {
-            console.log('AI画質向上エンジンを使用します...');
-            const enhancer = new AIImageEnhancer();
-            return await enhancer.enhance(blob, targetResolution);
-        }
-        
-        // フォールバック: 従来の処理
-        console.log('従来の画質向上処理を使用します...');
-        return new Promise((resolve) => {
-            const img = new Image();
-            
-            img.onload = function() {
-                // 元画像のサイズ
-                const originalWidth = img.width;
-                const originalHeight = img.height;
-                const aspectRatio = originalWidth / originalHeight;
-                
-                let width, height;
-                
-                // 解像度設定に基づいて目標サイズを決定
-                switch(targetResolution) {
-                    case '4k':
-                        if (aspectRatio > 16/9) {
-                            width = 3840;
-                            height = Math.round(3840 / aspectRatio);
-                        } else {
-                            height = 2160;
-                            width = Math.round(2160 * aspectRatio);
-                        }
-                        break;
-                    case '1440p':
-                        if (aspectRatio > 16/9) {
-                            width = 2560;
-                            height = Math.round(2560 / aspectRatio);
-                        } else {
-                            height = 1440;
-                            width = Math.round(1440 * aspectRatio);
-                        }
-                        break;
-                    case '1080p':
-                        if (aspectRatio > 16/9) {
-                            width = 1920;
-                            height = Math.round(1920 / aspectRatio);
-                        } else {
-                            height = 1080;
-                            width = Math.round(1080 * aspectRatio);
-                        }
-                        break;
-                    case '720p':
-                        if (aspectRatio > 16/9) {
-                            width = 1280;
-                            height = Math.round(1280 / aspectRatio);
-                        } else {
-                            height = 720;
-                            width = Math.round(720 * aspectRatio);
-                        }
-                        break;
-                    case 'original':
-                        width = originalWidth;
-                        height = originalHeight;
-                        break;
-                    case 'auto':
-                    default:
-                        let scaleFactor = 2;
-                        if (originalWidth < 400 || originalHeight < 400) {
-                            scaleFactor = 4;
-                        } else if (originalWidth < 800 || originalHeight < 800) {
-                            scaleFactor = 3;
-                        } else if (originalWidth > 1500 || originalHeight > 1500) {
-                            scaleFactor = 1.5;
-                        }
-                        width = Math.round(originalWidth * scaleFactor);
-                        height = Math.round(originalHeight * scaleFactor);
-                        
-                        if (width > 3840) {
-                            const scale = 3840 / width;
-                            width = 3840;
-                            height = Math.round(height * scale);
-                        }
-                        if (height > 2160) {
-                            const scale = 2160 / height;
-                            height = 2160;
-                            width = Math.round(width * scale);
-                        }
-                        break;
-                }
-                
-                // 元画像より小さくしない（originalモード以外）
-                if (targetResolution !== 'original') {
-                    if (width < originalWidth) width = originalWidth;
-                    if (height < originalHeight) height = originalHeight;
-                }
-                
-                // 処理用のキャンバスを作成
-                const srcCanvas = document.createElement('canvas');
-                const srcCtx = srcCanvas.getContext('2d', { willReadFrequently: true });
-                srcCanvas.width = originalWidth;
-                srcCanvas.height = originalHeight;
-                srcCtx.drawImage(img, 0, 0);
-                
-                // 元画像のデータを取得
-                let imageData = srcCtx.getImageData(0, 0, originalWidth, originalHeight);
-                
-                // Step 1: ノイズ除去とテクスチャ復元
-                console.log('ノイズ除去を実行中...');
-                imageData = denoiseAndRestoreTexture(imageData);
-                srcCtx.putImageData(imageData, 0, 0);
-                
-                // Step 2: 超解像処理（段階的に拡大）
-                let currentScale = 1;
-                const targetScale = Math.max(width / originalWidth, height / originalHeight);
-                
-                while (currentScale < targetScale) {
-                    const stepScale = Math.min(2, targetScale / currentScale);
-                    console.log(`超解像処理中... ${Math.round(currentScale * 100)}% → ${Math.round(currentScale * stepScale * 100)}%`);
-                    
-                    // 現在のサイズを取得
-                    const currentWidth = Math.round(originalWidth * currentScale);
-                    const currentHeight = Math.round(originalHeight * currentScale);
-                    
-                    // 超解像フィルターを適用
-                    imageData = srcCtx.getImageData(0, 0, currentWidth, currentHeight);
-                    const scaledData = superResolutionFilter(imageData, stepScale);
-                    
-                    // 新しいサイズのキャンバスに描画
-                    const newWidth = Math.round(currentWidth * stepScale);
-                    const newHeight = Math.round(currentHeight * stepScale);
-                    srcCanvas.width = newWidth;
-                    srcCanvas.height = newHeight;
-                    srcCtx.putImageData(scaledData, 0, 0);
-                    
-                    currentScale *= stepScale;
-                }
-                
-                // Step 3: 最終サイズに調整
-                const finalCanvas = document.createElement('canvas');
-                const finalCtx = finalCanvas.getContext('2d', { willReadFrequently: true });
-                finalCanvas.width = width;
-                finalCanvas.height = height;
-                
-                // 高品質な補間で最終サイズに（色は変えない）
-                finalCtx.imageSmoothingEnabled = true;
-                finalCtx.imageSmoothingQuality = 'high';
-                finalCtx.filter = 'none';
-                finalCtx.drawImage(srcCanvas, 0, 0, width, height);
-                
-                // Step 4: ディテール強調
-                console.log('ディテール強調中...');
-                let finalImageData = finalCtx.getImageData(0, 0, width, height);
-                const enhancedData = enhanceDetails(finalImageData);
-                finalImageData.data.set(enhancedData);
-                finalCtx.putImageData(finalImageData, 0, 0);
-                
-                // Step 5: 最終的な画質調整（彩度・コントラスト変更なし）
-                const outputCanvas = document.createElement('canvas');
-                const outputCtx = outputCanvas.getContext('2d');
-                outputCanvas.width = width;
-                outputCanvas.height = height;
-                
-                // 彩度・明るさ・コントラストは変更しない
-                outputCtx.filter = 'none';
-                outputCtx.drawImage(finalCanvas, 0, 0);
-                
-                // 高画質で保存
-                const outputFormat = blob.type === 'image/png' ? 'image/png' : 'image/jpeg';
-                const quality = 1.0; // 最高品質で保存
-                
-                outputCanvas.toBlob(function(newBlob) {
-                    console.log(`画質向上完了: ${originalWidth}x${originalHeight} → ${width}x${height}`);
-                    console.log(`ファイルサイズ: ${(blob.size/1024).toFixed(1)}KB → ${(newBlob.size/1024).toFixed(1)}KB`);
-                    resolve(newBlob);
-                }, outputFormat, quality);
-            };
-            
-            img.src = URL.createObjectURL(blob);
-        });
-    }
-
-    async function convertToGif(blob) {
-        // WebPアニメーションからGIFへの変換は複雑なため、
-        // 静止画として保存するか、元のWebPをGIFとして保存
-        // ブラウザの制限により、完全なアニメーション変換は困難
-        return blob;
-    }
-
-    // FandomのようなWikiサイトから実際の画像URLを取得
-    async function extractActualImageUrl(url) {
-        // FandomのWikiページの場合
-        if (url.includes('fandom.com') && url.includes('wiki')) {
-            try {
-                showStatus('Wikiページから画像を取得しています...', 'info');
-                
-                // URLからファイル名を抽出
-                const urlObj = new URL(url);
-                const fileParam = urlObj.searchParams.get('file');
-                
-                if (fileParam) {
-                    // Wikiページをフェッチして実際の画像URLを探す
-                    try {
-                        // CORSプロキシ経由でページを取得
-                        const pageUrl = url.split('?')[0]; // クエリパラメータを除去
-                        const proxyPageUrl = 'https://corsproxy.io/?' + encodeURIComponent(url);
-                        
-                        const pageResponse = await fetch(proxyPageUrl);
-                        if (pageResponse.ok) {
-                            const pageText = await pageResponse.text();
-                            
-                            // 画像URLを正規表現で探す
-                            // パターン1: static.wikia.nocookie.net のURL
-                            const imgUrlPattern = /https:\/\/static\.wikia\.nocookie\.net\/[^"'\s]+\.gif/gi;
-                            const matches = pageText.match(imgUrlPattern);
-                            
-                            if (matches && matches.length > 0) {
-                                // ファイル名に一致する画像URLを探す
-                                const targetFilename = fileParam.toLowerCase();
-                                for (const match of matches) {
-                                    if (match.toLowerCase().includes(targetFilename.replace(/_/g, ''))) {
-                                        console.log('Found actual image URL:', match);
-                                        // /revision/latest を削除してオリジナル画像を取得
-                                        const cleanUrl = match.split('/revision/')[0];
-                                        return cleanUrl;
-                                    }
-                                }
-                                
-                                // 一致するものが見つからない場合は最初のGIFを使用
-                                console.log('Using first GIF found:', matches[0]);
-                                return matches[0].split('/revision/')[0];
-                            }
-                        }
-                    } catch (e) {
-                        console.log('Failed to fetch Wiki page:', e);
-                    }
-                    
-                    // フォールバック: 直接URLを推測
-                    showStatus('画像URLを推測しています...', 'info');
-                    
-                    // 実際のMinecraft WikiのGIF URLの例:
-                    // https://static.wikia.nocookie.net/minecraft_gamepedia/images/e/ed/Enchanted_Stone_Sword.gif
-                    const wikiName = url.match(/https?:\/\/([^.]+)\.fandom\.com/)?.[1] || 'minecraft';
-                    
-                    // よく使われるハッシュパターン
-                    const hashes = ['e/ed', 'a/ab', '1/1a', '2/2b', '3/3c', '4/4d', '5/5e', '6/6f', '7/7a', '8/8b', '9/9c', '0/0a', 'b/bc', 'c/cd', 'd/de', 'f/fa'];
-                    
-                    for (const hash of hashes) {
-                        const testUrl = `https://static.wikia.nocookie.net/${wikiName}_gamepedia/images/${hash}/${fileParam}`;
-                        console.log('Trying URL pattern:', testUrl);
-                        
-                        // URLが有効か確認
-                        try {
-                            const testResponse = await fetch('https://corsproxy.io/?' + encodeURIComponent(testUrl), {
-                                method: 'HEAD'
-                            });
-                            if (testResponse.ok) {
-                                console.log('Found working URL:', testUrl);
-                                return testUrl;
-                            }
-                        } catch (e) {
-                            // 次のパターンを試す
-                        }
-                    }
-                }
-            } catch (e) {
-                console.log('Failed to extract Fandom image URL:', e);
-            }
-        }
-        
-        // 他の画像直接URLの場合はそのまま返す
-        // 安全なURLのホスト判定に置き換え
-        try {
-            const parsedUrl = new URL(url);
-            if (parsedUrl.hostname === 'static.wikia.nocookie.net' || 
-                url.includes('.gif') || 
-                url.includes('.jpg') || 
-                url.includes('.png') ||
-                url.includes('.webp')) {
-                return url;
-            }
-        } catch (e) {
-            // URLパース失敗時はfall through
-        }
-        
-        return url;
-    }
-
-    // YouTube Innertube APIを使用して動画情報を取得
+    // ---------- YouTube 関連（既存のまま） ----------
     async function getYouTubeVideoInfo(videoId) {
         try {
             showStatus('動画情報を取得中...', 'info');
-            
-            // YouTube Innertube API (YouTube内部API)
-            const apiKey = 'AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8'; // 公開APIキー
+            const apiKey = 'AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8';
             const innertubeUrl = 'https://www.youtube.com/youtubei/v1/player';
-            
-            const requestBody = {
-                videoId: videoId,
-                context: {
-                    client: {
-                        hl: 'ja',
-                        gl: 'JP',
-                        clientName: 'WEB',
-                        clientVersion: '2.20231219.01.00',
-                        platform: 'DESKTOP'
-                    }
-                }
-            };
-            
+            const requestBody = { videoId, context: { client: { hl:'ja', gl:'JP', clientName:'WEB', clientVersion:'2.20231219.01.00', platform:'DESKTOP' } } };
             const response = await fetch(`https://corsproxy.io/?${encodeURIComponent(innertubeUrl + '?key=' + apiKey)}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(requestBody)
+                method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(requestBody)
             });
-            
-            if (response.ok) {
-                const data = await response.json();
-                return data;
-            }
-            
-            // フォールバック: oEmbed API
+            if (response.ok) return await response.json();
+
             const oembedUrl = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`;
             const oembedResponse = await fetch('https://corsproxy.io/?' + encodeURIComponent(oembedUrl));
             const oembedData = await oembedResponse.json();
-            
-            return {
-                videoDetails: {
-                    title: oembedData.title,
-                    author: oembedData.author_name,
-                    videoId: videoId
-                }
-            };
-        } catch (error) {
-            console.error('Failed to get video info:', error);
-            return null;
-        }
+            return { videoDetails: { title: oembedData.title, author: oembedData.author_name, videoId } };
+        } catch { return null; }
     }
-    
+
     async function getYouTubeStreams(videoId) {
         try {
-            // YouTube動画ページから直接ストリーム情報を取得
             const videoPageUrl = `https://www.youtube.com/watch?v=${videoId}`;
             const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(videoPageUrl);
-            
             showStatus('動画情報を解析中...', 'info');
             const response = await fetch(proxyUrl);
             const html = await response.text();
-            
-            // ytInitialPlayerResponseを探す
             const ytConfigMatch = html.match(/ytInitialPlayerResponse\s*=\s*({.+?});/);
             if (ytConfigMatch) {
                 const playerResponse = JSON.parse(ytConfigMatch[1]);
-                
                 if (playerResponse.streamingData) {
                     const formats = [
                         ...(playerResponse.streamingData.formats || []),
                         ...(playerResponse.streamingData.adaptiveFormats || [])
                     ];
-                    
                     return formats.map(format => ({
                         itag: format.itag,
                         url: format.url || format.signatureCipher,
                         mimeType: format.mimeType,
                         quality: format.quality,
                         qualityLabel: format.qualityLabel,
-                        hasAudio: format.audioQuality ? true : false,
-                        hasVideo: format.width ? true : false,
+                        hasAudio: !!format.audioQuality,
+                        hasVideo: !!format.width,
                         width: format.width,
                         height: format.height,
                         contentLength: format.contentLength,
@@ -803,230 +241,140 @@ document.addEventListener('DOMContentLoaded', function() {
                     }));
                 }
             }
-            
             return [];
-        } catch (error) {
-            console.error('Failed to get streams:', error);
-            return [];
-        }
+        } catch { return []; }
     }
-    
-    // signatureCipherをデコードして実際のURLを取得
+
     function decodeSignatureCipher(signatureCipher) {
         const params = new URLSearchParams(signatureCipher);
-        const url = params.get('url');
-        const sp = params.get('sp') || 'signature';
-        const s = params.get('s');
-        
+        const url = params.get('url'); const sp = params.get('sp') || 'signature'; const s = params.get('s');
         if (url && s) {
-            // シグネチャーのデコード（簡易版）
-            // 実際にはYouTubeのJavaScriptプレーヤーからデコード関数を抽出する必要がある
-            const decodedSig = decodeSignature(s);
+            const decodedSig = s.split('').reverse().join('');
             return `${url}&${sp}=${encodeURIComponent(decodedSig)}`;
         }
         return null;
     }
-    
-    // YouTubeシグネチャーのデコード（簡易実装）
-    function decodeSignature(sig) {
-        // これは例示的な実装です。実際のデコードアルゴリズムはより複雑です
-        return sig.split('').reverse().join('');
-    }
-    
-    // 動画・音声データをダウンロードして結合
+
     async function downloadAndMergeStreams(videoUrl, audioUrl, filename) {
         try {
             showStatus('動画データをダウンロード中...', 'info');
-            
-            // Blob形式でダウンロード
             const videoResponse = await fetch(`https://corsproxy.io/?${encodeURIComponent(videoUrl)}`);
             const videoBlob = await videoResponse.blob();
-            
             if (audioUrl) {
                 showStatus('音声データをダウンロード中...', 'info');
                 const audioResponse = await fetch(`https://corsproxy.io/?${encodeURIComponent(audioUrl)}`);
                 const audioBlob = await audioResponse.blob();
-                
-                // ブラウザ上での動画・音声の結合は複雑なため、
-                // 個別にダウンロードして、ユーザーに結合を促す
+
                 const videoLink = document.createElement('a');
                 videoLink.href = URL.createObjectURL(videoBlob);
                 videoLink.download = filename.replace('.mp4', '_video.mp4');
                 videoLink.click();
-                
+
                 const audioLink = document.createElement('a');
                 audioLink.href = URL.createObjectURL(audioBlob);
                 audioLink.download = filename.replace('.mp4', '_audio.mp3');
                 audioLink.click();
-                
+
                 showStatus('動画と音声を別々にダウンロードしました。動画編集ソフトで結合してください。', 'info');
             } else {
-                // 音声込みの動画の場合
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(videoBlob);
                 link.download = filename;
                 link.click();
-                
                 showStatus('ダウンロードが完了しました！', 'success');
             }
         } catch (error) {
             throw new Error('ダウンロード中にエラーが発生しました: ' + error.message);
         }
     }
-    
+
     async function downloadYouTubeVideo(url, format, quality) {
         const videoId = extractYouTubeId(url);
-        if (!videoId) {
-            throw new Error('無効なYouTube URLです');
-        }
-        
+        if (!videoId) throw new Error('無効なYouTube URLです');
         showStatus('YouTube動画情報を取得中...', 'info');
-        
         try {
-            // Innertube APIで動画情報を取得
             const videoInfo = await getYouTubeVideoInfo(videoId);
-            
             if (!videoInfo || !videoInfo.streamingData) {
-                // ページから直接ストリーム情報を取得
                 const streams = await getYouTubeStreams(videoId);
-                
-                if (!streams || streams.length === 0) {
-                    throw new Error('動画ストリームが見つかりません');
-                }
-                
-                // レガシー処理にフォールバック
+                if (!streams || streams.length === 0) throw new Error('動画ストリームが見つかりません');
+
+                // レガシー処理
                 await handleLegacyDownload(streams, format, quality, videoInfo);
                 return;
             }
-            
-            // ストリーミングデータから適切なフォーマットを選択
+
             const formats = [
                 ...(videoInfo.streamingData.formats || []),
                 ...(videoInfo.streamingData.adaptiveFormats || [])
             ];
-            
+
             let selectedVideo = null;
             let selectedAudio = null;
-            
+
             if (format === 'audio') {
-                // 音声のみ - 最高品質のオーディオを選択
-                const audioFormats = formats.filter(f => 
-                    f.mimeType && f.mimeType.startsWith('audio/')
-                );
-                
-                selectedAudio = audioFormats.sort((a, b) => 
-                    (b.bitrate || 0) - (a.bitrate || 0)
-                )[0];
-                
+                const audioFormats = formats.filter(f => f.mimeType && f.mimeType.startsWith('audio/'));
+                selectedAudio = audioFormats.sort((a,b)=>(b.bitrate||0)-(a.bitrate||0))[0];
                 if (selectedAudio) {
-                    const audioUrl = selectedAudio.url || 
-                        (selectedAudio.signatureCipher && decodeSignatureCipher(selectedAudio.signatureCipher));
-                    
+                    const audioUrl = selectedAudio.url || (selectedAudio.signatureCipher && decodeSignatureCipher(selectedAudio.signatureCipher));
                     if (audioUrl) {
                         showStatus('音声をダウンロード中...', 'info');
-                        
-                        // 音声を直接ダウンロード
                         const link = document.createElement('a');
                         link.href = `https://corsproxy.io/?${encodeURIComponent(audioUrl)}`;
                         link.download = `${videoInfo.videoDetails?.title || videoId}.mp3`;
                         link.target = '_blank';
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                        
+                        document.body.appendChild(link); link.click(); document.body.removeChild(link);
                         showStatus('音声のダウンロードを開始しました', 'success');
                         return;
                     }
                 }
             } else {
-                // 動画 - 指定品質の動画と最高品質の音声を選択
-                const videoFormats = formats.filter(f => 
-                    f.mimeType && f.mimeType.startsWith('video/')
-                );
-                
-                // 品質に応じた動画を選択
+                const videoFormats = formats.filter(f => f.mimeType && f.mimeType.startsWith('video/'));
                 if (quality === 'highest') {
-                    selectedVideo = videoFormats.sort((a, b) => 
-                        (b.height || 0) - (a.height || 0)
-                    )[0];
+                    selectedVideo = videoFormats.sort((a,b)=>(b.height||0)-(a.height||0))[0];
                 } else {
-                    const targetHeight = parseInt(quality.replace('p', ''));
-                    selectedVideo = videoFormats.find(f => f.height === targetHeight) ||
-                                  videoFormats.find(f => f.height <= targetHeight) ||
-                                  videoFormats[0];
+                    const targetHeight = parseInt(quality.replace('p',''));
+                    selectedVideo = videoFormats.find(f=>f.height===targetHeight) ||
+                                    videoFormats.find(f=>(f.height||0)<=targetHeight) ||
+                                    videoFormats[0];
                 }
-                
-                // 音声トラックを持つフォーマットかチェック
                 if (selectedVideo && selectedVideo.audioQuality) {
-                    // 音声込みの動画
-                    const videoUrl = selectedVideo.url || 
-                        (selectedVideo.signatureCipher && decodeSignatureCipher(selectedVideo.signatureCipher));
-                    
+                    const videoUrl = selectedVideo.url || (selectedVideo.signatureCipher && decodeSignatureCipher(selectedVideo.signatureCipher));
                     if (videoUrl) {
                         showStatus('動画をダウンロード中...', 'info');
-                        
                         const link = document.createElement('a');
                         link.href = `https://corsproxy.io/?${encodeURIComponent(videoUrl)}`;
                         link.download = `${videoInfo.videoDetails?.title || videoId}.mp4`;
                         link.target = '_blank';
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                        
+                        document.body.appendChild(link); link.click(); document.body.removeChild(link);
                         showStatus('動画のダウンロードを開始しました', 'success');
                         return;
                     }
                 } else {
-                    // 動画と音声を別々にダウンロード
-                    const audioFormats = formats.filter(f => 
-                        f.mimeType && f.mimeType.startsWith('audio/')
-                    );
-                    selectedAudio = audioFormats.sort((a, b) => 
-                        (b.bitrate || 0) - (a.bitrate || 0)
-                    )[0];
-                    
-                    if (selectedVideo && selectedAudio) {
-                        const videoUrl = selectedVideo.url || 
-                            (selectedVideo.signatureCipher && decodeSignatureCipher(selectedVideo.signatureCipher));
-                        const audioUrl = selectedAudio.url || 
-                            (selectedAudio.signatureCipher && decodeSignatureCipher(selectedAudio.signatureCipher));
-                        
-                        if (videoUrl && audioUrl) {
-                            const filename = `${videoInfo.videoDetails?.title || videoId}.mp4`;
-                            await downloadAndMergeStreams(videoUrl, audioUrl, filename);
-                            return;
-                        }
+                    const audioFormats = formats.filter(f => f.mimeType && f.mimeType.startsWith('audio/'));
+                    selectedAudio = audioFormats.sort((a,b)=>(b.bitrate||0)-(a.bitrate||0))[0];
+                    const videoUrl = selectedVideo && (selectedVideo.url || (selectedVideo.signatureCipher && decodeSignatureCipher(selectedVideo.signatureCipher)));
+                    const audioUrl = selectedAudio && (selectedAudio.url || (selectedAudio.signatureCipher && decodeSignatureCipher(selectedAudio.signatureCipher)));
+                    if (videoUrl && audioUrl) {
+                        const filename = `${videoInfo.videoDetails?.title || videoId}.mp4`;
+                        await downloadAndMergeStreams(videoUrl, audioUrl, filename);
+                        return;
                     }
                 }
             }
-            
             throw new Error('適切なストリームが見つかりませんでした');
-            
         } catch (error) {
             console.error('YouTube download error:', error);
             showStatus(`エラー: ${error.message}`, 'error');
-            
-            // エラー時は手動ダウンロード用のUIを表示
             showManualDownloadUI(videoId);
         }
     }
-    
-    // 手動ダウンロード用のUI表示
-    function escapeHTML(str) {
-        return String(str)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;')
-            .replace(/\//g, '&#x2F;');
-    }
 
+    function escapeHTML(str){return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/\//g,'&#x2F;');}
     function showManualDownloadUI(videoId) {
         const escapedVideoId = escapeHTML(videoId);
         const modalHtml = `
-            <div id="ytDownloadModal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-                background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+            <div id="ytDownloadModal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
                 z-index: 10000; max-width: 500px;">
                 <h3>YouTube動画ダウンロード</h3>
                 <p>自動ダウンロードができませんでした。以下の方法をお試しください：</p>
@@ -1036,25 +384,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     <li>オンラインサービスを利用する</li>
                 </ol>
                 <p>動画ID: <code>${escapedVideoId}</code></p>
-                <button onclick="document.getElementById('ytDownloadModal').remove()" 
-                    style="background: #4CAF50; color: white; border: none; padding: 10px 20px; 
-                    border-radius: 4px; cursor: pointer;">閉じる</button>
+                <button onclick="document.getElementById('ytDownloadModal').remove()"
+                    style="background:#4CAF50;color:#fff;border:none;padding:10px 20px;border-radius:4px;cursor:pointer;">閉じる</button>
             </div>
-            <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
-                background: rgba(0,0,0,0.5); z-index: 9999;" 
+            <div style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 9999;"
                 onclick="document.getElementById('ytDownloadModal').remove()"></div>
         `;
-        
         const modalDiv = document.createElement('div');
         modalDiv.innerHTML = modalHtml;
         document.body.appendChild(modalDiv);
     }
-    
-    // レガシー処理のハンドラー
+
     async function handleLegacyDownload(streams, format, quality, videoInfo) {
-        // 既存のストリーム処理ロジック
         let selectedStream = null;
-        
         if (format === 'audio') {
             const audioStreams = streams.filter(s => s.hasAudio && !s.hasVideo);
             selectedStream = audioStreams[0];
@@ -1062,7 +404,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const videoStreams = streams.filter(s => s.hasVideo);
             selectedStream = videoStreams[0];
         }
-        
         if (selectedStream && selectedStream.url) {
             const link = document.createElement('a');
             link.href = selectedStream.url;
@@ -1074,196 +415,258 @@ document.addEventListener('DOMContentLoaded', function() {
             throw new Error('ストリームが見つかりません');
         }
     }
-    
+
+    // ---------- ここが“効く”画質向上：UpscalerJS（ESRGAN） ----------
+    // UpscalerJS を CDN（esm.sh）から動的 import。依存（tfjs 等）も bundle して取り込み。
+    async function enhanceImageQuality(blob, targetResolution = 'auto') {
+        try {
+            const Upscaler = (await import('https://esm.sh/upscaler@1?bundle')).default;
+            // モデルは 4x の軽量レガシー版。必要に応じて esrgan-medium / thick に差し替え可。
+            const model = (await import('https://esm.sh/@upscalerjs/esrgan-legacy@1/4x?bundle')).default;
+            const upscaler = new Upscaler({ model });
+
+            // 入力を dataURL に
+            const srcDataURL = await blobToDataURL(blob);
+
+            // 4x アップスケール（タイルでメモリ節約）
+            const upscaledDataURL = await upscaler.upscale(srcDataURL, {
+                patchSize: 128, padding: 10,
+            }); // base64 DataURL が返る
+
+            // 目標解像度へ調整（色は保持するための下準備）
+            const baseImg = new Image(); baseImg.src = srcDataURL; await baseImg.decode();
+            const srImg = new Image();   srImg.src   = upscaledDataURL; await srImg.decode();
+
+            const ow = baseImg.width, oh = baseImg.height;
+            const ar = ow / oh;
+            let width = srImg.width, height = srImg.height;
+
+            switch (targetResolution) {
+                case '4k':    if (ar>16/9){ width=3840; height=Math.round(3840/ar);} else { height=2160; width=Math.round(2160*ar);} break;
+                case '1440p': if (ar>16/9){ width=2560; height=Math.round(2560/ar);} else { height=1440; width=Math.round(1440*ar);} break;
+                case '1080p': if (ar>16/9){ width=1920; height=Math.round(1920/ar);} else { height=1080; width=Math.round(1080*ar);} break;
+                case '720p':  if (ar>16/9){ width=1280; height=Math.round(1280/ar);} else { height= 720; width=Math.round( 720*ar);} break;
+                case 'original': width=ow; height=oh; break;
+                default:
+                    // 4x結果が大きすぎる場合は軽く縮小して締める
+                    if (width > 3200) { const s=3200/width; width=Math.round(width*s); height=Math.round(height*s); }
+            }
+
+            // ベース（バイキュービック相当）と SR を同サイズに描画
+            const base = document.createElement('canvas'); base.width=width; base.height=height;
+            const bctx = base.getContext('2d'); bctx.imageSmoothingEnabled=true; bctx.imageSmoothingQuality='high'; bctx.filter='none';
+            bctx.drawImage(baseImg, 0, 0, width, height);
+
+            const sr = document.createElement('canvas'); sr.width=width; sr.height=height;
+            const srctx = sr.getContext('2d'); srctx.imageSmoothingEnabled=true; srctx.imageSmoothingQuality='high'; srctx.filter='none';
+            srctx.drawImage(srImg, 0, 0, width, height);
+
+            // 輝度（Y）のみ SR を採用して色（Cb/Cr）はベースから → 彩度/色相は不変
+            const merged = mergeLuma(sr, base);
+
+            // 出力 blob（元がPNGならPNG）
+            return await new Promise(res => merged.toBlob(res, (blob.type === 'image/png' ? 'image/png' : 'image/jpeg'), 1.0));
+        } catch (e) {
+            console.warn('UpscalerJS が使えないため従来処理にフォールバックします:', e);
+            // ---- フォールバック：従来のリサンプル＋ディテール強調（色は変えない） ----
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = function() {
+                    const originalWidth = img.width;
+                    const originalHeight = img.height;
+                    const aspectRatio = originalWidth / originalHeight;
+                    let width, height;
+
+                    switch(targetResolution) {
+                        case '4k':
+                            if (aspectRatio > 16/9) { width = 3840; height = Math.round(3840 / aspectRatio); }
+                            else { height = 2160; width = Math.round(2160 * aspectRatio); }
+                            break;
+                        case '1440p':
+                            if (aspectRatio > 16/9) { width = 2560; height = Math.round(2560 / aspectRatio); }
+                            else { height = 1440; width = Math.round(1440 * aspectRatio); }
+                            break;
+                        case '1080p':
+                            if (aspectRatio > 16/9) { width = 1920; height = Math.round(1920 / aspectRatio); }
+                            else { height = 1080; width = Math.round(1080 * aspectRatio); }
+                            break;
+                        case '720p':
+                            if (aspectRatio > 16/9) { width = 1280; height = Math.round(1280 / aspectRatio); }
+                            else { height = 720; width = Math.round(720 * aspectRatio); }
+                            break;
+                        case 'original':
+                            width = originalWidth; height = originalHeight; break;
+                        default:
+                            let scaleFactor = 2;
+                            if (originalWidth < 400 || originalHeight < 400) scaleFactor = 4;
+                            else if (originalWidth < 800 || originalHeight < 800) scaleFactor = 3;
+                            else if (originalWidth > 1500 || originalHeight > 1500) scaleFactor = 1.5;
+                            width = Math.round(originalWidth * scaleFactor);
+                            height = Math.round(originalHeight * scaleFactor);
+                            if (width > 3840) { const s = 3840 / width; width = 3840; height = Math.round(height * s); }
+                            if (height > 2160) { const s = 2160 / height; height = 2160; width = Math.round(width * s); }
+                            break;
+                    }
+                    if (targetResolution !== 'original') {
+                        if (width < originalWidth) width = originalWidth;
+                        if (height < originalHeight) height = originalHeight;
+                    }
+
+                    const srcCanvas = document.createElement('canvas');
+                    const srcCtx = srcCanvas.getContext('2d', { willReadFrequently: true });
+                    srcCanvas.width = originalWidth; srcCanvas.height = originalHeight;
+                    srcCtx.drawImage(img, 0, 0);
+
+                    // 最終サイズへ（高品質補間 / フィルタ無し）
+                    const finalCanvas = document.createElement('canvas');
+                    const finalCtx = finalCanvas.getContext('2d', { willReadFrequently: true });
+                    finalCanvas.width = width; finalCanvas.height = height;
+                    finalCtx.imageSmoothingEnabled = true;
+                    finalCtx.imageSmoothingQuality = 'high';
+                    finalCtx.filter = 'none';
+                    finalCtx.drawImage(srcCanvas, 0, 0, width, height);
+
+                    // 軽いディテール強調（RGB同一操作なので色相/彩度は実質維持）
+                    let id = finalCtx.getImageData(0, 0, width, height);
+                    const data = id.data, out = new Uint8ClampedArray(data);
+                    const radius = 2, amount = 0.6;
+                    const kSize = radius*2+1, sigma = radius*0.8+1.0;
+                    const k = []; let sum=0; const c = Math.floor(kSize/2);
+                    for(let y=0;y<kSize;y++){ k[y]=[]; for(let x=0;x<kSize;x++){ const dx=x-c,dy=y-c; const v=Math.exp(-(dx*dx+dy*dy)/(2*sigma*sigma)); k[y][x]=v; sum+=v; } }
+                    for(let y=0;y<kSize;y++) for(let x=0;x<kSize;x++) k[y][x]/=sum;
+
+                    // ぼかし
+                    const blur = new Float32Array(width*height*3);
+                    for(let y=0;y<height;y++){
+                        for(let x=0;x<width;x++){
+                            for(let ch=0;ch<3;ch++){
+                                let acc=0, wsum=0;
+                                for(let ky=0;ky<kSize;ky++){
+                                    for(let kx=0;kx<kSize;kx++){
+                                        const sx=Math.min(width-1, Math.max(0, x + kx - c));
+                                        const sy=Math.min(height-1, Math.max(0, y + ky - c));
+                                        const w=k[ky][kx];
+                                        acc += data[(sy*width+sx)*4 + ch] * w; wsum += w;
+                                    }
+                                }
+                                blur[(y*width+x)*3 + ch] = acc/(wsum||1);
+                            }
+                        }
+                    }
+                    for(let y=0;y<height;y++){
+                        for(let x=0;x<width;x++){
+                            const idx=(y*width+x)*4;
+                            for(let ch=0;ch<3;ch++){
+                                const yy = data[idx+ch];
+                                const yb = blur[(y*width+x)*3 + ch];
+                                const val = Math.max(0, Math.min(255, yy + amount*(yy - yb)));
+                                out[idx+ch]=val;
+                            }
+                            out[idx+3]=255;
+                        }
+                    }
+                    id.data.set(out); finalCtx.putImageData(id,0,0);
+
+                    finalCanvas.toBlob((newBlob)=>resolve(newBlob), (blob.type==='image/png'?'image/png':'image/jpeg'), 1.0);
+                };
+                img.src = URL.createObjectURL(blob);
+            });
+        }
+    }
+
+    // ---------- ダウンロード本体 ----------
+    async function extractActualImageUrl(url) {
+        try {
+            const parsedUrl = new URL(url);
+            if (parsedUrl.hostname === 'static.wikia.nocookie.net' ||
+                /\.(gif|jpg|jpeg|png|webp)(\?.*)?$/i.test(parsedUrl.pathname)) {
+                return url;
+            }
+        } catch {}
+        return url;
+    }
+
     async function downloadFile(url, filename) {
         try {
             downloadBtn.disabled = true;
             downloadBtn.innerHTML = `<span data-i18n="download.downloading">ダウンロード中</span><span class="loading"></span>`;
-            
-            // YouTubeの場合
+
             if (isYouTubeUrl(url)) {
                 const format = formatSelect.value;
                 const quality = videoQuality.value;
                 await downloadYouTubeVideo(url, format, quality);
                 return;
             }
-            
-            // FandomのようなWikiサイトの場合、実際の画像URLを取得
+
             const actualUrl = await extractActualImageUrl(url);
-            if (actualUrl !== url) {
-                console.log('Using actual image URL:', actualUrl);
-                url = actualUrl;
-            }
-            
-            // まずHEADリクエストでMIMEタイプを確認
+            if (actualUrl !== url) url = actualUrl;
+
+            // HEADでMIME取得
             let mimeType = null;
             try {
-                const headResponse = await fetch(url, {
-                    method: 'HEAD',
-                    mode: 'cors',
-                    credentials: 'omit'
-                });
+                const headResponse = await fetch(url, { method:'HEAD', mode:'cors', credentials:'omit' });
                 mimeType = headResponse.headers.get('content-type');
-            } catch (e) {
-                console.log('HEAD request failed, continuing with GET');
-            }
-            
-            const response = await fetch(url, {
-                mode: 'cors',
-                credentials: 'omit'
-            }).catch(async (error) => {
-                // CORS エラーの場合、プロキシ経由で試す
-                console.log('Direct fetch failed, trying proxy method');
-                
-                // CORSプロキシを使用（公開プロキシサービス）
+            } catch {}
+
+            const response = await fetch(url, { mode:'cors', credentials:'omit' }).catch(async () => {
                 const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(url);
-                try {
-                    const proxyResponse = await fetch(proxyUrl);
-                    if (proxyResponse.ok) {
-                        return proxyResponse;
-                    }
-                } catch (proxyError) {
-                    console.log('Proxy also failed');
-                }
-                
-                // WikiページのURLの場合、直接画像を開くリンクを提供
-                if (url.includes('wiki') && (url.includes('file=') || url.includes('File:'))) {
-                    showStatus('Wikiページです。画像を直接開くには、ページ内の画像を右クリックして「画像を新しいタブで開く」を選択し、その画像URLをここに貼り付けてください。', 'info');
-                    throw new Error('Wikiページから直接ダウンロードできません。画像の直接URLが必要です。');
-                }
-                
-                // 最終手段: 新しいタブで開く
-                // Validate protocol for security before creating download link
-                let safe = false;
-                try {
-                    const parsedUrl = new URL(url);
-                    const allowedProtocols = ['http:', 'https:', 'ftp:'];
-                    safe = allowedProtocols.includes(parsedUrl.protocol);
-                } catch (e) {
-                    safe = false;
-                }
-                if (!safe) {
-                    showStatus('ダウンロードできないURLです（許可されていないプロトコル: ' + url + '）', 'error');
-                    throw new Error('Unsafe protocol for direct download');
-                }
-                const link = document.createElement('a');
-                // 追加の安全プロトコルチェック (http/https のみ許可)
-                let parsedUrl;
-                try {
-                    parsedUrl = new URL(url);
-                } catch (e) {
-                    showStatus('無効なURLです。', 'error');
-                    throw new Error('Invalid URL');
-                }
-                if (parsedUrl.protocol !== 'http:' && parsedUrl.protocol !== 'https:') {
+                const proxyResponse = await fetch(proxyUrl);
+                if (proxyResponse.ok) return proxyResponse;
+
+                // 最終手段：新規タブで開く
+                const parsedUrl = new URL(url);
+                if (!['http:','https:'].includes(parsedUrl.protocol)) {
                     showStatus('許可されていないプロトコルです。', 'error');
                     throw new Error('Disallowed protocol');
                 }
-                link.href = parsedUrl.href;
-                link.download = filename || 'download';
-                link.target = '_blank';
-                link.rel = 'noopener noreferrer';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                
+                const a = document.createElement('a');
+                a.href = parsedUrl.href; a.download = filename || 'download'; a.target = '_blank'; a.rel='noopener noreferrer';
+                document.body.appendChild(a); a.click(); document.body.removeChild(a);
                 throw new Error('CORS制限により直接ダウンロードできません。新しいタブで開きます。');
             });
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
             let blob = await response.blob();
-            if (!mimeType) {
-                mimeType = blob.type;
-            }
-            
-            // 画像の形式変換処理
+            if (!mimeType) mimeType = blob.type;
+
             if (mimeType && mimeType.startsWith('image/')) {
                 const urlPath = new URL(url).pathname.toLowerCase();
                 const originalFilename = urlPath.split('/').pop() || '';
                 const shouldEnhance = enhanceQualityCheckbox.checked;
-                
-                // URLやファイル名から元の形式を判定
-                const isOriginallyGif = originalFilename.includes('.gif') || 
-                                       url.includes('gif') || 
-                                       url.includes('file=') && url.includes('.gif');
-                
-                // 画質向上処理（GIF以外の画像）
+
+                const isOriginallyGif = originalFilename.includes('.gif') || url.includes('gif') || (url.includes('file=') && url.includes('.gif'));
+
                 if (shouldEnhance && !isOriginallyGif) {
                     const selectedResolution = resolutionSelect.value;
-                    const originalSize = blob.size;
                     const resText = selectedResolution === 'auto' ? '自動' : selectedResolution.toUpperCase();
-                    showStatus(`画質を向上させています... (${resText}にアップスケーリング中)`, 'info');
+                    showStatus(`AIで画質を向上中...（${resText}）`, 'info');
                     blob = await enhanceImageQuality(blob, selectedResolution);
-                    const newSize = blob.size;
-                    console.log(`File size: ${(originalSize/1024).toFixed(1)}KB → ${(newSize/1024).toFixed(1)}KB`);
                 }
-                
-                // WebPやAVIFの処理
-                if (mimeType === 'image/webp' || mimeType === 'image/avif') {
-                    if (isOriginallyGif) {
-                        // 元がGIFの場合はGIFとして保存（アニメーション保持のため変換しない）
-                        showStatus('GIFファイルを処理中...', 'info');
-                        // ファイル名の拡張子だけ.gifに変更
-                        mimeType = 'image/gif';
-                    } else {
-                        // GIF以外はJPEGに変換
-                        if (!shouldEnhance) {
-                            showStatus('画像を変換中...', 'info');
-                        }
-                        blob = await convertImageBlob(blob, 'image/jpeg', shouldEnhance);
+
+                if (mimeType === 'image/webp' || mimeType === 'image/avif' ||
+                    url.includes('format,webp') || url.includes('format=webp')) {
+                    if (!isOriginallyGif) {
+                        blob = await convertImageBlob(blob, 'image/jpeg', false);
                         mimeType = 'image/jpeg';
-                    }
-                }
-                // URLパラメータでWebP変換されている場合も処理
-                else if (url.includes('format,webp') || url.includes('format=webp')) {
-                    if (isOriginallyGif) {
-                        // 元がGIFの場合はGIFとして扱う
-                        showStatus('GIFファイルを処理中...', 'info');
-                        mimeType = 'image/gif';
                     } else {
-                        // GIF以外はJPEGに変換
-                        if (!shouldEnhance) {
-                            showStatus('画像を変換中...', 'info');
-                        }
-                        blob = await convertImageBlob(blob, 'image/jpeg', shouldEnhance);
-                        mimeType = 'image/jpeg';
+                        mimeType = 'image/gif';
                     }
-                }
-                // 通常の画像で画質向上のみ行う場合
-                else if (shouldEnhance && !isOriginallyGif) {
-                    // 既に画質向上処理済み
                 }
             }
-            
+
             const downloadUrl = window.URL.createObjectURL(blob);
-            
-            // ファイル名の決定
             const finalFilename = filename || extractFilenameFromUrl(url, mimeType);
-            
+
             const link = document.createElement('a');
-            link.href = downloadUrl;
-            link.download = finalFilename;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            // Clean up
-            setTimeout(() => {
-                window.URL.revokeObjectURL(downloadUrl);
-            }, 100);
-            
+            link.href = downloadUrl; link.download = finalFilename;
+            document.body.appendChild(link); link.click(); document.body.removeChild(link);
+            setTimeout(()=>window.URL.revokeObjectURL(downloadUrl), 100);
             showStatus(`ダウンロードが完了しました: ${finalFilename}`, 'success');
         } catch (error) {
             console.error('Download error:', error);
-            
-            if (error.message.includes('CORS')) {
-                showStatus(error.message, 'info');
-            } else {
-                showStatus(`エラー: ${error.message}`, 'error');
-            }
+            if (String(error.message).includes('CORS')) showStatus(error.message, 'info');
+            else showStatus(`エラー: ${error.message}`, 'error');
         } finally {
             downloadBtn.disabled = false;
             downloadBtn.innerHTML = '<span data-i18n="download.downloadButton">ダウンロード</span>';
@@ -1273,83 +676,39 @@ document.addEventListener('DOMContentLoaded', function() {
     downloadBtn.addEventListener('click', async function() {
         const url = urlInput.value.trim();
         const filename = filenameInput.value.trim();
-        
-        if (!url) {
-            showStatus('URLを入力してください', 'error');
-            return;
-        }
-        
-        // URL検証
-        try {
-            new URL(url);
-        } catch (e) {
-            showStatus('有効なURLを入力してください', 'error');
-            return;
-        }
-        
+        if (!url) { showStatus('URLを入力してください', 'error'); return; }
+        try { new URL(url); } catch { showStatus('有効なURLを入力してください', 'error'); return; }
         hideStatus();
         await downloadFile(url, filename);
     });
 
-    // Enterキーでダウンロード
-    urlInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            downloadBtn.click();
-        }
-    });
-    
-    filenameInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            downloadBtn.click();
-        }
-    });
+    urlInput.addEventListener('keypress', function(e) { if (e.key === 'Enter') downloadBtn.click(); });
+    filenameInput.addEventListener('keypress', function(e) { if (e.key === 'Enter') downloadBtn.click(); });
 });
 
-// 国際化対応 - JSONファイルから翻訳を読み込み
+// ---------- i18n ----------
 let translations = {};
-
 async function loadTranslations() {
     try {
         const response = await fetch('/Drowse-Lab/assets/data/translations.json');
         translations = await response.json();
-        
-        // 言語切り替え機能との統合
-        if (typeof window.loadLanguage === 'function') {
-            window.loadLanguage();
-        }
-        
-        // 初期言語を適用
+        if (typeof window.loadLanguage === 'function') window.loadLanguage();
         applyTranslations();
-    } catch (error) {
-        console.error('Failed to load translations:', error);
-    }
+    } catch (error) { console.error('Failed to load translations:', error); }
 }
-
 function applyTranslations() {
     const lang = localStorage.getItem('selectedLanguage') || 'ja';
     const trans = translations[lang] || translations['ja'];
-    
-    // data-i18n属性を持つ要素を更新
-    document.querySelectorAll('[data-i18n]').forEach(element => {
-        const key = element.getAttribute('data-i18n');
-        if (trans[key]) {
-            element.textContent = trans[key];
-        }
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (trans[key]) el.textContent = trans[key];
     });
-    
-    // placeholder属性を更新
-    document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
-        const key = element.getAttribute('data-i18n-placeholder');
-        if (trans[key]) {
-            element.placeholder = trans[key];
-        }
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (trans[key]) el.placeholder = trans[key];
     });
 }
-
-// ページ読み込み時に翻訳を読み込む
 loadTranslations();
-
-// 言語切り替えボタンのイベントリスナー
 document.addEventListener('DOMContentLoaded', function() {
     const langToggleBtn = document.getElementById('langToggleBottom');
     if (langToggleBtn) {

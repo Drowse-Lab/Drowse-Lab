@@ -1,3 +1,4 @@
+// assets/js/ai-enhance.js
 // AI画質向上エンジン - ブラウザESRGAN（彩度・色相はオリジナル維持）
 (function(){
   // ---- YCbCr（BT.601 近似）：色差(Cb/Cr)を保持し、輝度(Y)のみ差し替え ----

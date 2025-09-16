@@ -2,6 +2,24 @@
     display: none !important; 
 }
 
+/* 端まで広げるユーティリティ（フルブリード） */
+.full-bleed {
+  width: 100vw;
+  /* 中央コンテナの左右余白を打ち消して画面端まで広げる */
+  margin-inline: calc(50% - 50vw);
+  box-sizing: border-box;
+  /* 好みの左右パディング（安全余白） */
+  padding-inline: clamp(12px, 4vw, 32px);
+}
+
+/* ナビ行のレイアウト：左右端に配置 */
+.full-bleed.nav-strip {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;            
+  gap: 12px;
+}
+
 .contact-container {
     max-width: 90%;
     margin: 0 auto;
@@ -76,3 +94,4 @@
     background-color: #555;
 
 }
+

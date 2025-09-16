@@ -1,3 +1,7 @@
+.page-header .page-title { 
+    display: none !important; 
+}
+
 .contact-container {
     max-width: 90%;
     margin: 0 auto;
@@ -70,4 +74,5 @@
 
 .back-button:hover {
     background-color: #555;
+
 }

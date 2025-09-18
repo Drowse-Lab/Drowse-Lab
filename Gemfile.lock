@@ -1,5 +1,5 @@
 GEM
-remote: https://rubygems.org/
+  remote: https://rubygems.org/
   specs:
     addressable (2.8.6)
       public_suffix (>= 2.0.2, < 6.0)
@@ -82,3 +82,4 @@ DEPENDENCIES
   webrick (~> 1.8)
 
 BUNDLED WITH
+   2.5.6

@@ -4,35 +4,48 @@ title: Diary
 permalink: /diary/
 ---
 
+<link rel="stylesheet" href="/Drowse-Lab/assets/css/diary.css">
+
 <div class="diary container">
-  <header class="diary-header">
-    <h1>Diary</h1>
 
-    <div class="diary-filter">
-      <label>Member</label>
-      <select id="member-filter" aria-label="Filter by member">
-        <option value="">(All)</option>
-        {% for member in site.data.members %}
-          <option value="{{ member.username | downcase }}">{{ member.name }}</option>
-        {% endfor %}
-      </select>
+  <!-- ▼ 3D Book Shelf -->
+  <section class="book-shelf" aria-label="Members">
+    <div class="shelf-rail">
+      {% for m in site.data.members %}
+        {% assign parts = m.github_link | split:'/' %}
+        {% assign u = parts | last | downcase %}
+        <button class="book" data-username="{{ u }}" title="{{ u }}">
+          <span class="book-spine">
+            <span class="book-title">{{ u }}</span>
+          </span>
+        </button>
+      {% endfor %}
     </div>
-  </header>
+  </section>
 
+  <!-- ▼ 日付で開く（author 選択後に有効化） -->
+  <section class="open-by-date">
+    <label>
+      <span>Open by date</span>
+      <input id="datePicker" type="date" disabled>
+    </label>
+    <button id="openDateBtn" disabled>Open</button>
+    <small id="authorHint" class="hint">← まず上の本からメンバーを選んでください</small>
+  </section>
+
+  <!-- ▼ 既存リスト（残す場合） -->
   <ul id="diary-list" class="diary-list">
     {% assign entries = site.diary | sort: "date" | reverse %}
     {% for post in entries %}
-      <li class="diary-card" data-author="{{ post.author | downcase }}">
+      <li class="diary-card" data-author="{{ post.author | downcase }}" data-date="{{ post.date | date: '%Y-%m-%d' }}">
         <a class="diary-link" href="{{ post.url | relative_url }}">
           <div class="diary-card-meta">
-            {% if post.author %}
-              <span class="badge">{{ post.author }}</span>
-            {% endif %}
+            <span class="badge">{{ post.author }}</span>
             <time>{{ post.date | date: "%Y-%m-%d" }}</time>
           </div>
           <h2 class="diary-card-title">{{ post.title }}</h2>
           {% if post.excerpt %}
-            <p class="diary-card-excerpt">{{ post.excerpt | strip_html | truncate: 120 }}</p>
+          <p class="diary-card-excerpt">{{ post.excerpt | strip_html | truncate: 120 }}</p>
           {% endif %}
         </a>
       </li>
@@ -41,12 +54,69 @@ permalink: /diary/
 </div>
 
 <script>
-  const sel = document.getElementById('member-filter');
-  const items = Array.from(document.querySelectorAll('.diary-card'));
-  sel?.addEventListener('change', () => {
-    const pick = sel.value;
-    items.forEach(li => {
-      li.style.display = (!pick || li.dataset.author === pick) ? '' : 'none';
-    });
+/* ---- EntriesメタデータをJSへ埋め込み（author, date, url） ---- */
+const ENTRIES = [
+{% assign entries_all = site.diary | sort: 'date' %}
+{% for p in entries_all %}
+  { a: "{{ p.author | downcase }}", d: "{{ p.date | date: '%Y-%m-%d' }}", u: "{{ p.url | relative_url }}", t: {{ p.title | jsonify }} }{% unless forloop.last %},{% endunless %}
+{% endfor %}
+];
+
+(function(){
+  const shelf = document.querySelector('.shelf-rail');
+  const books = Array.from(document.querySelectorAll('.book'));
+  const dateEl = document.getElementById('datePicker');
+  const openBtn = document.getElementById('openDateBtn');
+  const hint = document.getElementById('authorHint');
+  let currentAuthor = null;
+
+  function entriesOf(author){
+    return ENTRIES.filter(e => e.a === author).sort((x,y)=> x.d.localeCompare(y.d)); // 昇順
+  }
+
+  // 本クリック → 最古の日記へジャンプ
+  shelf?.addEventListener('click', (e)=>{
+    const btn = e.target.closest('.book');
+    if(!btn) return;
+    const author = btn.dataset.username;
+    const list = entriesOf(author);
+    if(list.length === 0) return;
+
+    // UI状態
+    currentAuthor = author;
+    books.forEach(b => b.classList.toggle('active', b === btn));
+    dateEl.disabled = false; openBtn.disabled = false;
+    hint.textContent = `選択中: ${author}（最古から表示）`;
+
+    // 最古のURLへ遷移
+    window.location.href = list[0].u;
   });
+
+  // 日付で開く（選択日の記事、なければ直後の最初を開く）
+  openBtn?.addEventListener('click', ()=>{
+    if(!currentAuthor || !dateEl.value) return;
+    const list = entriesOf(currentAuthor);
+    if(list.length === 0) return;
+
+    const target = dateEl.value;
+    let pick = list.find(e => e.d === target);
+    if(!pick){
+      pick = list.find(e => e.d >= target) || list[list.length-1];
+    }
+    window.location.href = pick.u;
+  });
+
+  // URLクエリで ?author=xxx&date=YYYY-MM-DD にも対応
+  const qp = new URLSearchParams(location.search);
+  const a = qp.get('author'); const d = qp.get('date');
+  if(a){
+    currentAuthor = a.toLowerCase();
+    const btn = books.find(b => b.dataset.username === currentAuthor);
+    if(btn){ btn.classList.add('active'); dateEl.disabled = false; openBtn.disabled = false; hint.textContent = `選択中: ${currentAuthor}`; }
+    if(d){
+      dateEl.value = d;
+      openBtn.click();
+    }
+  }
+})();
 </script>

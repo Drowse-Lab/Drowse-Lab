@@ -1,7 +1,7 @@
 ---
 title: 初回メモ
 date: 2025-10-18
-author: hrmcngs          # _members/youmi.md に合わせる
+author: hrmcngs
 tags: [日常, 進捗]
 ---
 

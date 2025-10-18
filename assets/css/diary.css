@@ -131,11 +131,11 @@
   .diary.container { margin-top: 36px; }
   .diary-link { padding: 14px 14px; }
 }
-/* ===== 3D Book Shelf ===== */
+/* ===== 3D Book Shelf（hoverで前に出る） ===== */
 .book-shelf {
   perspective: 1200px;
   -webkit-perspective: 1200px;
-  margin: 24px auto 12px;
+  margin: 24px auto 18px;
   max-width: 980px;
   padding: 0 12px;
 }
@@ -143,61 +143,86 @@
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: minmax(110px, 140px);
-  gap: 16px;
+  gap: 18px;
   overflow-x: auto;
-  padding: 16px 6px;
+  padding: 16px 6px 22px;
   scrollbar-width: thin;
 }
+
+/* 1冊 */
 .book {
-  position: relative;             
-  appearance: none;
-  border: none;
-  background: transparent;
-  padding: 0;
-  cursor: pointer;
-  transform: translateZ(0) rotateY(-18deg);
-  -webkit-transform: translateZ(0) rotateY(-18deg);
+  position: relative;                    /* 厚みの基準 */
+  appearance: none; border: 0; background: transparent;
+  width: 110px; height: 180px;           /* ← 背表紙サイズ */
+  cursor: pointer; outline: none;
+  transform: translateZ(0) rotateY(-20deg);
+  -webkit-transform: translateZ(0) rotateY(-20deg);
   transform-style: preserve-3d;
   -webkit-transform-style: preserve-3d;
   transition: transform .18s ease, filter .18s ease;
   will-change: transform;
-  outline: none;
 }
 .book:hover,
 .book.active {
-  transform: translateZ(36px) rotateY(0deg);
-  -webkit-transform: translateZ(36px) rotateY(0deg);
-  filter: drop-shadow(0 10px 16px rgba(0,0,0,.18));
+  transform: translateZ(42px) rotateY(0deg);
+  -webkit-transform: translateZ(42px) rotateY(0deg);
+  filter: drop-shadow(0 12px 18px rgba(0,0,0,.22));
+  z-index: 3;                            /* 前に出たら上に */
 }
-.book-spine {
-  display: block;
-  width: 100px; height: 140px;
-  border-radius: 10px;
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.10), rgba(0,0,0,.08)),
-    linear-gradient(135deg, #8aa4ff 0%, #5b7cff 100%);
+
+/* 背表紙（カラー可変） */
+.book-spine{
   position: relative;
-  border: 1px solid rgba(0,0,0,.12);
+  width: 100%; height: 100%;
+  border-radius: 12px;
+  /* HSLの色相だけ変える：--h はJSで設定 */
+  --h: 220;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.10), rgba(0,0,0,.10)),
+    linear-gradient(135deg, hsl(var(--h) 60% 70%) 0%, hsl(var(--h) 70% 55%) 100%);
+  border: 1px solid rgba(0,0,0,.14);
 }
-.book::before { /* 厚み（小口） */
-  content: "";
-  position: absolute;
-  width: 8px; height: 140px; left: 100%; top: 0;
+
+/* 小口（厚み） */
+.book::before{
+  content:"";
+  position:absolute; left:100%; top:0;
+  width: 10px; height: 100%;
   transform: rotateY(90deg);
   -webkit-transform: rotateY(90deg);
-  transform-origin: left;
-  -webkit-transform-origin: left;
-  background: repeating-linear-gradient(180deg, #f4f4f4 0 3px, #e7e7e7 3px 6px);
+  transform-origin: left; -webkit-transform-origin: left;
+  background: repeating-linear-gradient(180deg,#f5f5f5 0 3px,#e9e9e9 3px 6px);
   border-right: 1px solid rgba(0,0,0,.12);
   border-radius: 2px;
 }
-.book-title {
-  position: absolute; inset: 10px 8px auto 8px;
-  display: block;
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  font-weight: 700;
-  letter-spacing: .06em;
-  color: #fff;
-  text-shadow: 0 1px 0 rgba(0,0,0,.3);
+
+/* 上下の“化粧” */
+.book-spine::before,
+.book-spine::after{
+  content:"";
+  position:absolute; left:8px; right:8px; height:6px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(0,0,0,.12), rgba(255,255,255,.35), rgba(0,0,0,.12));
+}
+.book-spine::before{ top:8px; }
+.book-spine::after{  bottom:8px; }
+
+/* 縦書きのユーザー名（1文字ずつ） */
+.book-title{
+  position:absolute; top:18px; bottom:18px; left:0; right:0;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap: 2px;
+  font-weight: 800; letter-spacing:.04em;
+  color: #fff; text-shadow: 0 1px 0 rgba(0,0,0,.30);
+}
+.book-title .ch{
+  display:block;
+  font-size: 18px;           /* 文字サイズ */
+  line-height: 1;
+  transform: translateZ(1px); /* ちょい前に */
+}
+
+/* ダーク時の微調整（サイトが暗色ベースの場合） */
+@media (prefers-color-scheme: dark){
+  .book-spine{ border-color: rgba(255,255,255,.12); }
 }

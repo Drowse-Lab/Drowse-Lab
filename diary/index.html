@@ -63,13 +63,24 @@ const ENTRIES = [
 
   const entriesOf = (author) => ENTRIES.filter(e => e.a === author).sort((x,y)=> x.d.localeCompare(y.d));
 
+  /* ユーザー名から安定色を作る（色相Hだけ変える簡易ハッシュ） */
+  function hueFrom(str){
+    let h = 0;
+    for (let i=0;i<str.length;i++) h = (h*31 + str.charCodeAt(i)) >>> 0;
+    return h % 360;  // 0-359
+  }
+
+  /* “USERNAME” を 1文字ずつ <span class="ch"> にして縦積み */
+  function lettersHTML(username){
+    return username.split('').map(c => `<span class="ch">${c}</span>`).join('');
+  }
+
   /* --- 本棚を /assets/data/members.json から作る --- */
-  fetch('/Drowse-Lab/assets/data/members.json', {cache:'no-store'})
+  fetch('{{ site.baseurl }}/assets/data/members.json', {cache:'no-store'})
     .then(r => r.json())
     .then(list => {
-      // [{ "github_link": "https://github.com/xxx" }, ...]
       list.forEach(m => {
-        const parts = m.github_link.split('/');
+        const parts = (m.github_link || '').split('/');
         const username = (parts[parts.length - 1] || '').toLowerCase();
         if (!username) return;
 
@@ -77,9 +88,11 @@ const ENTRIES = [
         btn.className = 'book';
         btn.dataset.username = username;
         btn.title = username;
+
+        const h = hueFrom(username);
         btn.innerHTML = `
-          <span class="book-spine">
-            <span class="book-title">${username}</span>
+          <span class="book-spine" style="--h:${h}">
+            <span class="book-title">${lettersHTML(username)}</span>
           </span>
         `;
         shelfRail.appendChild(btn);
@@ -102,7 +115,7 @@ const ENTRIES = [
     dateEl.disabled = false; openBtn.disabled = false;
     hint.textContent = `選択中: ${author}（最古から表示）`;
 
-    location.href = list[0].u;   // 最古へ遷移
+    location.href = list[0].u;   // 最古の記事へ
   });
 
   /* --- 日付で開く（ピッタリ無ければ直後、無ければ最後） --- */
@@ -117,7 +130,7 @@ const ENTRIES = [
     location.href = pick.u;
   });
 
-  /* --- URLクエリ ?author=xxx&date=YYYY-MM-DD 対応 --- */
+  /* --- ?author=xxx&date=YYYY-MM-DD に対応 --- */
   const qp = new URLSearchParams(location.search);
   const qa = qp.get('author'), qd = qp.get('date');
   if (qa) {

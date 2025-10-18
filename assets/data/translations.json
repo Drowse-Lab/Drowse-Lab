@@ -51,6 +51,9 @@
       "comingSoon": "近日公開予定",
       "downloadFile": "ファイルダウンロード",
       "downloadDescription": "URLからファイルをダウンロードします"
+      "diary": "メンバー日記",
+      "diaryDescription": "メンバーごとの日記を公開・閲覧できます"
+  }
     },
     "common": {
       "backToHome": "ホームに戻る"
@@ -203,6 +206,9 @@
       "comingSoon": "Coming Soon",
       "downloadFile": "File Download",
       "downloadDescription": "Download files from URL"
+      "diary": "Member Diaries",
+      "diaryDescription": "Read and publish diaries by each member"
+  }
     },
     "common": {
       "backToHome": "Back to Home"

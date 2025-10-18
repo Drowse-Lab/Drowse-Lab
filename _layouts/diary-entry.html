@@ -1,0 +1,18 @@
+---
+layout: default
+---
+<article class="diary-entry">
+  <header>
+    <h1>{{ page.title }}</h1>
+    <p class="meta">
+      <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y-%m-%d" }}</time>
+      {% if page.author %}
+        · by <a href="/members/{{ page.author | downcase }}/">{{ page.author }}</a>
+      {% endif %}
+      {% if page.tags %} · tags: {{ page.tags | array_to_sentence_string }}{% endif %}
+    </p>
+  </header>
+  <div class="content">
+    {{ content }}
+  </div>
+</article>

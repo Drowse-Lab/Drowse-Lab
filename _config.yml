@@ -31,3 +31,15 @@ subtitle: ""
 
 include:
   - blog.html
+
+
+collections:
+  diary:
+    output: true
+    permalink: /diary/:year/:month/:day/:slug/
+
+defaults:
+  - scope: { path: "", type: "diary" }
+    values:
+      layout: diary-entry   # 後で作るエントリ用レイアウト
+      sitemap: true

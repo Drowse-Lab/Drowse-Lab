@@ -1,0 +1,12 @@
+<h2>{{ page.name | default: page.title }} の日記</h2>
+<ul>
+  {% assign mine = site.diary | where_exp: "p", "p.author and p.author downcase == page.slug downcase" | sort: "date" | reverse %}
+  {% for post in mine %}
+    <li>
+      <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+      <small>{{ post.date | date: "%Y-%m-%d" }}</small>
+    </li>
+  {% else %}
+    <li>まだ日記はありません。</li>
+  {% endfor %}
+</ul>

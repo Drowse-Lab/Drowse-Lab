@@ -134,6 +134,7 @@
 /* ===== 3D Book Shelf ===== */
 .book-shelf {
   perspective: 1200px;
+  -webkit-perspective: 1200px;
   margin: 24px auto 12px;
   max-width: 980px;
   padding: 0 12px;
@@ -148,13 +149,16 @@
   scrollbar-width: thin;
 }
 .book {
+  position: relative;             
   appearance: none;
   border: none;
   background: transparent;
   padding: 0;
   cursor: pointer;
   transform: translateZ(0) rotateY(-18deg);
+  -webkit-transform: translateZ(0) rotateY(-18deg);
   transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
   transition: transform .18s ease, filter .18s ease;
   will-change: transform;
   outline: none;
@@ -162,6 +166,7 @@
 .book:hover,
 .book.active {
   transform: translateZ(36px) rotateY(0deg);
+  -webkit-transform: translateZ(36px) rotateY(0deg);
   filter: drop-shadow(0 10px 16px rgba(0,0,0,.18));
 }
 .book-spine {
@@ -174,12 +179,14 @@
   position: relative;
   border: 1px solid rgba(0,0,0,.12);
 }
-.book::before { /* 厚み */
+.book::before { /* 厚み（小口） */
   content: "";
   position: absolute;
   width: 8px; height: 140px; left: 100%; top: 0;
   transform: rotateY(90deg);
+  -webkit-transform: rotateY(90deg);
   transform-origin: left;
+  -webkit-transform-origin: left;
   background: repeating-linear-gradient(180deg, #f4f4f4 0 3px, #e7e7e7 3px 6px);
   border-right: 1px solid rgba(0,0,0,.12);
   border-radius: 2px;
@@ -194,23 +201,3 @@
   color: #fff;
   text-shadow: 0 1px 0 rgba(0,0,0,.3);
 }
-
-/* ===== 日付オープナー ===== */
-.open-by-date {
-  display: flex; align-items: center; gap: 10px;
-  max-width: 980px; margin: 2px auto 22px; padding: 0 12px;
-}
-.open-by-date input[type="date"] {
-  padding: 8px 10px; border-radius: 10px;
-  border: 1px solid rgba(0,0,0,.15);
-  background: var(--dl-bg, #fff);
-}
-.open-by-date button {
-  padding: 8px 14px; border-radius: 10px;
-  border: 1px solid rgba(0,0,0,.15); background: #fff; cursor: pointer;
-}
-.open-by-date button:disabled,
-.open-by-date input:disabled { opacity: .5; cursor: not-allowed; }
-.hint { opacity: .75; }
-
-

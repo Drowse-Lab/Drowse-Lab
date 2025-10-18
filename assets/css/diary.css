@@ -1,0 +1,133 @@
+/* ベースレイアウト */
+.diary.container {
+  max-width: 860px;       /* 画面中央に収まる幅 */
+  margin: 48px auto 80px;
+  padding: 0 20px;
+}
+
+/* ヘッダー */
+.diary-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 24px;
+  margin-bottom: 20px;
+}
+.diary-header h1 {
+  font-size: clamp(24px, 2.4vw, 36px);
+  margin: 0;
+}
+.diary-filter {
+  margin-left: auto;
+  background: var(--dl-surface, rgba(127,127,255,0.06));
+  border: 1px solid rgba(0,0,0,0.08);
+  padding: 10px 12px;
+  border-radius: 10px;
+}
+.diary-filter label {
+  font-size: 13px;
+  opacity: .8;
+  margin-right: 8px;
+}
+.diary-filter select {
+  font: inherit;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.15);
+  background: var(--dl-bg, #fff);
+}
+
+/* リスト → カード化 */
+.diary-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+.diary-card {
+  margin: 0;
+}
+.diary-link {
+  display: block;
+  padding: 16px 18px;
+  border-radius: 14px;
+  text-decoration: none;
+  background: var(--dl-card, #fff);
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.03);
+  transition: transform .06s ease, box-shadow .12s ease, border-color .12s ease;
+  color: inherit;
+}
+.diary-link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  border-color: rgba(0,0,0,0.15);
+}
+
+/* メタ情報 */
+.diary-card-meta {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 12px;
+  opacity: .8;
+  margin-bottom: 6px;
+}
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 12px;
+  border-radius: 999px;
+  background: rgba(100, 120, 255, 0.15);
+  border: 1px solid rgba(100, 120, 255, 0.35);
+}
+
+/* タイトル・抜粋 */
+.diary-card-title {
+  font-size: clamp(16px, 1.7vw, 20px);
+  line-height: 1.35;
+  margin: 4px 0 8px;
+}
+.diary-card-excerpt {
+  margin: 0;
+  line-height: 1.7;
+  color: rgba(0,0,0,0.74);
+}
+
+/* ダークモード（背景が暗いサイト想定） */
+@media (prefers-color-scheme: dark) {
+  .diary-filter {
+    background: rgba(255,255,255,0.04);
+    border-color: rgba(255,255,255,0.12);
+  }
+  .diary-filter select {
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(255,255,255,0.2);
+    color: #fff;
+  }
+  .diary-link {
+    background: rgba(255,255,255,0.03);
+    border-color: rgba(255,255,255,0.10);
+    box-shadow: none;
+  }
+  .diary-link:hover {
+    box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+    border-color: rgba(255,255,255,0.18);
+  }
+  .diary-card-excerpt {
+    color: rgba(255,255,255,0.78);
+  }
+  .badge {
+    background: rgba(120, 160, 255, 0.15);
+    border-color: rgba(120, 160, 255, 0.45);
+    color: #dbe6ff;
+  }
+}
+
+/* モバイル微調整 */
+@media (max-width: 640px) {
+  .diary.container { margin-top: 36px; }
+  .diary-link { padding: 14px 14px; }
+}

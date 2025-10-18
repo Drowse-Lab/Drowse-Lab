@@ -4,39 +4,46 @@ title: Diary
 permalink: /diary/
 ---
 
-<h1>Diary</h1>
+<div class="diary container">
+  <header class="diary-header">
+    <h1>Diary</h1>
 
-<nav class="filters">
-  <label>Member:
-    <select id="member-filter">
-      <option value="">(All)</option>
-      {% assign members = site.members | default: site.collections.members.docs %}
-      {% if members %}
-        {% for m in members %}
-          <option value="{{ m.slug | default: m.name | downcase }}">{{ m.name | default: m.title }}</option>
+    <div class="diary-filter">
+      <label>Member</label>
+      <select id="member-filter" aria-label="Filter by member">
+        <option value="">(All)</option>
+        {% for member in site.data.members %}
+          <option value="{{ member.username | downcase }}">{{ member.name }}</option>
         {% endfor %}
-      {% endif %}
-    </select>
-  </label>
-</nav>
+      </select>
+    </div>
+  </header>
 
-<ul id="diary-list" class="diary-list">
-  {% assign entries = site.diary | sort: "date" | reverse %}
-  {% for post in entries %}
-    <li class="diary-item" data-author="{{ post.author | downcase }}">
-      <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-      <small>
-        {{ post.date | date: "%Y-%m-%d" }}
-        {% if post.author %} · {{ post.author }}{% endif %}
-      </small>
-    </li>
-  {% endfor %}
-</ul>
+  <ul id="diary-list" class="diary-list">
+    {% assign entries = site.diary | sort: "date" | reverse %}
+    {% for post in entries %}
+      <li class="diary-card" data-author="{{ post.author | downcase }}">
+        <a class="diary-link" href="{{ post.url | relative_url }}">
+          <div class="diary-card-meta">
+            {% if post.author %}
+              <span class="badge">{{ post.author }}</span>
+            {% endif %}
+            <time>{{ post.date | date: "%Y-%m-%d" }}</time>
+          </div>
+          <h2 class="diary-card-title">{{ post.title }}</h2>
+          {% if post.excerpt %}
+            <p class="diary-card-excerpt">{{ post.excerpt | strip_html | truncate: 120 }}</p>
+          {% endif %}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
 
 <script>
   const sel = document.getElementById('member-filter');
-  const items = Array.from(document.querySelectorAll('.diary-item'));
-  sel.addEventListener('change', () => {
+  const items = Array.from(document.querySelectorAll('.diary-card'));
+  sel?.addEventListener('change', () => {
     const pick = sel.value;
     items.forEach(li => {
       li.style.display = (!pick || li.dataset.author === pick) ? '' : 'none';

@@ -4,49 +4,17 @@ title: Diary
 permalink: /diary/
 ---
 
-<link rel="stylesheet" href="/Drowse-Lab/assets/css/diary.css">
+<link rel="stylesheet" href="{{ site.baseurl }}/assets/css/diary.css">
 
 <div class="diary container">
-
-  <!-- ▼ 3D Book Shelf -->
+  <!-- 3D Book Shelf -->
   <section class="book-shelf" aria-label="Members">
-    <div class="shelf-rail" id="shelfRail">
-      <!-- JSで /assets/data/members.json を読み込んで生成 -->
-    </div>
+    <div class="shelf-rail" id="shelfRail"></div>
   </section>
-
-  <!-- ▼ 日付で開く -->
-  <section class="open-by-date">
-    <label>
-      <span>Open by date</span>
-      <input id="datePicker" type="date" disabled>
-    </label>
-    <button id="openDateBtn" disabled>Open</button>
-    <small id="authorHint" class="hint">← まず上の本からメンバーを選んでください</small>
-  </section>
-
-  <!-- ▼ 既存リスト（任意で残す） -->
-  <ul id="diary-list" class="diary-list">
-    {% assign entries = site.diary | sort: "date" | reverse %}
-    {% for post in entries %}
-      <li class="diary-card" data-author="{{ post.author | downcase }}" data-date="{{ post.date | date: '%Y-%m-%d' }}">
-        <a class="diary-link" href="{{ post.url | relative_url }}">
-          <div class="diary-card-meta">
-            <span class="badge">{{ post.author }}</span>
-            <time>{{ post.date | date: "%Y-%m-%d" }}</time>
-          </div>
-          <h2 class="diary-card-title">{{ post.title }}</h2>
-          {% if post.excerpt %}
-            <p class="diary-card-excerpt">{{ post.excerpt | strip_html | truncate: 120 }}</p>
-          {% endif %}
-        </a>
-      </li>
-    {% endfor %}
-  </ul>
 </div>
 
 <script>
-/* ---- Entries をJSへ（昇順） ---- */
+/* 全エントリ（昇順）をJSへ埋め込み */
 const ENTRIES = [
 {% assign entries_all = site.diary | sort: 'date' %}
 {% for p in entries_all %}
@@ -56,88 +24,48 @@ const ENTRIES = [
 
 (function(){
   const shelfRail = document.getElementById('shelfRail');
-  const dateEl = document.getElementById('datePicker');
-  const openBtn = document.getElementById('openDateBtn');
-  const hint = document.getElementById('authorHint');
-  let currentAuthor = null;
 
-  const entriesOf = (author) => ENTRIES.filter(e => e.a === author).sort((x,y)=> x.d.localeCompare(y.d));
+  const entriesOf = (author) =>
+    ENTRIES.filter(e => e.a === author).sort((x,y)=> x.d.localeCompare(y.d));
 
-  /* ユーザー名から安定色を作る（色相Hだけ変える簡易ハッシュ） */
+  // 安定色（色相）を username から生成
   function hueFrom(str){
-    let h = 0;
-    for (let i=0;i<str.length;i++) h = (h*31 + str.charCodeAt(i)) >>> 0;
-    return h % 360;  // 0-359
+    let h = 0; for (let i=0;i<str.length;i++) h = (h*31 + str.charCodeAt(i)) >>> 0;
+    return h % 360;
   }
+  // 縦組み
+  const lettersHTML = (s) => s.split('').map(c=>`<span class="ch">${c}</span>`).join('');
 
-  /* “USERNAME” を 1文字ずつ <span class="ch"> にして縦積み */
-  function lettersHTML(username){
-    return username.split('').map(c => `<span class="ch">${c}</span>`).join('');
-  }
-
-  /* --- 本棚を /assets/data/members.json から作る --- */
+  // members.json を読み込んで本を描画
   fetch('{{ site.baseurl }}/assets/data/members.json', {cache:'no-store'})
     .then(r => r.json())
     .then(list => {
       list.forEach(m => {
         const parts = (m.github_link || '').split('/');
-        const username = (parts[parts.length - 1] || '').toLowerCase();
-        if (!username) return;
+        const username = (parts[parts.length-1] || '').toLowerCase();
+        if(!username) return;
 
         const btn = document.createElement('button');
         btn.className = 'book';
         btn.dataset.username = username;
         btn.title = username;
-
         const h = hueFrom(username);
         btn.innerHTML = `
           <span class="book-spine" style="--h:${h}">
             <span class="book-title">${lettersHTML(username)}</span>
-          </span>
-        `;
+          </span>`;
         shelfRail.appendChild(btn);
       });
-    })
-    .catch(() => {
-      shelfRail.innerHTML = '<p style="opacity:.7">メンバー一覧の読み込みに失敗しました。</p>';
     });
 
-  /* --- クリックで最古へ --- */
+  // クリック → その人の最古記事へ
   shelfRail.addEventListener('click', (e)=>{
     const btn = e.target.closest('.book');
     if(!btn) return;
     const author = btn.dataset.username;
     const list = entriesOf(author);
     if(list.length === 0) return;
-
-    currentAuthor = author;
-    [...shelfRail.querySelectorAll('.book')].forEach(b => b.classList.toggle('active', b===btn));
-    dateEl.disabled = false; openBtn.disabled = false;
-    hint.textContent = `選択中: ${author}（最古から表示）`;
-
-    location.href = list[0].u;   // 最古の記事へ
+    location.href = list[0].u;
   });
-
-  /* --- 日付で開く（ピッタリ無ければ直後、無ければ最後） --- */
-  openBtn.addEventListener('click', ()=>{
-    if(!currentAuthor || !dateEl.value) return;
-    const list = entriesOf(currentAuthor);
-    if(list.length === 0) return;
-
-    const target = dateEl.value;
-    let pick = list.find(e => e.d === target);
-    if(!pick) pick = list.find(e => e.d >= target) || list[list.length-1];
-    location.href = pick.u;
-  });
-
-  /* --- ?author=xxx&date=YYYY-MM-DD に対応 --- */
-  const qp = new URLSearchParams(location.search);
-  const qa = qp.get('author'), qd = qp.get('date');
-  if (qa) {
-    currentAuthor = qa.toLowerCase();
-    dateEl.disabled = false; openBtn.disabled = false;
-    hint.textContent = `選択中: ${currentAuthor}`;
-    if (qd) { dateEl.value = qd; openBtn.click(); }
-  }
 })();
 </script>

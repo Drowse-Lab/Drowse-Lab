@@ -6,14 +6,14 @@ layout: default
     <h1>{{ page.title }}</h1>
     <p class="meta">
       <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y-%m-%d" }}</time>
-      {% if page.author %} · by <a href="{{ site.baseurl }}/diary/?author={{ page.author | downcase }}">{{ page.author }}</a>{% endif %}
+      {% if page.author %} · by
+        <a href="{{ site.baseurl }}/diary/?author={{ page.author | downcase }}">{{ page.author }}</a>
+      {% endif %}
     </p>
   </header>
 
-  <!-- ▼ ここが“冊子を開いた時だけ”出る操作バー -->
   <div class="entry-toolbar" data-author="{{ page.author | downcase }}">
-    <label>
-      Open by date
+    <label>Open by date
       <input id="entryDate" type="date" value="{{ page.date | date: '%Y-%m-%d' }}">
     </label>
     <button id="entryOpenBtn">Open</button>
@@ -22,13 +22,10 @@ layout: default
     <a id="nextLink" class="nav-btn" href="#" hidden>Next →</a>
   </div>
 
-  <div class="content">
-    {{ content }}
-  </div>
+  <div class="content">{{ content }}</div>
 </article>
 
 <script>
-/* 同一著者の全記事から prev/next と日付オープンを提供 */
 const ENTRIES = [
 {% assign entries_all = site.diary | sort: 'date' %}
 {% for p in entries_all %}
@@ -37,26 +34,19 @@ const ENTRIES = [
 ];
 
 (function(){
-  const author = document.querySelector('.entry-toolbar')?.dataset.author;
+  const bar = document.querySelector('.entry-toolbar');
+  const author = bar?.dataset.author;
   if(!author) return;
-  const list = ENTRIES.filter(e => e.a === author).sort((x,y)=> x.d.localeCompare(y.d)); // 昇順
-  if(list.length === 0) return;
-
+  const list = ENTRIES.filter(e => e.a === author).sort((x,y)=> x.d.localeCompare(y.d));
   const today = "{{ page.date | date: '%Y-%m-%d' }}";
   const idx = list.findIndex(e => e.d === today);
 
-  // prev/next
-  const prev = list[idx - 1], next = list[idx + 1];
-  const prevL = document.getElementById('prevLink');
-  const nextL = document.getElementById('nextLink');
-  if(prev){ prevL.href = prev.u; prevL.hidden = false; }
-  if(next){ nextL.href = next.u; nextL.hidden = false; }
+  const prev = list[idx-1], next = list[idx+1];
+  if(prev){ prevLink.href = prev.u; prevLink.hidden = false; }
+  if(next){ nextLink.href = next.u; nextLink.hidden = false; }
 
-  // open by date
-  const input = document.getElementById('entryDate');
-  const btn = document.getElementById('entryOpenBtn');
-  btn.addEventListener('click', ()=>{
-    const target = input.value;
+  entryOpenBtn.addEventListener('click', ()=>{
+    const target = entryDate.value;
     if(!target) return;
     let pick = list.find(e => e.d === target);
     if(!pick) pick = list.find(e => e.d >= target) || list[list.length-1];
@@ -64,37 +54,3 @@ const ENTRIES = [
   });
 })();
 </script>
-
-<style>
-.entry-toolbar{
-  display:flex; align-items:center; gap:12px;
-  padding: 10px 12px; margin: 6px 0 18px;
-  border: 1px solid rgba(0,0,0,.10);
-  border-radius: 10px;
-  background: rgba(127,127,255,.06);
-}
-.entry-toolbar input[type="date"]{
-  padding:6px 8px; border-radius:8px;
-  border:1px solid rgba(0,0,0,.18);
-  background:#fff;
-}
-.entry-toolbar button{
-  padding:6px 12px; border-radius:8px; cursor:pointer;
-  border:1px solid rgba(0,0,0,.18); background:#fff;
-}
-.entry-toolbar .spacer{ flex:1; }
-.nav-btn{
-  text-decoration:none; padding:6px 10px; border-radius:8px;
-  border:1px solid rgba(0,0,0,.18); background:#fff;
-}
-@media (prefers-color-scheme: dark){
-  .entry-toolbar{ background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.12); }
-  .entry-toolbar input[type="date"],
-  .entry-toolbar button,
-  .nav-btn{
-    background: rgba(255,255,255,.06);
-    border-color: rgba(255,255,255,.22);
-    color:#fff;
-  }
-}
-</style>

@@ -28,40 +28,36 @@ const ENTRIES = [
   const entriesOf = (author) =>
     ENTRIES.filter(e => e.a === author).sort((x,y)=> x.d.localeCompare(y.d));
 
-  // 安定色（色相）を username から生成
+  // 安定色（色相）を文字列から生成
   function hueFrom(str){
     let h = 0; for (let i=0;i<str.length;i++) h = (h*31 + str.charCodeAt(i)) >>> 0;
     return h % 360;
   }
 
-  // HTMLエスケープ（念のため）
   function escapeHTML(s){
     return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c]));
   }
 
-  // members.json を読み込んで本を描画
+  // members.json を読み込んで本を描画（表示ラベルは1つの要素で中央表示）
   fetch('{{ site.baseurl }}/assets/data/members.json', {cache:'no-store'})
     .then(r => r.json())
     .then(list => {
       list.forEach(m => {
-        // username 抽出（dataset 用は小文字化するが表示ラベルは原文優先で表示）
         const link = (m.github_link || m.github || '');
         const parts = link.split('/').filter(Boolean);
         const fromLink = parts[parts.length-1] || '';
         const rawUsername = (m.username || fromLink || m.login || '').toString().trim();
         const usernameKey = rawUsername.replace(/^@/, '').toLowerCase();
 
-        // 表示ラベルは名前優先（大文字小文字を保持）、長ければ切る
         const displayRaw = (m.name && m.name.toString().trim()) || (m.username && m.username.toString().trim()) || fromLink || 'unknown';
-        const displayLabel = displayRaw.slice(0, 14); // 背表紙に入る長さを少し増やして余裕を持たせる
+        const displayLabel = displayRaw.slice(0, 14);
 
         const btn = document.createElement('button');
         btn.className = 'book';
-        btn.dataset.username = usernameKey || ''; // クリック時に使うキー
+        btn.dataset.username = usernameKey || '';
         btn.title = (m.name || m.username || fromLink || 'unknown');
         const h = hueFrom(displayLabel);
 
-        // ここで「1つのラベル要素」を入れる（以前の1文字ずつspanはやめる）
         btn.innerHTML = `
           <span class="book-spine" style="--h:${h}">
             <span class="book-title"><span class="label">${escapeHTML(displayLabel)}</span></span>

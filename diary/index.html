@@ -28,29 +28,34 @@ const ENTRIES = [
   const entriesOf = (author) =>
     ENTRIES.filter(e => e.a === author).sort((x,y)=> x.d.localeCompare(y.d));
 
+  // 安定色（色相）を username から生成
   function hueFrom(str){
     let h = 0; for (let i=0;i<str.length;i++) h = (h*31 + str.charCodeAt(i)) >>> 0;
     return h % 360;
   }
+  // 縦組み
   const lettersHTML = (s) => (s||'?').split('').map(c=>`<span class="ch">${c}</span>`).join('');
 
+  // members.json を読み込んで本を描画
   fetch('{{ site.baseurl }}/assets/data/members.json', {cache:'no-store'})
     .then(r => r.json())
     .then(list => {
       list.forEach(m => {
-        // 複数の候補から username を決める（堅牢化）
+        // username 抽出（dataset 用は小文字化するが表示ラベルは原文優先で表示）
         const link = (m.github_link || m.github || '');
         const parts = link.split('/').filter(Boolean);
         const fromLink = parts[parts.length-1] || '';
-        const raw = (m.username || fromLink || m.name || m.login || '').toString().trim();
-        const username = raw.replace(/^@/, '').toLowerCase();
-        // 表示用ラベルは最大 12 文字に切る（CSS と合わせて安全側で調整）
-        const displayLabel = (username || 'unknown').slice(0, 12);
+        const rawUsername = (m.username || fromLink || m.login || '').toString().trim();
+        const usernameKey = rawUsername.replace(/^@/, '').toLowerCase();
+
+        // 表示ラベルは人が読みやすい形（名前優先、username も可）、大文字小文字は保持
+        const displayRaw = (m.name && m.name.toString().trim()) || (m.username && m.username.toString().trim()) || fromLink || 'unknown';
+        const displayLabel = displayRaw.slice(0, 12); // 背表紙に入りきる長さに制限
 
         const btn = document.createElement('button');
         btn.className = 'book';
-        btn.dataset.username = username || ''; // 空でも本は表示される（クリック時は無視）
-        btn.title = m.name || username || 'unknown';
+        btn.dataset.username = usernameKey || ''; // クリック時に使うキー
+        btn.title = (m.name || m.username || fromLink || 'unknown');
         const h = hueFrom(displayLabel);
         btn.innerHTML = `
           <span class="book-spine" style="--h:${h}">
@@ -60,6 +65,7 @@ const ENTRIES = [
       });
     });
 
+  // クリック → その人の最古記事へ
   shelfRail.addEventListener('click', (e)=>{
     const btn = e.target.closest('.book');
     if(!btn) return;

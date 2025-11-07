@@ -131,7 +131,7 @@
   .diary.container { margin-top: 36px; }
   .diary-link { padding: 14px 14px; }
 }
-/* ===== 3D Book Shelf ===== */
+/* ===== 3D Book Shelf (改善版) ===== */
 .book-shelf{
   perspective: 900px;
   -webkit-perspective: 900px;
@@ -143,20 +143,22 @@
 .shelf-rail{
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: 160px;
+  grid-auto-columns: 160px;   /* 1冊の幅（必要なら増やす） */
   gap: 22px;
   overflow-x: auto;
   overflow-y: visible;
   padding: 12px 6px 26px;
   min-height: 260px;
   scrollbar-width: thin;
-  align-items: end; /* 下揃えにして棚に乗って見せる */
+  align-items: end;           /* 下揃えにする */
 }
 
 /* 1冊 */
 .book{
   position: relative;
-  width: 140px;
+  display: block;             /* 横方向で潰れないように明示 */
+  width: 140px;               /* 背表紙を十分に見せる幅 */
+  min-width: 120px;           /* 幅が潰れるのを防ぐ */
   height: 220px;
   box-sizing: border-box;
   appearance: none; border: 0; background: transparent;
@@ -169,6 +171,8 @@
   backface-visibility: hidden;
   transition: transform .18s ease, filter .18s ease;
   will-change: transform;
+  /* 一時デバッグ：枠を見やすくする（確認後削除） */
+  outline: 1px dashed rgba(0,0,0,0.05);
 }
 .book:hover,
 .book.active{
@@ -178,16 +182,18 @@
   z-index: 10;
 }
 
-/* 背表紙：薄い茶色グラデーションに変更 */
+/* 背表紙：薄い茶色グラデーションで本体をはっきり表示 */
 .book-spine{
   position: relative;
-  width: 100%; height: 100%;
+  display: block;             /* ブロックで幅いっぱいにする */
+  width: 100%;
+  height: 100%;
   border-radius: 14px;
-  --h: 220;
   background:
-    linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.06)),
+    linear-gradient(180deg, rgba(255,255,255,.04), rgba(0,0,0,.03)),
     linear-gradient(135deg, #f3e6d8 0%, #e3cba9 50%, #d9c2a1 100%);
-  border: 1px solid rgba(0,0,0,.14); /* ほんのり濃いめの枠 */
+  border: 1px solid rgba(0,0,0,.12);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.3);
   overflow: hidden;
 }
 
@@ -203,7 +209,7 @@
   border-radius: 2px;
 }
 
-/* 縦組みタイトル（ユーザー名）: 文字色を黒に */
+/* 縦組みタイトル（ユーザー名）: 文字色を黒に。縦書きが効かない場合は横回転で代替 */
 .book-title{
   position:absolute;
   inset: 12px 8px;
@@ -212,33 +218,40 @@
   align-items:center;
   justify-content:center;
   gap: 4px;
-  font-weight: 900; letter-spacing:.02em;
-  color: #111; /* ← 黒に変更 */
-  text-shadow: none; /* 白影を消す */
+  font-weight: 800;
+  color: #111;                /* 黒 */
+  text-shadow: none;
   overflow: hidden;
+  /* 縦書きを試みる（対応しない環境では下の transform 回転が効く） */
   writing-mode: vertical-rl;
   text-orientation: upright;
   -webkit-font-smoothing: antialiased;
 }
+/* 各文字の扱いを安定 */
 .book-title .ch{
   display:block;
-  font-size: clamp(14px, 1.8vw, 22px);
+  font-size: clamp(14px, 1.4vw, 20px);
   line-height: 1;
   transform: translateZ(1px);
-  transform-origin: center;
   white-space: nowrap;
   -webkit-user-select: none;
   user-select: none;
-  color: #111; /* 黒 */
+  color: #111;
+}
+
+/* 環境で縦書きがサポートされない場合のフェールバック（強制回転） */
+/* 必要なら下のコメントを外して試してください */
+/*
+.book-title { writing-mode: horizontal-tb; transform: rotate(-90deg); transform-origin: left top; }
+.book { height: 220px; width: 140px; }
+*/
+
+@media (max-width: 640px) {
+  .book { width: 120px; height: 190px; }
+  .book-title .ch { font-size: clamp(12px, 2.6vw, 18px); }
 }
 
 /* 長い名前対策 */
 .book-title{ 
   --max-chars: 12;
 }
-@media (max-width: 640px) {
-  .book { width: 120px; height: 190px; }
-  .book-title .ch { font-size: clamp(12px, 2.6vw, 18px); }
-}
-
-/* （既存のダークモードなど他スタイルは必要に応じて残してください） */

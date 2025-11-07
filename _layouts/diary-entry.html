@@ -5,23 +5,21 @@ layout: default
 <link rel="stylesheet" href="{{ site.baseurl }}/assets/css/diary-book.css">
 
 <article class="diary-entry">
-  <!-- 見開きブック（左: メタ/ツール、右: 本文） -->
   <div class="book-spread" role="region" aria-label="Diary entry book view">
-    <!-- 左ページ（メタ / ツール / ナビ） -->
-    <aside class="page left-page" aria-labelledby="meta-heading">
+    <!-- 左ページ -->
+    <aside class="page left-page paper" aria-labelledby="meta-heading">
       <div class="page-inner">
-        <h2 id="meta-heading" class="page-small-title">Drowse‑Lab</h2>
+        <!-- 日付（左上） -->
+        <div class="page-date">{{ page.date | date: "%Y-%m-%d" }}</div>
 
+        <!-- 内側コンテンツ（タイトルや短い紹介など） -->
+        <h2 id="meta-heading" class="page-small-title">Drowse‑Lab</h2>
         <div class="meta-block">
           <p class="meta">
-            <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y-%m-%d" }}</time>
-            {% if page.author %} · by
-              <a href="{{ site.baseurl }}/diary/?author={{ page.author | downcase }}">{{ page.author }}</a>
-            {% endif %}
+            {% if page.author %}投稿: <strong>{{ page.author }}</strong>{% endif %}
           </p>
         </div>
 
-        <!-- ツールバー（日付ピッカー等） -->
         <div class="entry-toolbar" data-author="{{ page.author | downcase }}">
           <label>Open by date
             <input id="entryDate" type="date" value="{{ page.date | date: '%Y-%m-%d' }}">
@@ -32,19 +30,19 @@ layout: default
           <a id="nextLink" class="nav-btn" href="#" hidden>Next →</a>
         </div>
 
-        <!-- 左ページ下部に一覧的な抜粋や著者紹介などを出す余地 -->
-        <div class="left-excerpt">
-          <p>投稿者: <strong>{{ page.author }}</strong></p>
-          {% if page.excerpt %}
-            <p class="excerpt">{{ page.excerpt | strip_html | truncate: 160 }}</p>
-          {% endif %}
+        <!-- 一番下に投稿者（ページフッタ） -->
+        <div class="page-footer">
+          <div class="page-author">投稿者: {{ page.author }}</div>
         </div>
       </div>
     </aside>
 
-    <!-- 右ページ（本文） -->
-    <section class="page right-page" aria-labelledby="entry-title">
+    <!-- 右ページ -->
+    <section class="page right-page paper" aria-labelledby="entry-title">
       <div class="page-inner">
+        <!-- 日付（左上） -->
+        <div class="page-date">{{ page.date | date: "%Y-%m-%d" }}</div>
+
         <header>
           <h1 id="entry-title">{{ page.title }}</h1>
         </header>
@@ -55,7 +53,6 @@ layout: default
 
         <hr class="diary-divider">
 
-        <!-- ページ下部の「前の記事 / 次の記事」ナビ（従来ロジックを維持） -->
         <nav class="diary-nav">
           {% assign entries = site.diary | where: "author", page.author | sort: "date" %}
           {% for post in entries %}
@@ -72,13 +69,18 @@ layout: default
             <a class="next" href="{{ next.url | relative_url }}">次の記事：{{ next.title }} →</a>
           {% endif %}
         </nav>
+
+        <!-- 一番下に投稿者（ページフッタ） -->
+        <div class="page-footer">
+          <div class="page-author">投稿者: {{ page.author }}</div>
+        </div>
       </div>
     </section>
   </div>
 </article>
 
 <script>
-/* 既存の ENTRIES データ埋め込み（そのまま利用） */
+/* ENTRIES データ（既存と同様） */
 const ENTRIES = [
 {% assign entries_all = site.diary | sort: 'date' %}
 {% for p in entries_all %}

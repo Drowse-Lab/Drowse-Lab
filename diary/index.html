@@ -28,41 +28,43 @@ const ENTRIES = [
   const entriesOf = (author) =>
     ENTRIES.filter(e => e.a === author).sort((x,y)=> x.d.localeCompare(y.d));
 
-  // 安定色（色相）を username から生成
   function hueFrom(str){
     let h = 0; for (let i=0;i<str.length;i++) h = (h*31 + str.charCodeAt(i)) >>> 0;
     return h % 360;
   }
-  // 縦組み
-  const lettersHTML = (s) => s.split('').map(c=>`<span class="ch">${c}</span>`).join('');
+  const lettersHTML = (s) => (s||'?').split('').map(c=>`<span class="ch">${c}</span>`).join('');
 
-  // members.json を読み込んで本を描画
   fetch('{{ site.baseurl }}/assets/data/members.json', {cache:'no-store'})
     .then(r => r.json())
     .then(list => {
       list.forEach(m => {
-        const parts = (m.github_link || '').split('/');
-        const username = (parts[parts.length-1] || '').toLowerCase();
-        if(!username) return;
+        // 複数の候補から username を決める（堅牢化）
+        const link = (m.github_link || m.github || '');
+        const parts = link.split('/').filter(Boolean);
+        const fromLink = parts[parts.length-1] || '';
+        const raw = (m.username || fromLink || m.name || m.login || '').toString().trim();
+        const username = raw.replace(/^@/, '').toLowerCase();
+        // 表示用ラベルは最大 12 文字に切る（CSS と合わせて安全側で調整）
+        const displayLabel = (username || 'unknown').slice(0, 12);
 
         const btn = document.createElement('button');
         btn.className = 'book';
-        btn.dataset.username = username;
-        btn.title = username;
-        const h = hueFrom(username);
+        btn.dataset.username = username || ''; // 空でも本は表示される（クリック時は無視）
+        btn.title = m.name || username || 'unknown';
+        const h = hueFrom(displayLabel);
         btn.innerHTML = `
           <span class="book-spine" style="--h:${h}">
-            <span class="book-title">${lettersHTML(username)}</span>
+            <span class="book-title">${lettersHTML(displayLabel)}</span>
           </span>`;
         shelfRail.appendChild(btn);
       });
     });
 
-  // クリック → その人の最古記事へ
   shelfRail.addEventListener('click', (e)=>{
     const btn = e.target.closest('.book');
     if(!btn) return;
     const author = btn.dataset.username;
+    if(!author) return;
     const list = entriesOf(author);
     if(list.length === 0) return;
     location.href = list[0].u;

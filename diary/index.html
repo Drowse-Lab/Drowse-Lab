@@ -4,8 +4,8 @@ title: Diary
 permalink: /diary/
 ---
 
-<link rel="stylesheet" href="{{ '/assets/css/diary.css' | relative_url }}">
-
+<!-- <link rel="stylesheet" href="{{ '/assets/css/diary.css' | relative_url }}"> -->
+<link rel="stylesheet" href="/Drowse-Lab/assets/css/diary.css">
 <div class="diary container">
   <!-- 3D Book Shelf -->
   <section class="book-shelf" aria-label="Members">
@@ -37,7 +37,7 @@ const ENTRIES = [
     return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c]));
   }
 
- fetch('{{ "/assets/data/members.json" | relative_url }}', {cache:'no-store'})
+fetch('/Drowse-Lab/assets/data/members.json', {cache:'no-store'})
     .then(r => r.json())
     .then(list => {
       list.forEach(m => {

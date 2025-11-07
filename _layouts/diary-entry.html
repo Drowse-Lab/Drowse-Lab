@@ -2,53 +2,83 @@
 layout: default
 ---
 
+<link rel="stylesheet" href="{{ site.baseurl }}/assets/css/diary-book.css">
+
 <article class="diary-entry">
-  <header>
-    <h1>{{ page.title }}</h1>
-    <p class="meta">
-      <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y-%m-%d" }}</time>
-      {% if page.author %} · by
-        <a href="{{ site.baseurl }}/diary/?author={{ page.author | downcase }}">{{ page.author }}</a>
-      {% endif %}
-    </p>
-  </header>
+  <!-- 見開きブック（左: メタ/ツール、右: 本文） -->
+  <div class="book-spread" role="region" aria-label="Diary entry book view">
+    <!-- 左ページ（メタ / ツール / ナビ） -->
+    <aside class="page left-page" aria-labelledby="meta-heading">
+      <div class="page-inner">
+        <h2 id="meta-heading" class="page-small-title">Drowse‑Lab</h2>
 
-  <!-- ▼ ツールバー（前後ボタン＋日付オープン） -->
-  <div class="entry-toolbar" data-author="{{ page.author | downcase }}">
-    <label>Open by date
-      <input id="entryDate" type="date" value="{{ page.date | date: '%Y-%m-%d' }}">
-    </label>
-    <button id="entryOpenBtn">Open</button>
-    <span class="spacer"></span>
-    <a id="prevLink" class="nav-btn" href="#" hidden>← Prev</a>
-    <a id="nextLink" class="nav-btn" href="#" hidden>Next →</a>
+        <div class="meta-block">
+          <p class="meta">
+            <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y-%m-%d" }}</time>
+            {% if page.author %} · by
+              <a href="{{ site.baseurl }}/diary/?author={{ page.author | downcase }}">{{ page.author }}</a>
+            {% endif %}
+          </p>
+        </div>
+
+        <!-- ツールバー（日付ピッカー等） -->
+        <div class="entry-toolbar" data-author="{{ page.author | downcase }}">
+          <label>Open by date
+            <input id="entryDate" type="date" value="{{ page.date | date: '%Y-%m-%d' }}">
+          </label>
+          <button id="entryOpenBtn">Open</button>
+          <div class="spacer"></div>
+          <a id="prevLink" class="nav-btn" href="#" hidden>← Prev</a>
+          <a id="nextLink" class="nav-btn" href="#" hidden>Next →</a>
+        </div>
+
+        <!-- 左ページ下部に一覧的な抜粋や著者紹介などを出す余地 -->
+        <div class="left-excerpt">
+          <p>投稿者: <strong>{{ page.author }}</strong></p>
+          {% if page.excerpt %}
+            <p class="excerpt">{{ page.excerpt | strip_html | truncate: 160 }}</p>
+          {% endif %}
+        </div>
+      </div>
+    </aside>
+
+    <!-- 右ページ（本文） -->
+    <section class="page right-page" aria-labelledby="entry-title">
+      <div class="page-inner">
+        <header>
+          <h1 id="entry-title">{{ page.title }}</h1>
+        </header>
+
+        <div class="content">
+          {{ content }}
+        </div>
+
+        <hr class="diary-divider">
+
+        <!-- ページ下部の「前の記事 / 次の記事」ナビ（従来ロジックを維持） -->
+        <nav class="diary-nav">
+          {% assign entries = site.diary | where: "author", page.author | sort: "date" %}
+          {% for post in entries %}
+            {% if post.url == page.url %}
+              {% assign index = forloop.index0 %}
+              {% assign prev = entries[index-1] %}
+              {% assign next = entries[index+1] %}
+            {% endif %}
+          {% endfor %}
+          {% if prev %}
+            <a class="prev" href="{{ prev.url | relative_url }}">← 前の記事：{{ prev.title }}</a>
+          {% endif %}
+          {% if next %}
+            <a class="next" href="{{ next.url | relative_url }}">次の記事：{{ next.title }} →</a>
+          {% endif %}
+        </nav>
+      </div>
+    </section>
   </div>
-
-  <div class="content">
-    {{ content }}
-  </div>
-
-  <!-- ▼ ページ下部の「前の記事 / 次の記事」ナビ -->
-  <hr class="diary-divider">
-  <nav class="diary-nav">
-    {% assign entries = site.diary | where: "author", page.author | sort: "date" %}
-    {% for post in entries %}
-      {% if post.url == page.url %}
-        {% assign index = forloop.index0 %}
-        {% assign prev = entries[index-1] %}
-        {% assign next = entries[index+1] %}
-      {% endif %}
-    {% endfor %}
-    {% if prev %}
-      <a class="prev" href="{{ prev.url | relative_url }}">← 前の記事：{{ prev.title }}</a>
-    {% endif %}
-    {% if next %}
-      <a class="next" href="{{ next.url | relative_url }}">次の記事：{{ next.title }} →</a>
-    {% endif %}
-  </nav>
 </article>
 
 <script>
+/* 既存の ENTRIES データ埋め込み（そのまま利用） */
 const ENTRIES = [
 {% assign entries_all = site.diary | sort: 'date' %}
 {% for p in entries_all %}
@@ -80,76 +110,3 @@ const ENTRIES = [
   });
 })();
 </script>
-
-<style>
-.entry-toolbar {
-  display: flex; align-items: center; gap: 12px;
-  padding: 10px 12px; margin: 6px 0 18px;
-  border: 1px solid rgba(0,0,0,.10);
-  border-radius: 10px;
-  background: rgba(127,127,255,.06);
-}
-.entry-toolbar input[type="date"] {
-  padding: 6px 8px; border-radius: 8px;
-  border: 1px solid rgba(0,0,0,.18);
-  background: #fff;
-}
-.entry-toolbar button {
-  padding: 6px 12px; border-radius: 8px; cursor: pointer;
-  border: 1px solid rgba(0,0,0,.18); background: #fff;
-}
-.entry-toolbar .spacer { flex: 1; }
-.nav-btn {
-  text-decoration: none; padding: 6px 10px; border-radius: 8px;
-  border: 1px solid rgba(0,0,0,.18); background: #fff;
-}
-
-.diary-divider {
-  margin: 48px 0 24px;
-  border: none;
-  border-top: 1px solid rgba(0,0,0,0.15);
-}
-.diary-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-.diary-nav a {
-  flex: 1 1 auto;
-  text-decoration: none;
-  padding: 10px 16px;
-  border-radius: 10px;
-  background: rgba(127,127,255,0.08);
-  border: 1px solid rgba(0,0,0,0.1);
-  transition: all .2s ease;
-}
-.diary-nav a:hover {
-  background: rgba(127,127,255,0.15);
-  transform: translateY(-2px);
-}
-.diary-nav .prev { text-align: left; }
-.diary-nav .next { text-align: right; }
-
-@media (prefers-color-scheme: dark) {
-  .entry-toolbar {
-    background: rgba(255,255,255,.05);
-    border-color: rgba(255,255,255,.12);
-  }
-  .entry-toolbar input[type="date"],
-  .entry-toolbar button,
-  .nav-btn {
-    background: rgba(255,255,255,.06);
-    border-color: rgba(255,255,255,.22);
-    color: #fff;
-  }
-  .diary-divider { border-top-color: rgba(255,255,255,0.15); }
-  .diary-nav a {
-    background: rgba(255,255,255,0.05);
-    border-color: rgba(255,255,255,0.15);
-    color: #fff;
-  }
-  .diary-nav a:hover { background: rgba(255,255,255,0.1); }
-}
-</style>

@@ -147,12 +147,19 @@
   gap: 22px;
   overflow-x: auto;
   overflow-y: visible;
+  /* ここに右側の余白を十分に確保（ホバーで前へ出る分のスペース） */
   padding: 12px 6px 26px;
+  padding-inline-end: 140px; /* ← ここを増やすと右端の余白が増える（調整可） */
   min-height: 260px;
   scrollbar-width: thin;
   align-items: end;
+  -webkit-overflow-scrolling: touch;
+  scroll-padding-inline: 24px;
 }
 
+.shelf-rail .book:last-child {
+  margin-right: 8px; /* 必要なら増やす */
+}
 /* 1冊 */
 .book{
   position: relative;

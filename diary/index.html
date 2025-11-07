@@ -33,8 +33,11 @@ const ENTRIES = [
     let h = 0; for (let i=0;i<str.length;i++) h = (h*31 + str.charCodeAt(i)) >>> 0;
     return h % 360;
   }
-  // 縦組み
-  const lettersHTML = (s) => (s||'?').split('').map(c=>`<span class="ch">${c}</span>`).join('');
+
+  // HTMLエスケープ（念のため）
+  function escapeHTML(s){
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c]));
+  }
 
   // members.json を読み込んで本を描画
   fetch('{{ site.baseurl }}/assets/data/members.json', {cache:'no-store'})
@@ -48,18 +51,20 @@ const ENTRIES = [
         const rawUsername = (m.username || fromLink || m.login || '').toString().trim();
         const usernameKey = rawUsername.replace(/^@/, '').toLowerCase();
 
-        // 表示ラベルは人が読みやすい形（名前優先、username も可）、大文字小文字は保持
+        // 表示ラベルは名前優先（大文字小文字を保持）、長ければ切る
         const displayRaw = (m.name && m.name.toString().trim()) || (m.username && m.username.toString().trim()) || fromLink || 'unknown';
-        const displayLabel = displayRaw.slice(0, 12); // 背表紙に入りきる長さに制限
+        const displayLabel = displayRaw.slice(0, 14); // 背表紙に入る長さを少し増やして余裕を持たせる
 
         const btn = document.createElement('button');
         btn.className = 'book';
         btn.dataset.username = usernameKey || ''; // クリック時に使うキー
         btn.title = (m.name || m.username || fromLink || 'unknown');
         const h = hueFrom(displayLabel);
+
+        // ここで「1つのラベル要素」を入れる（以前の1文字ずつspanはやめる）
         btn.innerHTML = `
           <span class="book-spine" style="--h:${h}">
-            <span class="book-title">${lettersHTML(displayLabel)}</span>
+            <span class="book-title"><span class="label">${escapeHTML(displayLabel)}</span></span>
           </span>`;
         shelfRail.appendChild(btn);
       });

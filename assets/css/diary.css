@@ -131,7 +131,7 @@
   .diary.container { margin-top: 36px; }
   .diary-link { padding: 14px 14px; }
 }
-/* ===== 3D Book Shelf (改善版) ===== */
+/* ===== 3D Book Shelf （該当セクション） ===== */
 .book-shelf{
   perspective: 900px;
   -webkit-perspective: 900px;
@@ -143,49 +143,51 @@
 .shelf-rail{
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: 160px;   /* 1冊の幅（必要なら増やす） */
+  grid-auto-columns: 160px;
   gap: 22px;
   overflow-x: auto;
   overflow-y: visible;
   padding: 12px 6px 26px;
   min-height: 260px;
   scrollbar-width: thin;
-  align-items: end;           /* 下揃えにする */
+  align-items: end;
 }
 
 /* 1冊 */
 .book{
   position: relative;
-  display: block;             /* 横方向で潰れないように明示 */
-  width: 140px;               /* 背表紙を十分に見せる幅 */
-  min-width: 120px;           /* 幅が潰れるのを防ぐ */
+  display: block;
+  width: 140px;
+  min-width: 120px;
   height: 220px;
   box-sizing: border-box;
   appearance: none; border: 0; background: transparent;
   cursor: pointer; outline: none;
+  /* 重要：回転ピボットを底辺にする */
+  transform-origin: center bottom;
   transform: translateZ(0) rotateY(-18deg);
   -webkit-transform: translateZ(0) rotateY(-18deg);
   transform-style: preserve-3d;
   -webkit-transform-style: preserve-3d;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
-  transition: transform .18s ease, filter .18s ease;
+  transition: transform .24s cubic-bezier(.2,.9,.2,1), filter .18s ease;
   will-change: transform;
-  /* 一時デバッグ：枠を見やすくする（確認後削除） */
-  outline: 1px dashed rgba(0,0,0,0.05);
+  outline: 1px dashed rgba(0,0,0,0.03); /* デバッグ枠（確認後削除してOK） */
 }
 .book:hover,
 .book.active{
-  transform: translateZ(90px) scale(1.06) rotateY(0deg);
-  -webkit-transform: translateZ(90px) scale(1.06) rotateY(0deg);
-  filter: drop-shadow(0 16px 24px rgba(0,0,0,.28));
-  z-index: 10;
+  /* 底辺を軸に前へ傾ける（上側が手前に来る）＋少し手前にズラす */
+  transform: translateZ(90px) rotateX(-12deg) rotateY(0deg) scale(1.06);
+  -webkit-transform: translateZ(90px) rotateX(-12deg) rotateY(0deg) scale(1.06);
+  filter: drop-shadow(0 20px 28px rgba(0,0,0,.28));
+  z-index: 30;
 }
 
-/* 背表紙：薄い茶色グラデーションで本体をはっきり表示 */
+/* 背表紙：薄い茶色グラデーション */
 .book-spine{
   position: relative;
-  display: block;             /* ブロックで幅いっぱいにする */
+  display: block;
   width: 100%;
   height: 100%;
   border-radius: 14px;
@@ -193,7 +195,7 @@
     linear-gradient(180deg, rgba(255,255,255,.04), rgba(0,0,0,.03)),
     linear-gradient(135deg, #f3e6d8 0%, #e3cba9 50%, #d9c2a1 100%);
   border: 1px solid rgba(0,0,0,.12);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.3);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.18);
   overflow: hidden;
 }
 
@@ -205,53 +207,37 @@
   -webkit-transform: rotateY(90deg) translateZ(1px);
   transform-origin: left; -webkit-transform-origin: left;
   background: repeating-linear-gradient(180deg,#e9e0d5 0 3px,#d9cdbb 3px 6px);
-  border-right: 1px solid rgba(0,0,0,.10);
+  border-right: 1px solid rgba(0,0,0,.08);
   border-radius: 2px;
 }
 
-/* 縦組みタイトル（ユーザー名）: 文字色を黒に。縦書きが効かない場合は横回転で代替 */
+/* タイトル（ユーザー名） — 今回は1つの label を中央に表示、色は黒 */
 .book-title{
   position:absolute;
   inset: 12px 8px;
   display:flex;
-  flex-direction:column;
   align-items:center;
   justify-content:center;
-  gap: 4px;
-  font-weight: 800;
-  color: #111;                /* 黒 */
+  text-align:center;
+  font-weight: 700;
+  color: #111; /* 黒 */
   text-shadow: none;
   overflow: hidden;
-  /* 縦書きを試みる（対応しない環境では下の transform 回転が効く） */
-  writing-mode: vertical-rl;
-  text-orientation: upright;
+  white-space: nowrap;
   -webkit-font-smoothing: antialiased;
 }
-/* 各文字の扱いを安定 */
-.book-title .ch{
-  display:block;
-  font-size: clamp(14px, 1.4vw, 20px);
+/* ラベル要素 */
+.book-title .label{
+  display: inline-block;
+  font-size: clamp(14px, 1.8vw, 20px);
+  letter-spacing: .06em;
   line-height: 1;
-  transform: translateZ(1px);
-  white-space: nowrap;
-  -webkit-user-select: none;
-  user-select: none;
+  padding: 0 6px;
   color: #111;
 }
 
-/* 環境で縦書きがサポートされない場合のフェールバック（強制回転） */
-/* 必要なら下のコメントを外して試してください */
-/*
-.book-title { writing-mode: horizontal-tb; transform: rotate(-90deg); transform-origin: left top; }
-.book { height: 220px; width: 140px; }
-*/
-
+/* モバイル調整 */
 @media (max-width: 640px) {
   .book { width: 120px; height: 190px; }
-  .book-title .ch { font-size: clamp(12px, 2.6vw, 18px); }
-}
-
-/* 長い名前対策 */
-.book-title{ 
-  --max-chars: 12;
+  .book-title .label { font-size: clamp(12px, 2.6vw, 16px); }
 }

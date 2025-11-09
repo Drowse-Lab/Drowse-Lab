@@ -31,6 +31,11 @@ subtitle: ""
 
 include:
   - blog.html
+  - diary.html
+  
+# For project pages
+baseurl: /Drowse-Lab
+url: https://drowse-lab.github.io
 
 
 collections:

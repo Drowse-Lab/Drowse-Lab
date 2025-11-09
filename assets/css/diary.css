@@ -131,112 +131,72 @@
   .diary.container { margin-top: 36px; }
   .diary-link { padding: 14px 14px; }
 }
-/* ===== 3D Book Shelf （該当セクション） ===== */
+/* ===== 3D Book Shelf（折り返し対応 置換版） ===== */
 .book-shelf{
   position: relative;
-  /* full-bleed：コンテナが中央寄せでもビューポート幅いっぱいに広がる */
+  /* full-bleed は維持（不要なら width/max-width/margin を消す） */
   max-width: none;
   width: 100vw;
   margin-left: calc(50% - 50vw);
   margin-right: calc(50% - 50vw);
 
+  --book-h: 240px;   /* 本の高さ */
+  --gap: 18px;       /* 本同士の間隔 */
+
+  padding: 36px 20px 48px;
   perspective: 900px;
   -webkit-perspective: 900px;
   perspective-origin: 50% 30%;
   margin-top: 28px;
   margin-bottom: 10px;
-  padding: 36px 20px 48px; /* 左寄せに見せるために左右のパディングを控えめに */
   background: linear-gradient(180deg,#fbf8f4 0%, #f7f3ee 100%);
   border-radius: 12px;
-  /* 背景に奥行きを出すための薄い内側シャドウ */
   box-shadow: inset 0 -18px 32px rgba(0,0,0,0.03);
 }
 
-/* 棚板（上段・下段）：本より一段下に見せる */
+/* 棚板の装飾は “行” に合わせて背景で描く（疑似要素の固定位置は撤去） */
 .book-shelf::before,
-.book-shelf::after{
-  content:"";
-  position: absolute;
-  left: 2%;
-  right: 2%;
-  height: 60px;
-  background: linear-gradient(90deg, #b8894b 0%, #d4b083 30%, #a6783f 70%, #c49f61 100%);
-  border-radius: 6px;
-  /* 棚板の深さを出すため、内側の影と手前の柔らかい影で表現 */
-  box-shadow: inset 0 6px 14px rgba(0,0,0,.14), 0 8px 22px rgba(0,0,0,.06);
-  z-index: 2;
-  transform-origin: center;
-}
+.book-shelf::after{ content: none; }
 
-/* 上の棚（飾り） */
-.book-shelf::before{
-  top: 8px;
-  transform: translateZ(-24px);
-}
+.book-shelf .shelf-backdrop{ display:none; }
 
-/* 下の棚（本が“乗る”位置）：本の底辺に合わせる */
-.book-shelf::after{
-  top: 156px; /* 必要なら 140〜170px で微調整 */
-  transform: translateZ(-8px);
-}
-
-/* 棚の奥のバックドロップ（ごく薄くして深みを出す） */
-.book-shelf .shelf-backdrop{
-  position: absolute;
-  left: 2%;
-  right: 2%;
-  top: 200px;
-  height: 80px;
-  background: linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.00));
-  border-radius: 4px;
-  z-index: 1;
-  pointer-events: none;
-}
-
-/* 棚のレール（本が並ぶ領域）
-   - 左から詰める（start）
-   - 右端の余白はホバーで飛び出しても切れないよう確保する */
+/* 本が並ぶ領域：グリッドで自動折り返し */
 .shelf-rail{
   position: relative;
-  z-index: 6; /* 本が棚板より前に来る */
+  z-index: 6;
+
   display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 160px;
-  gap: 28px;
-  justify-content: start;           /* 左から詰める */
-  overflow-x: auto;
-  overflow-y: visible;
-  /* 左側のパディングは小さめにして左詰めに見せる */
-  padding: 18px 10px 32px 18px;
-  /* 右端余白はまだ確保（ホバーで前に出るため） */
-  padding-inline-end: 320px;
-  min-height: 260px;
-  scrollbar-width: thin;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--gap);
   align-items: end;
-  -webkit-overflow-scrolling: touch;
-  scroll-padding-inline: 24px;
+
+  /* 横スクロール/カラム自動追加は撤去 */
+  overflow: visible;
+  padding: 18px 8px 24px;
+
+  /* 行ごとに “棚板” 風の帯を描く */
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0 calc(var(--book-h) + var(--gap) - 10px),
+      rgba(185,146,99,0.25) calc(var(--book-h) + var(--gap) - 10px) calc(var(--book-h) + var(--gap) + 10px),
+      transparent calc(var(--book-h) + var(--gap) + 10px) calc(var(--book-h) + var(--gap) + 11px)
+    );
 }
 
-/* 最後の本にさらに余裕を追加して万全にする */
-.shelf-rail .book:last-child { margin-right: 48px; }
-
-/* 1冊（本）の基本
-   - 回転ピボットは底辺
-   - 軽い傾きで立体を示す（Y回転）
-   - 通常時の影は控えめで角度を統一 */
+/* 本カード：幅は列幅に追従させる */
 .book{
   position: relative;
   display: block;
-  width: 140px;
-  min-width: 120px;
-  height: 220px;
+  width: 100%;
+  height: var(--book-h);
   box-sizing: border-box;
-  appearance: none; border: 0; background: transparent;
-  cursor: pointer; outline: none;
+  cursor: pointer;
 
-  transform-origin: center bottom; /* 底辺を軸に回転 */
-  transform: translateZ(0) rotateY(-12deg);
-  -webkit-transform: translateZ(0) rotateY(-12deg);
+  /* 3D */
+  transform-origin: center bottom;
+  transform: translateZ(0) rotateY(-10deg);
+  -webkit-transform: translateZ(0) rotateY(-10deg);
   transform-style: preserve-3d;
   -webkit-transform-style: preserve-3d;
   -webkit-backface-visibility: hidden;
@@ -245,24 +205,22 @@
   transition: transform .28s cubic-bezier(.2,.9,.2,1), filter .18s ease;
   will-change: transform;
 
-  /* 通常時の控えめで自然なドロップシャドウ（一定の方向・角度） */
   box-shadow: 4px 10px 20px rgba(0,0,0,0.10), inset 0 2px 6px rgba(255,255,255,0.02);
   z-index: 22;
+  min-width: 0; /* 折り返し時のはみ出し防止 */
 }
 
-/* hover: 底辺を基準に上側が手前に傾く（立体感を強める）
-   - 影は下方向に濃く伸ばす（方向を統一） */
+/* ホバー時：少しだけ手前に。行の重なりを避けるためZは控えめ */
 .book:hover,
 .book.active{
-  transform: translateZ(90px) rotateX(-12deg) rotateY(0deg) scale(1.06);
-  -webkit-transform: translateZ(90px) rotateX(-12deg) rotateY(0deg) scale(1.06);
-  /* 影の方向を下（＋やや右）に揃えて自然に見えるように */
-  box-shadow: 10px 34px 48px rgba(0,0,0,0.28), 0 4px 14px rgba(0,0,0,0.08);
+  transform: translateZ(60px) rotateX(-10deg) rotateY(0deg) scale(1.04);
+  -webkit-transform: translateZ(60px) rotateX(-10deg) rotateY(0deg) scale(1.04);
+  box-shadow: 10px 28px 44px rgba(0,0,0,0.25), 0 4px 14px rgba(0,0,0,0.08);
   z-index: 80;
-  filter: none; /* 不要なフィルタは消す */
+  filter: none;
 }
 
-/* 背表紙（革っぽい質感）：縦の繊維、上下の金帯、トップハイライトで立体感を演出 */
+/* 背表紙などの装飾はそのまま */
 .book-spine{
   position: relative;
   display: block;
@@ -274,108 +232,59 @@
     repeating-linear-gradient(0deg, rgba(0,0,0,0.02) 0 2px, transparent 2px 6px),
     linear-gradient(180deg, #b88f63 0%, #d6b98f 40%, #b78f61 100%);
   border: 1px solid rgba(0,0,0,0.10);
-  /* 内側の暗がりで厚みを感じさせる */
   box-shadow: inset 0 6px 20px rgba(0,0,0,0.12), 0 6px 12px rgba(0,0,0,0.04);
   overflow: hidden;
   z-index: 24;
 }
-
-/* 繊維のオーバーレイ（ごく細かい斜めノイズ） */
 .book-spine .spine-decor{
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
+  position: absolute; inset: 0; pointer-events: none;
   background-image:
     linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.00)),
     repeating-linear-gradient(135deg, rgba(0,0,0,0.01) 0 2px, rgba(255,255,255,0.00) 2px 6px);
-  mix-blend-mode: overlay;
-  opacity: 0.55;
-  z-index: 26;
+  mix-blend-mode: overlay; opacity: .55; z-index: 26;
 }
-
-/* 縦の革パネル（左寄り） */
 .book-spine::before{
-  content: "";
-  position: absolute;
-  left: 10px;
-  top: 8%;
-  bottom: 8%;
-  width: 14px;
+  content: ""; position: absolute; left: 10px; top: 8%; bottom: 8%; width: 14px;
   border-radius: 6px;
   background: linear-gradient(180deg, rgba(0,0,0,0.06), rgba(255,255,255,0.03));
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
-  z-index: 28;
-  opacity: 0.55;
-  transform: skewY(-2deg);
+  z-index: 28; opacity: .55; transform: skewY(-2deg);
 }
-
-/* 金帯の凹凸感を強める（少し光沢） */
 .book-spine .spine-band{
-  position: absolute;
-  left: 12%;
-  right: 12%;
-  height: 10px;
-  border-radius: 6px;
+  position: absolute; left: 12%; right: 12%; height: 10px; border-radius: 6px;
   background: linear-gradient(90deg, #e0b14a 0%, #f7d884 40%, #e0b14a 100%);
   box-shadow: 0 2px 6px rgba(0,0,0,0.12), inset 0 1px rgba(255,255,255,0.6);
-  z-index: 30;
-  opacity: 0.98;
-  transform: translateZ(2px);
+  z-index: 30; opacity: .98; transform: translateZ(2px);
 }
 .book-spine .spine-band.top{ top: 26%; width: 68%; margin: 0 auto; }
 .book-spine .spine-band.bottom{ top: 62%; width: 56%; margin: 0 auto; }
 
-/* 小口（厚み）: 少し幅と影を調整して本が分厚く見えるように */
 .book::after{
-  content:"";
-  position:absolute;
-  left:100%; top:0;
-  width: 14px; height: 100%;
-  transform: rotateY(90deg) translateZ(1px);
-  transform-origin: left;
+  content:""; position:absolute; left:100%; top:0; width:14px; height:100%;
+  transform: rotateY(90deg) translateZ(1px); transform-origin: left;
   background: linear-gradient(180deg,#e6d8c2 0 3px,#d1bfa3 3px 6px);
   border-right: 1px solid rgba(0,0,0,0.10);
-  border-radius: 2px;
-  z-index: 20;
+  border-radius: 2px; z-index: 20;
   box-shadow: 2px 6px 18px rgba(0,0,0,0.08);
 }
 
-/* ラベル（ユーザー名）: 中央で読みやすく、トップハイライトで浮かせる */
 .book-title{
-  position:absolute;
-  inset: 12px 8px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  font-weight: 700;
-  color: #111;
-  text-shadow: 0 1px 0 rgba(255,255,255,0.08);
-  overflow: hidden;
-  white-space: nowrap;
-  z-index: 40;
+  position:absolute; inset:12px 8px; display:flex; align-items:center; justify-content:center;
+  text-align:center; font-weight:700; color:#111; text-shadow:0 1px 0 rgba(255,255,255,0.08);
+  overflow:hidden; white-space:nowrap; z-index:40;
 }
 .book-title .label{
-  display: inline-block;
-  font-size: clamp(13px, 1.8vw, 20px);
-  letter-spacing: .06em;
-  padding: 0 6px;
-  background: rgba(255,255,255,0); /* 透明。必要なら半透明の帯で可読性UP */
-  border-radius: 4px;
-  color: #111;
+  display:inline-block; font-size: clamp(13px, 1.8vw, 20px);
+  letter-spacing:.06em; padding:0 6px; border-radius:4px; color:#111;
 }
 
-/* 画面幅に合わせた調整 */
-@media (max-width: 880px) {
-  .book { width: 120px; height: 200px; }
-  .shelf-rail { grid-auto-columns: 140px; padding-inline-end: 220px; gap: 22px; }
-  .book-title .label { font-size: clamp(12px, 2.6vw, 18px); }
-  .book-spine .spine-band.top { top: 24%; }
-  .book-spine .spine-band.bottom { top: 60%; }
+/* レスポンシブ：画面が狭いほど本を少し低く、列幅も少し狭く */
+@media (max-width: 900px){
+  .book-shelf{ --book-h: 220px; --gap: 16px; }
+  .shelf-rail{ grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
 }
-
-@media (max-width: 640px) {
-  .book { width: 100px; height: 170px; }
-  .shelf-rail { grid-auto-columns: 120px; padding-inline-end: 120px; gap: 18px; }
-  .book-title .label { font-size: clamp(10px, 3.2vw, 14px); }
+@media (max-width: 640px){
+  .book-shelf{ --book-h: 190px; --gap: 14px; }
+  .shelf-rail{ grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+  .book-title .label{ font-size: clamp(12px, 3.2vw, 16px); }
 }

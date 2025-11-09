@@ -28,41 +28,51 @@ const ENTRIES = [
   const entriesOf = (author) =>
     ENTRIES.filter(e => e.a === author).sort((x,y)=> x.d.localeCompare(y.d));
 
-  // 安定色（色相）を username から生成
   function hueFrom(str){
     let h = 0; for (let i=0;i<str.length;i++) h = (h*31 + str.charCodeAt(i)) >>> 0;
     return h % 360;
   }
-  // 縦組み
-  const lettersHTML = (s) => s.split('').map(c=>`<span class="ch">${c}</span>`).join('');
 
-  // members.json を読み込んで本を描画
+  function escapeHTML(s){
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c]));
+  }
+
   fetch('{{ site.baseurl }}/assets/data/members.json', {cache:'no-store'})
     .then(r => r.json())
     .then(list => {
       list.forEach(m => {
-        const parts = (m.github_link || '').split('/');
-        const username = (parts[parts.length-1] || '').toLowerCase();
-        if(!username) return;
+        const link = (m.github_link || m.github || '');
+        const parts = link.split('/').filter(Boolean);
+        const fromLink = parts[parts.length-1] || '';
+        const rawUsername = (m.username || fromLink || m.login || '').toString().trim();
+        const usernameKey = rawUsername.replace(/^@/, '').toLowerCase();
+
+        const displayRaw = (m.name && m.name.toString().trim()) || (m.username && m.username.toString().trim()) || fromLink || 'unknown';
+        const displayLabel = displayRaw.slice(0, 16); // 少し長めでも収まるように調整
 
         const btn = document.createElement('button');
         btn.className = 'book';
-        btn.dataset.username = username;
-        btn.title = username;
-        const h = hueFrom(username);
+        btn.dataset.username = usernameKey || '';
+        btn.title = (m.name || m.username || fromLink || 'unknown');
+        const h = hueFrom(displayLabel);
+
+        // 背表紙内に装飾用要素を入れる（CSSで革質感・金帯を表現）
         btn.innerHTML = `
           <span class="book-spine" style="--h:${h}">
-            <span class="book-title">${lettersHTML(username)}</span>
+            <span class="spine-decor" aria-hidden="true"></span>
+            <span class="spine-band top" aria-hidden="true"></span>
+            <span class="spine-band bottom" aria-hidden="true"></span>
+            <span class="book-title"><span class="label">${escapeHTML(displayLabel)}</span></span>
           </span>`;
         shelfRail.appendChild(btn);
       });
     });
 
-  // クリック → その人の最古記事へ
   shelfRail.addEventListener('click', (e)=>{
     const btn = e.target.closest('.book');
     if(!btn) return;
     const author = btn.dataset.username;
+    if(!author) return;
     const list = entriesOf(author);
     if(list.length === 0) return;
     location.href = list[0].u;

@@ -1,0 +1,152 @@
+/* diary-book.css — 見開き本（古紙・縫い目・日付・投稿者） */
+
+/* 基本のレイアウト（既にある .book-spread を引き継ぎ） */
+.book-spread{
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 28px;
+  max-width: 1200px;
+  margin: 24px auto;
+  position: relative;
+}
+
+/* 共通の紙（古紙）スタイル */
+.paper{
+  width: 560px;
+  min-width: 280px;
+  background: linear-gradient(180deg, #fbf6ec 0%, #fff9f0 50%, #fffdf9 100%);
+  border-radius: 8px;
+  padding: 36px 40px;
+  box-sizing: border-box;
+  color: #111;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.06);
+  overflow: hidden;
+  /* 古紙の微細な紙目 */
+  background-image:
+    radial-gradient(rgba(0,0,0,0.02) 0.5px, transparent 0.5px),
+    linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.01));
+  background-size: 6px 6px, auto;
+}
+
+/* 左ページは左側に縫い目（バインディング）を作る */
+.left-page.paper::before{
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 12px;
+  bottom: 12px;
+  width: 12px;
+  border-radius: 4px;
+  /* 縫い目っぽくドットで表現 */
+  background:
+    linear-gradient(90deg, rgba(0,0,0,0.03), rgba(0,0,0,0.01)),
+    repeating-linear-gradient(180deg, #9a3b2e 0 6px, transparent 6px 12px);
+  box-shadow: inset 0 2px 4px rgba(255,255,255,0.02);
+  z-index: 12;
+  transform: translateX(-6px);
+}
+
+/* 片側に赤いステッチ風の装飾（画風に応じて色を調整） */
+.left-page.paper::after{
+  content:"";
+  position: absolute;
+  left: 18px;
+  top: 20px;
+  bottom: 20px;
+  width: 4px;
+  background-image: repeating-linear-gradient(180deg, #8b2f2f 0 3px, transparent 3px 7px);
+  opacity: 0.9;
+  z-index: 13;
+  transform: translateX(-2px);
+}
+
+/* 右ページにも小さな縁飾り（視覚的バランス） */
+.right-page.paper::before{
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 12px;
+  bottom: 12px;
+  width: 6px;
+  background: linear-gradient(90deg, rgba(0,0,0,0.02), rgba(0,0,0,0.01));
+  border-radius: 4px;
+  z-index: 8;
+  opacity: .25;
+  transform: translateX(-3px);
+}
+
+/* 日付（左上） */
+.page-date{
+  position: absolute;
+  top: 14px;
+  left: 18px;
+  font-size: 13px;
+  color: #6b5f4a;
+  font-weight: 600;
+  z-index: 40;
+  letter-spacing: .02em;
+}
+
+/* ページ番号（右上） — 任意、右ページに表示したい場合は使う */
+.page-number{
+  position: absolute;
+  top: 12px;
+  right: 18px;
+  font-size: 12px;
+  color: #7a6b53;
+  z-index: 40;
+}
+
+/* 投稿者（ページ下部） — 画面の底に固定っぽく表示 */
+.page-footer{
+  position: absolute;
+  left: 36px;
+  right: 36px;
+  bottom: 16px;
+  text-align: left;
+  z-index: 40;
+  pointer-events: none;
+}
+.page-author{
+  font-size: 13px;
+  color: #6b5f4a;
+  font-weight: 600;
+}
+
+/* 見開きの視差（左右の角度） */
+.left-page{ transform: rotateY(4deg); transform-origin: left center; z-index: 6; }
+.right-page{ transform: rotateY(-4deg); transform-origin: right center; z-index: 6; }
+
+/* ページ内部の見出し等 */
+.page h1, .page h2 {
+  margin: 0 0 16px 0;
+  font-weight: 700;
+  color: #2a2a2a;
+}
+.page h1 { font-size: clamp(20px, 2.4vw, 28px); text-align: center; }
+.page h2.page-small-title { font-size: 13px; color: #7a6b53; margin-bottom: 6px; text-transform: uppercase; }
+
+/* 本文の読みやすさ調整 */
+.content { color: #222; line-height: 1.9; font-size: 16px; padding-bottom: 44px; }
+
+/* 小さい画面は縦積み（単ページ）にフォールバック */
+@media (max-width: 980px) {
+  .book-spread{ flex-direction: column; gap: 20px; padding: 20px; }
+  .book-spread::before, .book-spread::after { display: none; }
+  .page { width: auto; min-width: auto; transform: none !important; }
+  .left-page, .right-page { z-index: 5; }
+  .page-date { left: 20px; top: 12px; }
+  .page-footer { left: 20px; right: 20px; bottom: 12px; position: absolute; }
+}
+
+/* さらに狭いスマホ用 */
+@media (max-width: 560px) {
+  .paper { padding: 20px; border-radius: 6px; }
+  .page-date { font-size: 12px; }
+  .page-author { font-size: 12px; }
+  .content { font-size: 15px; line-height: 1.7; }
+}

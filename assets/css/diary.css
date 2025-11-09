@@ -259,32 +259,87 @@
 .book-spine .spine-band.top{ top: 26%; width: 68%; margin: 0 auto; }
 .book-spine .spine-band.bottom{ top: 62%; width: 56%; margin: 0 auto; }
 
-.book::after{
+/* .book::after{
   content:""; position:absolute; left:100%; top:0; width:14px; height:100%;
   transform: rotateY(90deg) translateZ(1px); transform-origin: left;
   background: linear-gradient(180deg,#e6d8c2 0 3px,#d1bfa3 3px 6px);
   border-right: 1px solid rgba(0,0,0,0.10);
   border-radius: 2px; z-index: 20;
   box-shadow: 2px 6px 18px rgba(0,0,0,0.08);
-}
+} */
 
+/* === 縦書きタイトル（名前）＋ 文字数で自動縮小 === */
 .book-title{
-  position:absolute; inset:12px 8px; display:flex; align-items:center; justify-content:center;
-  text-align:center; font-weight:700; color:#111; text-shadow:0 1px 0 rgba(255,255,255,0.08);
-  overflow:hidden; white-space:nowrap; z-index:40;
-}
-.book-title .label{
-  display:inline-block; font-size: clamp(13px, 1.8vw, 20px);
-  letter-spacing:.06em; padding:0 6px; border-radius:4px; color:#111;
+  position: absolute;
+  inset: 10px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-weight: 700;
+  color: #111;
+  writing-mode: vertical-rl;        /* ←縦書きに変更 */
+  text-orientation: mixed;          /* 英数字を正立 */
+  white-space: normal;              /* 折り返し許可 */
+  line-height: 1.1;
+  z-index: 40;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.08);
+  overflow: hidden;
 }
 
-/* レスポンシブ：画面が狭いほど本を少し低く、列幅も少し狭く */
-@media (max-width: 900px){
-  .book-shelf{ --book-h: 220px; --gap: 16px; }
-  .shelf-rail{ grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+.book-title .label{
+  display: inline-block;
+  font-size: clamp(12px, 2vw, 18px);
+  letter-spacing: 0.08em;
+  max-height: 100%;
+  max-width: 100%;
+  word-break: break-all;            /* 長い英字対応 */
+  transform-origin: center;
+  transition: font-size 0.2s ease;
 }
-@media (max-width: 640px){
-  .book-shelf{ --book-h: 190px; --gap: 14px; }
-  .shelf-rail{ grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
-  .book-title .label{ font-size: clamp(12px, 3.2vw, 16px); }
+
+/* --- 文字数に応じて自動縮小（目安） --- */
+/* JSで data-length 属性を付与して調整 */
+.book-title .label[data-length="6"],
+.book-title .label[data-length="7"] {
+  font-size: clamp(10px, 1.8vw, 16px);
+}
+.book-title .label[data-length="8"],
+.book-title .label[data-length="9"] {
+  font-size: clamp(9px, 1.6vw, 14px);
+}
+.book-title .label[data-length="10"],
+.book-title .label[data-length="11"],
+.book-title .label[data-length="12"] {
+  font-size: clamp(8px, 1.4vw, 12px);
+}
+
+/* hover時：少し明るく */
+.book:hover .book-title .label {
+  color: #000;
+  filter: brightness(1.1);
+}
+
+/* 小口（厚み）は現状のままにしておくが、
+   よりスリムにしたい場合は下の width を8pxに変更可 */
+.book::after {
+  content: "";
+  position: absolute;
+  left: 100%;
+  top: 0;
+  width: 14px;
+  height: 100%;
+  transform: rotateY(90deg) translateZ(1px);
+  transform-origin: left;
+  background: linear-gradient(180deg,#e6d8c2 0 3px,#d1bfa3 3px 6px);
+  border-right: 1px solid rgba(0,0,0,0.10);
+  border-radius: 2px;
+  z-index: 20;
+  box-shadow: 2px 6px 18px rgba(0,0,0,0.08);
+}
+
+/* JSを使わずCSSだけでもある程度対応させたい場合 */
+.book-title .label {
+  font-size: clamp(10px, 1.8vw, 18px);
+  text-overflow: ellipsis;
 }

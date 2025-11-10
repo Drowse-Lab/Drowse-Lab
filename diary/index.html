@@ -79,3 +79,10 @@ const ENTRIES = [
   });
 })();
 </script>
+
+<script>
+  fetch('{{ '/assets/data/manifest.json' | relative_url }}')
+    .then(r => r.json()).then(data => {
+      console.log(data);
+    });
+</script>

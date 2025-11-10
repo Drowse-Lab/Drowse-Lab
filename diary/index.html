@@ -4,7 +4,7 @@ title: Diary
 permalink: /diary/
 ---
 
-<link rel="stylesheet" href="{{ '/assets/css/diary.css' | relative_url }}">
+<link rel="stylesheet" href="{{ site.baseurl }}/assets/css/diary.css">
 
 <div class="diary container">
   <!-- 3D Book Shelf -->
@@ -78,11 +78,4 @@ const ENTRIES = [
     location.href = list[0].u;
   });
 })();
-</script>
-
-<script>
-  fetch('{{ '/assets/data/manifest.json' | relative_url }}')
-    .then(r => r.json()).then(data => {
-      console.log(data);
-    });
 </script>

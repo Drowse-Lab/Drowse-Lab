@@ -768,7 +768,7 @@ pre {
 
 /* 3dmodelここまでやでー */
 /* === blog ページ専用 幅調整 === */
-body.blog {
+.blog body {
   /* 他ページと同じように全幅表示 */
   margin: 0;
   padding: 0;

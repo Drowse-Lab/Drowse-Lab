@@ -702,14 +702,14 @@ pre {
   box-sizing: border-box;
 }
 
-.month-grid {
+.month-grid, {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 6px;
   margin-top: 6px;
 }
 
-.month-button {
+.month-button, {
   padding: 6px;
   border: 1px solid #ccc;
   background-color: white;
@@ -718,7 +718,7 @@ pre {
   font-size: 0.9em;
 }
 
-.month-button.active {
+.month-button.active, {
   background-color: #3f51b5;
   color: white;
   font-weight: bold;
@@ -767,32 +767,3 @@ pre {
 }
 
 /* 3dmodelここまでやでー */
-/* === blog ページ専用 幅調整 === */
-.blog body {
-  /* 他ページと同じように全幅表示 */
-  margin: 0;
-  padding: 0;
-}
-
-.blog .main-content,
-.blog .content,
-.blog .container,
-.blog .posts,
-.blog .blog-list {
-  max-width: none;      /* 最大幅制限を解除 */
-  width: 100%;          /* 横幅いっぱいに広げる */
-  padding-left: 0;
-  padding-right: 0;
-  margin-left: 0;
-  margin-right: 0;
-  box-sizing: border-box;
-}
-
-/* 投稿カードをページ端に揃えすぎず、ほんの少し内側に */
-.blog .post-card,
-.blog .post-item {
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: clamp(12px, 4vw, 32px);
-  padding-right: clamp(12px, 4vw, 32px);
-}

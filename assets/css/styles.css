@@ -702,14 +702,14 @@ pre {
   box-sizing: border-box;
 }
 
-.month-grid {
+.month-grid, {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 6px;
   margin-top: 6px;
 }
 
-.month-button {
+.month-button, {
   padding: 6px;
   border: 1px solid #ccc;
   background-color: white;
@@ -718,7 +718,7 @@ pre {
   font-size: 0.9em;
 }
 
-.month-button.active {
+.month-button.active, {
   background-color: #3f51b5;
   color: white;
   font-weight: bold;

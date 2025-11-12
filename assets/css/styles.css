@@ -702,14 +702,15 @@ pre {
   box-sizing: border-box;
 }
 
-.month-grid, {
+/* 余計なカンマが付いていて無効になってるセレクタを修正 */
+.month-grid {                /* ← 末尾のカンマ削除 */
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 6px;
   margin-top: 6px;
 }
 
-.month-button, {
+.month-button {              /* ← 末尾のカンマ削除 */
   padding: 6px;
   border: 1px solid #ccc;
   background-color: white;
@@ -718,11 +719,23 @@ pre {
   font-size: 0.9em;
 }
 
-.month-button.active, {
+.month-button.active {       /* ← 末尾のカンマ削除 */
   background-color: #3f51b5;
   color: white;
   font-weight: bold;
 }
+
+/* 数値に % が入っていて無効な box-shadow を修正 */
+.repo:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);  /* 4% 10% → 4px 10px */
+}
+
+/* 画像 hover の transform 用。今のままでも動きますが、transition を入れておくと滑らか */
+.post-content img {
+  transition: transform 0.15s ease;
+}
+
 
 .day-grid {
   display: grid;
@@ -767,11 +780,13 @@ pre {
 }
 
 
-:root {
-  /* デバイスに合わせて自然な左右余白。iPhoneのセーフエリアも考慮 */
-  --gutter-l: max(env(safe-area-inset-left), clamp(14px, 4vw, 24px));
-  --gutter-r: max(env(safe-area-inset-right), clamp(14px, 4vw, 24px));
+/* ブログページのときだけ、ナビの左右をブログ本文と揃える */
+:root:has(.blog-main) .top-nav {
+  padding-left: var(--gutter-l);
+  padding-right: var(--gutter-r);
+  box-sizing: border-box;
 }
+
 
 /* 上部ナビ（既存 .top-nav） */
 .top-nav {

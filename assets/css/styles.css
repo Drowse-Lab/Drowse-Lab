@@ -766,4 +766,36 @@ pre {
   transform: scale(1.05);
 }
 
-/* 3dmodelここまでやでー */
+
+:root {
+  /* デバイスに合わせて自然な左右余白。iPhoneのセーフエリアも考慮 */
+  --gutter-l: max(env(safe-area-inset-left), clamp(14px, 4vw, 24px));
+  --gutter-r: max(env(safe-area-inset-right), clamp(14px, 4vw, 24px));
+}
+
+/* 上部ナビ（既存 .top-nav） */
+.top-nav {
+  padding-left: var(--gutter-l);
+  padding-right: var(--gutter-r);
+  box-sizing: border-box;
+}
+
+/* ブログ本文領域（既存 .blog-main） */
+.blog-main {
+  max-width: none;
+  width: 100%;
+  padding-left: var(--gutter-l);
+  padding-right: var(--gutter-r);
+  box-sizing: border-box;
+}
+
+/* 投稿リスト(#posts)や絞り込みUIに不要な左右余白があれば削除 */
+.blog-main #posts,
+.blog-main aside,
+.blog-main h1,
+.blog-main .filter-sidebar {
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 0;
+  padding-right: 0;
+}

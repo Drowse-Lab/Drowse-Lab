@@ -1,5 +1,5 @@
 // /script/manifest-loader.js
-function addManifestTag(manifestUrl = "/assets/data/manifest.json") {
+function addManifestTag(manifestUrl = "/Drowse-Lab/assets/data/manifest.json") {
   if (!document.querySelector('link[rel="manifest"]')) {
     const link = document.createElement("link");
     link.rel = "manifest";

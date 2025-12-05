@@ -5,6 +5,24 @@
   padding: 0 20px;
 }
 
+/* 戻るボタン */
+.back-to-home {
+  display: inline-block;
+  margin-bottom: 20px;
+  padding: 8px 16px;
+  color: #5a4a3a;
+  text-decoration: none;
+  font-size: 14px;
+  border: 1px solid #d4c4a8;
+  border-radius: 4px;
+  background: #faf6f0;
+  transition: background 0.2s, color 0.2s;
+}
+.back-to-home:hover {
+  background: #f0e8d8;
+  color: #3a2a1a;
+}
+
 /* ヘッダー */
 .diary-header {
   display: flex;

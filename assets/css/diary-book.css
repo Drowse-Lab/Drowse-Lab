@@ -150,3 +150,27 @@
   .page-author { font-size: 12px; }
   .content { font-size: 15px; line-height: 1.7; }
 }
+
+/* 戻るボタン */
+.back-to-diary {
+  display: inline-block;
+  margin: 0 auto 16px;
+  padding: 8px 16px;
+  color: #5a4a3a;
+  text-decoration: none;
+  font-size: 14px;
+  border: 1px solid #d4c4a8;
+  border-radius: 4px;
+  background: #faf6f0;
+  transition: background 0.2s, color 0.2s;
+}
+.back-to-diary:hover {
+  background: #f0e8d8;
+  color: #3a2a1a;
+}
+.diary-entry {
+  text-align: center;
+}
+.diary-entry .book-spread {
+  text-align: left;
+}

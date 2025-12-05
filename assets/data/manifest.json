@@ -8,13 +8,13 @@
   "description": "なんとなく作っているwebである",
   "icons": [
     {
-      "src": "/Drowse-Lab/assets/image/DrowseLabicon.png",
-      "type": "image/png",
+      "src": "/Drowse-Lab/assets/image/DrowseLabIcon.jpg",
+      "type": "image/jpeg",
       "sizes": "192x192"
     },
     {
-      "src": "/Drowse-Lab/assets/image/DrowseLabicon.png",
-      "type": "image/png",
+      "src": "/Drowse-Lab/assets/image/DrowseLabIcon.jpg",
+      "type": "image/jpeg",
       "sizes": "512x512"
     }
   ]

@@ -11,6 +11,10 @@ future: true
 collections:
   posts:
     output: true
+  diary:
+    output: true
+    permalink: /diary/:year/:month/:day/:slug/
+
 defaults:
   - scope:
       path: ""
@@ -18,6 +22,12 @@ defaults:
     values:
       layout: post
       permalink: /blog/:year/:month/:day/:title/
+  - scope:
+      path: ""
+      type: "diary"
+    values:
+      layout: diary-entry
+      sitemap: true
 
 paginate: 5
 paginate_path: "/blog/page:num"
@@ -32,19 +42,3 @@ subtitle: ""
 include:
   - blog.html
   - diary.html
-  
-# For project pages
-baseurl: /Drowse-Lab
-url: https://drowse-lab.github.io
-
-
-collections:
-  diary:
-    output: true
-    permalink: /diary/:year/:month/:day/:slug/
-
-defaults:
-  - scope: { path: "", type: "diary" }
-    values:
-      layout: diary-entry   # 後で作るエントリ用レイアウト
-      sitemap: true

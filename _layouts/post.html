@@ -89,36 +89,33 @@ layout: default
 </style>
 
 {% elsif page.viewer_style == "GUI" %}
-<!-- ===== Minecraft GUI item slot viewer ===== -->
+<!-- ===== Blockbench GUI Display viewer ===== -->
 <section class="gui-viewer-wrap" style="margin-top: 2em; display: flex; justify-content: center;">
-  <div class="mc-slot-outer">
-    <div class="mc-slot">
+  <div class="mc-gui-frame">
+    <div class="mc-gui-inner">
       <div id="mcmodel-viewer" data-model-path="{{ page.model_path }}" data-viewer-style="gui" {% if page.enable_glow %}data-enable-glow="{{ page.enable_glow }}"{% endif %} data-init-scale-x="{{ page.model_scale_x | default: 1 }}" data-init-scale-y="{{ page.model_scale_y | default: 1 }}" data-init-scale-z="{{ page.model_scale_z | default: 1 }}"></div>
     </div>
-    <div class="mc-slot-label">{{ page.title }}</div>
   </div>
 </section>
 <style>
-  .mc-slot-outer {
-    display: flex; flex-direction: column; align-items: center; gap: 8px;
-    image-rendering: pixelated;
+  .mc-gui-frame {
+    width: 320px; height: 320px;
+    background: #6d8399;
+    padding: 16px;
+    border: 6px solid;
+    border-color: #566a7e #8faab8 #8faab8 #566a7e;
+    box-shadow: inset 0 0 0 3px #7a94a8;
   }
-  .mc-slot {
-    width: 256px; height: 256px; position: relative;
-    background: #8b8b8b;
-    border: 4px solid;
-    border-color: #373737 #fff #fff #373737;
-    box-shadow: inset 0 0 0 2px #555;
-  }
-  .mc-slot #mcmodel-viewer {
+  .mc-gui-inner {
     width: 100%; height: 100%;
+    background: #aac4dc;
+    border: 4px solid;
+    border-color: #8aa4bc #c4daea #c4daea #8aa4bc;
+    position: relative;
+    overflow: hidden;
   }
-  .mc-slot-label {
-    font-family: 'Minecraft', monospace; font-size: 14px;
-    color: #fff; text-shadow: 2px 2px 0 #3f3f3f;
-    background: #100010; border: 2px solid #25005a;
-    border-radius: 3px; padding: 4px 12px;
-    text-align: center;
+  .mc-gui-inner #mcmodel-viewer {
+    width: 100%; height: 100%;
   }
 </style>
 

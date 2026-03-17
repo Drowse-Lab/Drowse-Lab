@@ -301,10 +301,12 @@ if (container) {
   const isBlockbench = viewerStyle === 'blockbench';
   const isGUI = viewerStyle === 'gui';
 
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: !isBlockbench });
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: !(isBlockbench || isGUI) });
   renderer.setSize(container.clientWidth, container.clientHeight);
   if (isBlockbench) {
     renderer.setClearColor(0x21252b, 1);
+  } else if (isGUI) {
+    renderer.setClearColor(0xaac4dc, 1);
   } else {
     renderer.setClearColor(0x000000, 0);
   }

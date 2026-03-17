@@ -297,7 +297,9 @@ class BlockModelRenderer {
 // Three.js の初期化
 const container = document.getElementById("mcmodel-viewer");
 if (container) {
-  const isBlockbench = container.dataset.viewerStyle === 'blockbench';
+  const viewerStyle = container.dataset.viewerStyle || 'default';
+  const isBlockbench = viewerStyle === 'blockbench';
+  const isGUI = viewerStyle === 'gui';
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: !isBlockbench });
   renderer.setSize(container.clientWidth, container.clientHeight);
@@ -309,19 +311,47 @@ if (container) {
   container.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
-  camera.position.set(20, 20, 20);
+  let camera;
+  if (isGUI) {
+    // Minecraft GUI: orthographic camera for flat inventory look
+    const aspect = container.clientWidth / container.clientHeight;
+    const size = 18;
+    camera = new THREE.OrthographicCamera(-size * aspect, size * aspect, size, -size, 0.1, 1000);
+    // Minecraft item display angle: 30° X tilt, 225° Y rotation
+    const dist = 40;
+    const xRot = -30 * Math.PI / 180;
+    const yRot = 225 * Math.PI / 180;
+    camera.position.set(
+      dist * Math.sin(yRot) * Math.cos(xRot),
+      dist * -Math.sin(xRot),
+      dist * Math.cos(yRot) * Math.cos(xRot)
+    );
+    camera.lookAt(0, 0, 0);
+  } else {
+    camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+    camera.position.set(20, 20, 20);
+  }
 
-  const controls = new THREE.OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true;
-  controls.dampingFactor = 0.05;
-  controls.minDistance = 10;
-  controls.maxDistance = 50;
-  controls.update();
+  // OrbitControls (disabled for GUI mode)
+  let controls = null;
+  if (!isGUI) {
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.minDistance = 10;
+    controls.maxDistance = 50;
+    controls.update();
+  }
 
-  // Ambient light
-  const ambient = new THREE.AmbientLight(0xffffff, 1);
+  // Lighting
+  const ambient = new THREE.AmbientLight(0xffffff, isGUI ? 0.85 : 1);
   scene.add(ambient);
+  if (isGUI) {
+    // Minecraft-style top-left directional light for shading
+    const dirLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    dirLight.position.set(-1, 1.5, 1);
+    scene.add(dirLight);
+  }
 
   // Blockbench-only: Grid & Axis
   let gridHelper = null;
@@ -346,19 +376,36 @@ if (container) {
     const center = loader.modelCenter;
     const radius = loader.modelRadius;
 
-    // Set orbit target to model center
-    controls.target.copy(center);
+    if (isGUI) {
+      // GUI mode: fixed camera, just look at center
+      camera.lookAt(center);
+      // Adjust ortho size to fit model
+      const aspect = container.clientWidth / container.clientHeight;
+      const size = radius * 1.4;
+      camera.left = -size * aspect;
+      camera.right = size * aspect;
+      camera.top = size;
+      camera.bottom = -size;
+      camera.updateProjectionMatrix();
+      // Reposition camera to keep angle but target center
+      const dir = camera.position.clone().normalize();
+      camera.position.copy(center).add(dir.multiplyScalar(40));
+      camera.lookAt(center);
+    } else {
+      // Set orbit target to model center
+      controls.target.copy(center);
 
-    // Position camera to fit the entire model in view
-    const fov = camera.fov * (Math.PI / 180);
-    const dist = (radius / Math.sin(fov / 2)) * 1.2;
-    const direction = camera.position.clone().sub(controls.target).normalize();
-    camera.position.copy(center).add(direction.multiplyScalar(dist));
+      // Position camera to fit the entire model in view
+      const fov = camera.fov * (Math.PI / 180);
+      const dist = (radius / Math.sin(fov / 2)) * 1.2;
+      const direction = camera.position.clone().sub(controls.target).normalize();
+      camera.position.copy(center).add(direction.multiplyScalar(dist));
 
-    // Update distance limits based on model size
-    controls.minDistance = radius * 0.5;
-    controls.maxDistance = radius * 5;
-    controls.update();
+      // Update distance limits based on model size
+      controls.minDistance = radius * 0.5;
+      controls.maxDistance = radius * 5;
+      controls.update();
+    }
   }
 
   loader.loadModel(modelPath, () => {
@@ -380,13 +427,20 @@ if (container) {
     const time = performance.now() * 0.001; // Convert to seconds
     loader.update(time);
     
-    controls.update();
+    if (controls) controls.update();
     renderer.render(scene, camera);
   }
 
   // Handle window resize
   function updateSize() {
-    camera.aspect = container.clientWidth / container.clientHeight;
+    if (camera.isOrthographicCamera) {
+      const aspect = container.clientWidth / container.clientHeight;
+      const size = (camera.top - camera.bottom) / 2;
+      camera.left = -size * aspect;
+      camera.right = size * aspect;
+    } else {
+      camera.aspect = container.clientWidth / container.clientHeight;
+    }
     camera.updateProjectionMatrix();
     renderer.setSize(container.clientWidth, container.clientHeight);
   }

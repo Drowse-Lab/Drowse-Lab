@@ -362,10 +362,10 @@ if (container) {
   }
 
   loader.loadModel(modelPath, () => {
-    // Apply initial scale: from inputs (blockbench) or data attributes (default)
-    const ix = parseFloat(document.getElementById('scale-x')?.value || container.dataset.initScaleX) || 1;
-    const iy = parseFloat(document.getElementById('scale-y')?.value || container.dataset.initScaleY) || 1;
-    const iz = parseFloat(document.getElementById('scale-z')?.value || container.dataset.initScaleZ) || 1;
+    // Apply initial scale from data attributes (set via front matter)
+    const ix = parseFloat(container.dataset.initScaleX) || 1;
+    const iy = parseFloat(container.dataset.initScaleY) || 1;
+    const iz = parseFloat(container.dataset.initScaleZ) || 1;
     if (loader.modelGroup) {
       loader.modelGroup.scale.set(ix, iy, iz);
     }

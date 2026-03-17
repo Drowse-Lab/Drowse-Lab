@@ -62,7 +62,7 @@ layout: default
         </button>
       </div>
     </div>
-    <div id="mcmodel-viewer" data-model-path="{{ page.model_path }}" data-viewer-style="blockbench" {% if page.enable_glow %}data-enable-glow="{{ page.enable_glow }}"{% endif %} style="width: 100%; height: 450px; position: relative; cursor: grab;"></div>
+    <div id="mcmodel-viewer" data-model-path="{{ page.model_path }}" data-viewer-style="blockbench" {% if page.enable_glow %}data-enable-glow="{{ page.enable_glow }}"{% endif %} data-init-scale-x="{{ page.model_scale_x | default: 1 }}" data-init-scale-y="{{ page.model_scale_y | default: 1 }}" data-init-scale-z="{{ page.model_scale_z | default: 1 }}" style="width: 100%; height: 450px; position: relative; cursor: grab;"></div>
     <div class="bb-statusbar" style="display: flex; align-items: center; justify-content: space-between; background: #282c34; padding: 3px 10px; border-top: 1px solid #181a1f;">
       <span id="bb-info" style="color: #636d83; font-size: 11px;">左ドラッグ: 回転 | ホイール: ズーム | 右ドラッグ: 移動</span>
       <span id="bb-coords" style="color: #636d83; font-size: 11px; font-family: monospace;"></span>

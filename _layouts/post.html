@@ -73,8 +73,10 @@ layout: default
 <style>
   .bb-btn {
     background: transparent; border: 1px solid transparent; color: #636d83;
-    padding: 3px 5px; border-radius: 3px; cursor: pointer; display: flex; align-items: center; transition: all 0.15s;
+    padding: 5px 7px; border-radius: 3px; cursor: pointer; display: flex; align-items: center;
+    justify-content: center; transition: all 0.15s; min-width: 28px; min-height: 28px; position: relative;
   }
+  .bb-btn svg { pointer-events: none; }
   .bb-btn:hover { background: #3a3f4b; color: #abb2bf; }
   .bb-btn-active { color: #abb2bf; background: #3a3f4b; border-color: #4a5060; }
   .bb-scale-label {

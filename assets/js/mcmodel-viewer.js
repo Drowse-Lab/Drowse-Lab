@@ -422,19 +422,19 @@ if (container) {
 
         // Wrap in a pivot group for display transforms
         const pivot = new THREE.Group();
-        // Apply: scale -> rotate -> translate (Minecraft order)
-        pivot.scale.set(gs[0], gs[1], gs[2]);
+        // Minecraft uses YXZ Euler rotation order
+        pivot.rotation.order = 'YXZ';
         pivot.rotation.set(
           gr[0] * Math.PI / 180,
           gr[1] * Math.PI / 180,
           gr[2] * Math.PI / 180
         );
+        pivot.scale.set(gs[0], gs[1], gs[2]);
         pivot.position.set(gt[0], gt[1], gt[2]);
 
         scene.remove(loader.modelGroup);
         pivot.add(loader.modelGroup);
         scene.add(pivot);
-        // Update reference so centerView uses the pivot
         loader.modelGroup = pivot;
       }
     }

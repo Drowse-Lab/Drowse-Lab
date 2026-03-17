@@ -410,21 +410,32 @@ if (container) {
       loader.modelGroup.scale.set(ix, iy, iz);
 
       // GUI mode: apply display.gui transform from model JSON
+      // Minecraft applies transforms around the block center (8, 8, 8)
       if (isGUI && loader.displayData && loader.displayData.gui) {
         const gui = loader.displayData.gui;
-        // Reset scale to gui display values
-        const gs = gui.scale || [1, 1, 1];
-        loader.modelGroup.scale.set(gs[0], gs[1], gs[2]);
-        // Apply rotation (Minecraft: degrees, order XYZ)
         const gr = gui.rotation || [0, 0, 0];
-        loader.modelGroup.rotation.set(
+        const gt = gui.translation || [0, 0, 0];
+        const gs = gui.scale || [1, 1, 1];
+
+        // Move model so block center (8,8,8) is at origin
+        loader.modelGroup.position.set(-8, -8, -8);
+
+        // Wrap in a pivot group for display transforms
+        const pivot = new THREE.Group();
+        // Apply: scale -> rotate -> translate (Minecraft order)
+        pivot.scale.set(gs[0], gs[1], gs[2]);
+        pivot.rotation.set(
           gr[0] * Math.PI / 180,
           gr[1] * Math.PI / 180,
           gr[2] * Math.PI / 180
         );
-        // Apply translation
-        const gt = gui.translation || [0, 0, 0];
-        loader.modelGroup.position.set(gt[0], gt[1], gt[2]);
+        pivot.position.set(gt[0], gt[1], gt[2]);
+
+        scene.remove(loader.modelGroup);
+        pivot.add(loader.modelGroup);
+        scene.add(pivot);
+        // Update reference so centerView uses the pivot
+        loader.modelGroup = pivot;
       }
     }
     centerView();

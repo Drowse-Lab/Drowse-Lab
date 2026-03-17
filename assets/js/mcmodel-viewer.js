@@ -321,6 +321,13 @@ if (container) {
   const baseUrl = window.location.pathname.includes('/Drowse-Lab/') ? '/Drowse-Lab' : '';
   const modelPath = container.dataset.modelPath ? baseUrl + container.dataset.modelPath : baseUrl + "/assets/models/customkatanairon3d.json";
   loader.loadModel(modelPath, () => {
+    // Apply initial scale from input values (set via front matter)
+    const ix = parseFloat(document.getElementById('scale-x')?.value) || 1;
+    const iy = parseFloat(document.getElementById('scale-y')?.value) || 1;
+    const iz = parseFloat(document.getElementById('scale-z')?.value) || 1;
+    if (loader.modelGroup) {
+      loader.modelGroup.scale.set(ix, iy, iz);
+    }
     animate();
   });
 
@@ -336,9 +343,40 @@ if (container) {
   }
 
   // Handle window resize
-  window.addEventListener('resize', () => {
+  function updateSize() {
     camera.aspect = container.clientWidth / container.clientHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(container.clientWidth, container.clientHeight);
-  });
+  }
+
+  window.addEventListener('resize', updateSize);
+
+  // Model scale controls
+  const scaleX = document.getElementById('scale-x');
+  const scaleY = document.getElementById('scale-y');
+  const scaleZ = document.getElementById('scale-z');
+  const scaleReset = document.getElementById('scale-reset');
+
+  function applyScale() {
+    if (!loader.modelGroup) return;
+    const x = parseFloat(scaleX.value) || 1;
+    const y = parseFloat(scaleY.value) || 1;
+    const z = parseFloat(scaleZ.value) || 1;
+    loader.modelGroup.scale.set(x, y, z);
+  }
+
+  if (scaleX && scaleY && scaleZ) {
+    scaleX.addEventListener('input', applyScale);
+    scaleY.addEventListener('input', applyScale);
+    scaleZ.addEventListener('input', applyScale);
+  }
+
+  if (scaleReset) {
+    scaleReset.addEventListener('click', () => {
+      scaleX.value = 1;
+      scaleY.value = 1;
+      scaleZ.value = 1;
+      applyScale();
+    });
+  }
 }

@@ -294,12 +294,14 @@ class BlockModelRenderer {
   }
 }
 
-// Three.js の初期化 — Blockbench-style viewport
+// Three.js の初期化
 const container = document.getElementById("mcmodel-viewer");
 if (container) {
+  const isBlockbench = container.dataset.viewerStyle === 'blockbench';
+
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setSize(container.clientWidth, container.clientHeight);
-  renderer.setClearColor(0x21252b, 1);
+  renderer.setClearColor(isBlockbench ? 0x21252b : 0xfafafa, 1);
   container.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
@@ -317,13 +319,15 @@ if (container) {
   const ambient = new THREE.AmbientLight(0xffffff, 1);
   scene.add(ambient);
 
-  // Grid (Blockbench-style dark grid)
-  const gridHelper = new THREE.GridHelper(48, 48, 0x3a3f4b, 0x2c313a);
-  scene.add(gridHelper);
-
-  // Axis helper (RGB = XYZ)
-  const axisHelper = new THREE.AxesHelper(24);
-  scene.add(axisHelper);
+  // Blockbench-only: Grid & Axis
+  let gridHelper = null;
+  let axisHelper = null;
+  if (isBlockbench) {
+    gridHelper = new THREE.GridHelper(48, 48, 0x3a3f4b, 0x2c313a);
+    scene.add(gridHelper);
+    axisHelper = new THREE.AxesHelper(24);
+    scene.add(axisHelper);
+  }
 
   // Check for enable_glow attribute
   const enableGlow = container.dataset.enableGlow === 'true';
@@ -415,42 +419,42 @@ if (container) {
     });
   }
 
-  // --- Toolbar toggle buttons ---
-  function toggleBtn(btn, obj) {
-    const active = btn.classList.toggle('bb-btn-active');
-    obj.visible = active;
-  }
+  // --- Blockbench toolbar (only when blockbench style) ---
+  if (isBlockbench) {
+    function toggleBtn(btn, obj) {
+      const active = btn.classList.toggle('bb-btn-active');
+      obj.visible = active;
+    }
 
-  const gridToggle = document.getElementById('bb-grid-toggle');
-  if (gridToggle) gridToggle.addEventListener('click', () => toggleBtn(gridToggle, gridHelper));
+    const gridToggle = document.getElementById('bb-grid-toggle');
+    if (gridToggle) gridToggle.addEventListener('click', () => toggleBtn(gridToggle, gridHelper));
 
-  const axisToggle = document.getElementById('bb-axis-toggle');
-  if (axisToggle) axisToggle.addEventListener('click', () => toggleBtn(axisToggle, axisHelper));
+    const axisToggle = document.getElementById('bb-axis-toggle');
+    if (axisToggle) axisToggle.addEventListener('click', () => toggleBtn(axisToggle, axisHelper));
 
-  // Wireframe toggle
-  let wireframeOn = false;
-  const wireToggle = document.getElementById('bb-wireframe-toggle');
-  if (wireToggle) {
-    wireToggle.addEventListener('click', () => {
-      wireframeOn = !wireframeOn;
-      wireToggle.classList.toggle('bb-btn-active', wireframeOn);
-      if (loader.modelGroup) {
-        loader.modelGroup.traverse(child => {
-          if (child.isMesh) {
-            const mats = Array.isArray(child.material) ? child.material : [child.material];
-            mats.forEach(m => { if (m.wireframe !== undefined) m.wireframe = wireframeOn; });
-          }
-        });
-      }
-    });
-  }
+    let wireframeOn = false;
+    const wireToggle = document.getElementById('bb-wireframe-toggle');
+    if (wireToggle) {
+      wireToggle.addEventListener('click', () => {
+        wireframeOn = !wireframeOn;
+        wireToggle.classList.toggle('bb-btn-active', wireframeOn);
+        if (loader.modelGroup) {
+          loader.modelGroup.traverse(child => {
+            if (child.isMesh) {
+              const mats = Array.isArray(child.material) ? child.material : [child.material];
+              mats.forEach(m => { if (m.wireframe !== undefined) m.wireframe = wireframeOn; });
+            }
+          });
+        }
+      });
+    }
 
-  // Camera coordinate display
-  const coordsEl = document.getElementById('bb-coords');
-  if (coordsEl) {
-    setInterval(() => {
-      const p = camera.position;
-      coordsEl.textContent = `cam: ${p.x.toFixed(1)}, ${p.y.toFixed(1)}, ${p.z.toFixed(1)}`;
-    }, 200);
+    const coordsEl = document.getElementById('bb-coords');
+    if (coordsEl) {
+      setInterval(() => {
+        const p = camera.position;
+        coordsEl.textContent = `cam: ${p.x.toFixed(1)}, ${p.y.toFixed(1)}, ${p.z.toFixed(1)}`;
+      }, 200);
+    }
   }
 }

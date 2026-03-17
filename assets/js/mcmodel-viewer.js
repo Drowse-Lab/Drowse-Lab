@@ -14,6 +14,8 @@ class BlockModelRenderer {
     fetch(modelPath)
       .then(response => response.json())
       .then(modelData => {
+        // Store display settings from model JSON
+        this.displayData = modelData.display || {};
         // Load textures first
         this.loadTextures(modelData.textures, () => {
           // Create model after textures are loaded
@@ -315,19 +317,12 @@ if (container) {
   const scene = new THREE.Scene();
   let camera;
   if (isGUI) {
-    // Minecraft GUI: orthographic camera for flat inventory look
+    // GUI mode: orthographic camera, front-facing
+    // Model rotation comes from display.gui in the JSON, not the camera
     const aspect = container.clientWidth / container.clientHeight;
     const size = 18;
     camera = new THREE.OrthographicCamera(-size * aspect, size * aspect, size, -size, 0.1, 1000);
-    // Minecraft item display angle: 30° X tilt, 225° Y rotation
-    const dist = 40;
-    const xRot = -30 * Math.PI / 180;
-    const yRot = 225 * Math.PI / 180;
-    camera.position.set(
-      dist * Math.sin(yRot) * Math.cos(xRot),
-      dist * -Math.sin(xRot),
-      dist * Math.cos(yRot) * Math.cos(xRot)
-    );
+    camera.position.set(0, 0, 40);
     camera.lookAt(0, 0, 0);
   } else {
     camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
@@ -379,19 +374,15 @@ if (container) {
     const radius = loader.modelRadius;
 
     if (isGUI) {
-      // GUI mode: fixed camera, just look at center
-      camera.lookAt(center);
-      // Adjust ortho size to fit model
+      // GUI mode: camera looks at bounding box center, no model repositioning
       const aspect = container.clientWidth / container.clientHeight;
-      const size = radius * 1.4;
+      const size = radius * 1.3;
       camera.left = -size * aspect;
       camera.right = size * aspect;
       camera.top = size;
       camera.bottom = -size;
       camera.updateProjectionMatrix();
-      // Reposition camera to keep angle but target center
-      const dir = camera.position.clone().normalize();
-      camera.position.copy(center).add(dir.multiplyScalar(40));
+      camera.position.set(0, 0, 40);
       camera.lookAt(center);
     } else {
       // Set orbit target to model center
@@ -411,12 +402,30 @@ if (container) {
   }
 
   loader.loadModel(modelPath, () => {
-    // Apply initial scale from data attributes (set via front matter)
-    const ix = parseFloat(container.dataset.initScaleX) || 1;
-    const iy = parseFloat(container.dataset.initScaleY) || 1;
-    const iz = parseFloat(container.dataset.initScaleZ) || 1;
     if (loader.modelGroup) {
+      // Apply initial scale from data attributes (set via front matter)
+      const ix = parseFloat(container.dataset.initScaleX) || 1;
+      const iy = parseFloat(container.dataset.initScaleY) || 1;
+      const iz = parseFloat(container.dataset.initScaleZ) || 1;
       loader.modelGroup.scale.set(ix, iy, iz);
+
+      // GUI mode: apply display.gui transform from model JSON
+      if (isGUI && loader.displayData && loader.displayData.gui) {
+        const gui = loader.displayData.gui;
+        // Reset scale to gui display values
+        const gs = gui.scale || [1, 1, 1];
+        loader.modelGroup.scale.set(gs[0], gs[1], gs[2]);
+        // Apply rotation (Minecraft: degrees, order XYZ)
+        const gr = gui.rotation || [0, 0, 0];
+        loader.modelGroup.rotation.set(
+          gr[0] * Math.PI / 180,
+          gr[1] * Math.PI / 180,
+          gr[2] * Math.PI / 180
+        );
+        // Apply translation
+        const gt = gui.translation || [0, 0, 0];
+        loader.modelGroup.position.set(gt[0], gt[1], gt[2]);
+      }
     }
     centerView();
     animate();

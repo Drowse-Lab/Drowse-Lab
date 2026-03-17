@@ -299,9 +299,13 @@ const container = document.getElementById("mcmodel-viewer");
 if (container) {
   const isBlockbench = container.dataset.viewerStyle === 'blockbench';
 
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: !isBlockbench });
   renderer.setSize(container.clientWidth, container.clientHeight);
-  renderer.setClearColor(isBlockbench ? 0x21252b : 0xfafafa, 1);
+  if (isBlockbench) {
+    renderer.setClearColor(0x21252b, 1);
+  } else {
+    renderer.setClearColor(0x000000, 0);
+  }
   container.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
@@ -358,10 +362,10 @@ if (container) {
   }
 
   loader.loadModel(modelPath, () => {
-    // Apply initial scale from input values (set via front matter)
-    const ix = parseFloat(document.getElementById('scale-x')?.value) || 1;
-    const iy = parseFloat(document.getElementById('scale-y')?.value) || 1;
-    const iz = parseFloat(document.getElementById('scale-z')?.value) || 1;
+    // Apply initial scale: from inputs (blockbench) or data attributes (default)
+    const ix = parseFloat(document.getElementById('scale-x')?.value || container.dataset.initScaleX) || 1;
+    const iy = parseFloat(document.getElementById('scale-y')?.value || container.dataset.initScaleY) || 1;
+    const iz = parseFloat(document.getElementById('scale-z')?.value || container.dataset.initScaleZ) || 1;
     if (loader.modelGroup) {
       loader.modelGroup.scale.set(ix, iy, iz);
     }

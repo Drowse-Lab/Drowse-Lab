@@ -357,12 +357,22 @@ if (container) {
   const scaleZ = document.getElementById('scale-z');
   const scaleReset = document.getElementById('scale-reset');
 
+  function recenter() {
+    if (!loader.modelGroup) return;
+    const box = new THREE.Box3().setFromObject(loader.modelGroup);
+    const center = box.getCenter(new THREE.Vector3());
+    loader.modelGroup.position.sub(center);
+    controls.target.set(0, 0, 0);
+    controls.update();
+  }
+
   function applyScale() {
     if (!loader.modelGroup) return;
     const x = parseFloat(scaleX.value) || 1;
     const y = parseFloat(scaleY.value) || 1;
     const z = parseFloat(scaleZ.value) || 1;
     loader.modelGroup.scale.set(x, y, z);
+    recenter();
   }
 
   if (scaleX && scaleY && scaleZ) {
@@ -378,5 +388,10 @@ if (container) {
       scaleZ.value = 1;
       applyScale();
     });
+  }
+
+  const centerBtn = document.getElementById('scale-center');
+  if (centerBtn) {
+    centerBtn.addEventListener('click', recenter);
   }
 }

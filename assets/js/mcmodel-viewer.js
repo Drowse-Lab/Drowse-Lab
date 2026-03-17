@@ -266,17 +266,22 @@ class BlockModelRenderer {
       group.add(mesh);
     });
     
-    // Center the model
-    const box = new THREE.Box3().setFromObject(group);
-    const center = box.getCenter(new THREE.Vector3());
-    group.position.sub(center);
-    
     this.scene.add(group);
-    
-    // Store the model group for animation updates
+
+    // Store the model group and bounding info for centering/camera fit
     this.modelGroup = group;
+    this.updateBounds();
   }
   
+  // Calculate bounding box center and size from all blocks
+  updateBounds() {
+    if (!this.modelGroup) return;
+    const box = new THREE.Box3().setFromObject(this.modelGroup);
+    this.modelCenter = box.getCenter(new THREE.Vector3());
+    this.modelSize = box.getSize(new THREE.Vector3());
+    this.modelRadius = this.modelSize.length() / 2;
+  }
+
   // Update method for animating glow effect
   update(time) {
     if (this.enableGlow) {
@@ -320,6 +325,27 @@ if (container) {
   // Get model path from data attribute or use default
   const baseUrl = window.location.pathname.includes('/Drowse-Lab/') ? '/Drowse-Lab' : '';
   const modelPath = container.dataset.modelPath ? baseUrl + container.dataset.modelPath : baseUrl + "/assets/models/customkatanairon3d.json";
+  function centerView() {
+    if (!loader.modelGroup) return;
+    loader.updateBounds();
+    const center = loader.modelCenter;
+    const radius = loader.modelRadius;
+
+    // Set orbit target to model center
+    controls.target.copy(center);
+
+    // Position camera to fit the entire model in view
+    const fov = camera.fov * (Math.PI / 180);
+    const dist = (radius / Math.sin(fov / 2)) * 1.2;
+    const direction = camera.position.clone().sub(controls.target).normalize();
+    camera.position.copy(center).add(direction.multiplyScalar(dist));
+
+    // Update distance limits based on model size
+    controls.minDistance = radius * 0.5;
+    controls.maxDistance = radius * 5;
+    controls.update();
+  }
+
   loader.loadModel(modelPath, () => {
     // Apply initial scale from input values (set via front matter)
     const ix = parseFloat(document.getElementById('scale-x')?.value) || 1;
@@ -328,6 +354,7 @@ if (container) {
     if (loader.modelGroup) {
       loader.modelGroup.scale.set(ix, iy, iz);
     }
+    centerView();
     animate();
   });
 
@@ -357,22 +384,13 @@ if (container) {
   const scaleZ = document.getElementById('scale-z');
   const scaleReset = document.getElementById('scale-reset');
 
-  function recenter() {
-    if (!loader.modelGroup) return;
-    const box = new THREE.Box3().setFromObject(loader.modelGroup);
-    const center = box.getCenter(new THREE.Vector3());
-    loader.modelGroup.position.sub(center);
-    controls.target.set(0, 0, 0);
-    controls.update();
-  }
-
   function applyScale() {
     if (!loader.modelGroup) return;
     const x = parseFloat(scaleX.value) || 1;
     const y = parseFloat(scaleY.value) || 1;
     const z = parseFloat(scaleZ.value) || 1;
     loader.modelGroup.scale.set(x, y, z);
-    recenter();
+    centerView();
   }
 
   if (scaleX && scaleY && scaleZ) {
@@ -392,6 +410,6 @@ if (container) {
 
   const centerBtn = document.getElementById('scale-center');
   if (centerBtn) {
-    centerBtn.addEventListener('click', recenter);
+    centerBtn.addEventListener('click', centerView);
   }
 }

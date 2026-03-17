@@ -407,9 +407,4 @@ if (container) {
       applyScale();
     });
   }
-
-  const centerBtn = document.getElementById('scale-center');
-  if (centerBtn) {
-    centerBtn.addEventListener('click', centerView);
-  }
 }

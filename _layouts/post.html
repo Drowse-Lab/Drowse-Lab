@@ -34,18 +34,58 @@ layout: default
 </article>
 
 {% if page.model_path %}
-<section class="model-viewer" style="margin-top: 2em;">
-  <div id="mcmodel-scale-controls" style="text-align: center; margin-bottom: 0.5em; display: flex; align-items: center; justify-content: center; gap: 0.8em; flex-wrap: wrap;">
-    <span style="font-size: 0.9em; color: #666;">モデル比率:</span>
-    <label style="font-size: 0.85em; color: #555;">X <input type="number" id="scale-x" value="{{ page.model_scale_x | default: 1 }}" min="0.1" max="10" step="0.1" style="width: 60px; padding: 3px 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.85em; text-align: center;"></label>
-    <label style="font-size: 0.85em; color: #555;">Y <input type="number" id="scale-y" value="{{ page.model_scale_y | default: 1 }}" min="0.1" max="10" step="0.1" style="width: 60px; padding: 3px 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.85em; text-align: center;"></label>
-    <label style="font-size: 0.85em; color: #555;">Z <input type="number" id="scale-z" value="{{ page.model_scale_z | default: 1 }}" min="0.1" max="10" step="0.1" style="width: 60px; padding: 3px 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.85em; text-align: center;"></label>
-    <button id="scale-reset" style="padding: 3px 10px; border: 1px solid #ccc; border-radius: 4px; background: #fff; color: #333; cursor: pointer; font-size: 0.85em;">リセット</button>  </div>
-  <div id="mcmodel-viewer" data-model-path="{{ page.model_path }}" {% if page.enable_glow %}data-enable-glow="{{ page.enable_glow }}"{% endif %} style="width: 100%; height: 400px; border: 1px solid #ddd; border-radius: 4px; background: #fafafa;"></div>
-  <div style="text-align: center; margin-top: 0.5em; font-size: 0.9em; color: #666;">
-    マウス操作: 左ドラッグで回転 | ホイールでズーム | 右ドラッグで移動
+<section class="bb-viewer-wrap" style="margin-top: 2em;">
+  <!-- Blockbench-style container -->
+  <div class="bb-container" style="background: #21252b; border-radius: 6px; overflow: hidden; border: 1px solid #181a1f; font-family: -apple-system, 'Segoe UI', sans-serif;">
+    <!-- Top toolbar -->
+    <div class="bb-toolbar" style="display: flex; align-items: center; justify-content: space-between; background: #282c34; padding: 4px 10px; border-bottom: 1px solid #181a1f; flex-wrap: wrap; gap: 4px;">
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <span style="color: #abb2bf; font-size: 12px; font-weight: 600; letter-spacing: 0.5px;">3D Preview</span>
+        <span style="color: #555; font-size: 11px;">|</span>
+        <button id="bb-grid-toggle" class="bb-btn bb-btn-active" title="グリッド表示">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><path d="M0 0h6v6H0zM8 0h6v6H8zM0 8h6v6H0zM8 8h6v6H8z" opacity="0.4"/><path d="M0 0h14v1H0zM0 7h14v1H0zM0 13h14v1H0zM0 0h1v14H0zM7 0h1v14H7zM13 0h1v14H13z"/></svg>
+        </button>
+        <button id="bb-axis-toggle" class="bb-btn bb-btn-active" title="軸表示">
+          <svg width="14" height="14" viewBox="0 0 14 14"><line x1="2" y1="12" x2="12" y2="12" stroke="#e06c75" stroke-width="2"/><line x1="2" y1="12" x2="2" y2="2" stroke="#98c379" stroke-width="2"/><line x1="2" y1="12" x2="8" y2="6" stroke="#61afef" stroke-width="2"/></svg>
+        </button>
+        <button id="bb-wireframe-toggle" class="bb-btn" title="ワイヤーフレーム">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1"><rect x="1" y="1" width="12" height="12"/><line x1="1" y1="7" x2="13" y2="7"/><line x1="7" y1="1" x2="7" y2="13"/></svg>
+        </button>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <label class="bb-scale-label">X <input type="number" id="scale-x" value="{{ page.model_scale_x | default: 1 }}" min="0.1" max="10" step="0.1" class="bb-scale-input"></label>
+        <label class="bb-scale-label">Y <input type="number" id="scale-y" value="{{ page.model_scale_y | default: 1 }}" min="0.1" max="10" step="0.1" class="bb-scale-input"></label>
+        <label class="bb-scale-label">Z <input type="number" id="scale-z" value="{{ page.model_scale_z | default: 1 }}" min="0.1" max="10" step="0.1" class="bb-scale-input"></label>
+        <button id="scale-reset" class="bb-btn" title="リセット">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><path d="M7 1a6 6 0 1 0 6 6h-2a4 4 0 1 1-4-4V1z"/><path d="M7 0l3 3-3 3V0z"/></svg>
+        </button>
+      </div>
+    </div>
+    <!-- Viewport -->
+    <div id="mcmodel-viewer" data-model-path="{{ page.model_path }}" {% if page.enable_glow %}data-enable-glow="{{ page.enable_glow }}"{% endif %} style="width: 100%; height: 450px; position: relative; cursor: grab;"></div>
+    <!-- Bottom status bar -->
+    <div class="bb-statusbar" style="display: flex; align-items: center; justify-content: space-between; background: #282c34; padding: 3px 10px; border-top: 1px solid #181a1f;">
+      <span id="bb-info" style="color: #636d83; font-size: 11px;">左ドラッグ: 回転 | ホイール: ズーム | 右ドラッグ: 移動</span>
+      <span id="bb-coords" style="color: #636d83; font-size: 11px; font-family: monospace;"></span>
+    </div>
   </div>
 </section>
+<style>
+  .bb-btn {
+    background: transparent; border: 1px solid transparent; color: #636d83;
+    padding: 3px 5px; border-radius: 3px; cursor: pointer; display: flex; align-items: center; transition: all 0.15s;
+  }
+  .bb-btn:hover { background: #3a3f4b; color: #abb2bf; }
+  .bb-btn-active { color: #abb2bf; background: #3a3f4b; border-color: #4a5060; }
+  .bb-scale-label {
+    color: #636d83; font-size: 11px; display: flex; align-items: center; gap: 3px;
+  }
+  .bb-scale-input {
+    width: 48px; padding: 2px 4px; background: #1e2127; border: 1px solid #3a3f4b;
+    border-radius: 3px; color: #abb2bf; font-size: 11px; text-align: center; font-family: monospace;
+  }
+  .bb-scale-input:focus { border-color: #528bff; outline: none; }
+</style>
 <script src="https://cdn.jsdelivr.net/npm/three@0.125.0/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.125.0/examples/js/controls/OrbitControls.js"></script>
 <script src="{{ '/assets/js/mcmodel-viewer.js' | relative_url }}"></script>

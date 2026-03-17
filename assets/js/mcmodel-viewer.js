@@ -294,12 +294,12 @@ class BlockModelRenderer {
   }
 }
 
-// Three.js の初期化
+// Three.js の初期化 — Blockbench-style viewport
 const container = document.getElementById("mcmodel-viewer");
 if (container) {
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setSize(container.clientWidth, container.clientHeight);
-  renderer.setClearColor(0xfafafa, 1);
+  renderer.setClearColor(0x21252b, 1);
   container.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
@@ -313,10 +313,17 @@ if (container) {
   controls.maxDistance = 50;
   controls.update();
 
-  // Remove directional light since we're using MeshBasicMaterial
-  // Add only ambient light for consistent brightness
+  // Ambient light
   const ambient = new THREE.AmbientLight(0xffffff, 1);
   scene.add(ambient);
+
+  // Grid (Blockbench-style dark grid)
+  const gridHelper = new THREE.GridHelper(48, 48, 0x3a3f4b, 0x2c313a);
+  scene.add(gridHelper);
+
+  // Axis helper (RGB = XYZ)
+  const axisHelper = new THREE.AxesHelper(24);
+  scene.add(axisHelper);
 
   // Check for enable_glow attribute
   const enableGlow = container.dataset.enableGlow === 'true';
@@ -406,5 +413,44 @@ if (container) {
       scaleZ.value = 1;
       applyScale();
     });
+  }
+
+  // --- Toolbar toggle buttons ---
+  function toggleBtn(btn, obj) {
+    const active = btn.classList.toggle('bb-btn-active');
+    obj.visible = active;
+  }
+
+  const gridToggle = document.getElementById('bb-grid-toggle');
+  if (gridToggle) gridToggle.addEventListener('click', () => toggleBtn(gridToggle, gridHelper));
+
+  const axisToggle = document.getElementById('bb-axis-toggle');
+  if (axisToggle) axisToggle.addEventListener('click', () => toggleBtn(axisToggle, axisHelper));
+
+  // Wireframe toggle
+  let wireframeOn = false;
+  const wireToggle = document.getElementById('bb-wireframe-toggle');
+  if (wireToggle) {
+    wireToggle.addEventListener('click', () => {
+      wireframeOn = !wireframeOn;
+      wireToggle.classList.toggle('bb-btn-active', wireframeOn);
+      if (loader.modelGroup) {
+        loader.modelGroup.traverse(child => {
+          if (child.isMesh) {
+            const mats = Array.isArray(child.material) ? child.material : [child.material];
+            mats.forEach(m => { if (m.wireframe !== undefined) m.wireframe = wireframeOn; });
+          }
+        });
+      }
+    });
+  }
+
+  // Camera coordinate display
+  const coordsEl = document.getElementById('bb-coords');
+  if (coordsEl) {
+    setInterval(() => {
+      const p = camera.position;
+      coordsEl.textContent = `cam: ${p.x.toFixed(1)}, ${p.y.toFixed(1)}, ${p.z.toFixed(1)}`;
+    }, 200);
   }
 }

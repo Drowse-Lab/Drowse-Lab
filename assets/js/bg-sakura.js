@@ -19,104 +19,75 @@
   resize();
   window.addEventListener('resize', resize);
 
-  // ========== 桜の木 ==========
-  function drawBranch(x, y, angle, length, depth, maxDepth) {
-    if (depth > maxDepth || length < 3) return;
-
-    const endX = x + Math.cos(angle) * length;
-    const endY = y + Math.sin(angle) * length;
-
-    const thickness = (maxDepth - depth + 1) * 1.8;
-    ctx.save();
-    ctx.strokeStyle = depth < 3 ? '#5a3a2a' : '#7a5040';
-    ctx.lineWidth = thickness;
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.lineTo(endX, endY);
-    ctx.stroke();
-    ctx.restore();
-
-    // 枝先に花の塊
-    if (depth >= maxDepth - 2) {
-      drawBlossomCluster(endX, endY, length * 0.6);
-    }
-
-    const shrink = 0.65 + Math.random() * 0.1;
-    const spread = 0.3 + Math.random() * 0.25;
-    drawBranch(endX, endY, angle - spread, length * shrink, depth + 1, maxDepth);
-    drawBranch(endX, endY, angle + spread, length * shrink, depth + 1, maxDepth);
-    // たまに3本目
-    if (Math.random() < 0.3) {
-      drawBranch(endX, endY, angle + (Math.random() - 0.5) * 0.5, length * shrink * 0.8, depth + 1, maxDepth);
-    }
-  }
-
-  function drawBlossomCluster(x, y, radius) {
-    const count = 5 + Math.floor(Math.random() * 8);
-    for (let i = 0; i < count; i++) {
-      const bx = x + (Math.random() - 0.5) * radius * 2.5;
-      const by = y + (Math.random() - 0.5) * radius * 2.5;
-      const r = 3 + Math.random() * 5;
-      drawFlower(bx, by, r);
-    }
-  }
-
-  function drawFlower(x, y, r) {
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.rotate(Math.random() * Math.PI * 2);
-    // 花びら5枚
-    const petalColors = ['rgba(255,185,200,0.7)', 'rgba(255,200,215,0.65)', 'rgba(255,170,190,0.6)'];
-    ctx.fillStyle = petalColors[Math.floor(Math.random() * petalColors.length)];
-    for (let i = 0; i < 5; i++) {
-      ctx.beginPath();
-      ctx.ellipse(0, -r * 0.5, r * 0.4, r * 0.6, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.rotate(Math.PI * 2 / 5);
-    }
-    // 中心
-    ctx.fillStyle = 'rgba(255,220,180,0.8)';
-    ctx.beginPath();
-    ctx.arc(0, 0, r * 0.2, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-  }
-
-  // 木の描画（初回のみ、別canvasにキャッシュ）
+  // ========== 桜の木（キャッシュ描画） ==========
   let treeCanvas = null;
+
   function renderTree() {
     treeCanvas = document.createElement('canvas');
     treeCanvas.width = W;
     treeCanvas.height = H;
-    const tCtx = treeCanvas.getContext('2d');
+    const c = treeCanvas.getContext('2d');
 
-    // 左側の木
-    const saved = ctx;
-    // treeCanvasに描く
-    const origCtx = ctx;
-    // ctxを一時差し替え
-    Object.defineProperty(window, '__sakuraCtx', { value: tCtx, writable: true });
+    // 右端に見切れる桜の木
+    // 幹は画面右80%あたり、やや左に傾いて上に伸びる
+    var trunkX = W * 0.82;
+    var trunkLen = H * 0.28;
 
-    // 右端から見切れる桜の木（幹が右端、枝が左に広がる）
-    drawTreeOn(tCtx, W + 15, H, -Math.PI / 2 - 0.2, H * 0.22, 8);
+    // 幹（太い曲線で描く）
+    drawTrunk(c, trunkX, H + 10, trunkLen);
   }
 
-  function drawTreeOn(c, x, y, angle, length, maxDepth) {
-    const prevCtx = ctx;
-    // 再帰でctxを使うのでグローバル参照を差し替え
-    drawBranchOn(c, x, y, angle, length, 0, maxDepth);
+  function drawTrunk(c, x, y, length) {
+    // 幹を太いベジェ曲線で描く（黄色の線のようにゆるくS字カーブ）
+    var topX = x - length * 0.15;
+    var topY = y - length;
+    var cp1x = x + length * 0.05;
+    var cp1y = y - length * 0.35;
+    var cp2x = x - length * 0.2;
+    var cp2y = y - length * 0.7;
+
+    // 幹の太さ（下が太く上が細い）
+    var widthBottom = 18;
+    var widthTop = 8;
+
+    c.save();
+    c.fillStyle = '#5a3a2a';
+    c.beginPath();
+    // 左側のライン
+    c.moveTo(x - widthBottom, y);
+    c.bezierCurveTo(cp1x - widthBottom * 0.8, cp1y, cp2x - widthTop, cp2y, topX - widthTop, topY);
+    // 右側のライン（逆順）
+    c.lineTo(topX + widthTop, topY);
+    c.bezierCurveTo(cp2x + widthTop, cp2y, cp1x + widthBottom * 0.8, cp1y, x + widthBottom, y);
+    c.closePath();
+    c.fill();
+    c.restore();
+
+    // 枝を生やす（幹の途中と先端から）
+    drawBranchesFrom(c, topX, topY, -Math.PI / 2 - 0.3, length * 0.55, 0, 6);  // 左上に大きく
+    drawBranchesFrom(c, topX, topY, -Math.PI / 2 + 0.2, length * 0.4, 0, 5);   // 右上（見切れる側）
+
+    // 幹の途中から枝
+    var midX = (x + topX) * 0.5 + 5;
+    var midY = (y + topY) * 0.5;
+    drawBranchesFrom(c, midX, midY, -Math.PI / 2 - 0.6, length * 0.45, 0, 6);  // 左に大きく伸びる
+    drawBranchesFrom(c, midX + 15, midY + 30, -Math.PI / 2 + 0.4, length * 0.35, 0, 5); // 右へ（見切れ）
+
+    // 下の方からも1本
+    var lowX = x - 3;
+    var lowY = y - length * 0.3;
+    drawBranchesFrom(c, lowX, lowY, -Math.PI / 2 - 0.8, length * 0.35, 0, 5);
   }
 
-  function drawBranchOn(c, x, y, angle, length, depth, maxDepth) {
+  function drawBranchesFrom(c, x, y, angle, length, depth, maxDepth) {
     if (depth > maxDepth || length < 3) return;
 
-    const endX = x + Math.cos(angle) * length;
-    const endY = y + Math.sin(angle) * length;
+    var endX = x + Math.cos(angle) * length;
+    var endY = y + Math.sin(angle) * length;
 
-    const thickness = (maxDepth - depth + 1) * 1.8;
+    var thickness = Math.max(1, (maxDepth - depth + 1) * 1.6);
     c.save();
-    c.strokeStyle = depth < 3 ? '#5a3a2a' : '#7a5040';
+    c.strokeStyle = depth < 2 ? '#5a3a2a' : depth < 4 ? '#7a5040' : '#8a6050';
     c.lineWidth = thickness;
     c.lineCap = 'round';
     c.beginPath();
@@ -125,38 +96,47 @@
     c.stroke();
     c.restore();
 
+    // 枝先に花の塊
     if (depth >= maxDepth - 2) {
-      const count = 5 + Math.floor(Math.random() * 8);
-      for (let i = 0; i < count; i++) {
-        const bx = endX + (Math.random() - 0.5) * length * 1.2;
-        const by = endY + (Math.random() - 0.5) * length * 1.2;
-        const r = 3 + Math.random() * 5;
-        c.save();
-        c.translate(bx, by);
-        c.rotate(Math.random() * Math.PI * 2);
-        const petalColors = ['rgba(255,185,200,0.7)', 'rgba(255,200,215,0.65)', 'rgba(255,170,190,0.6)'];
-        c.fillStyle = petalColors[Math.floor(Math.random() * petalColors.length)];
-        for (let j = 0; j < 5; j++) {
-          c.beginPath();
-          c.ellipse(0, -r * 0.5, r * 0.4, r * 0.6, 0, 0, Math.PI * 2);
-          c.fill();
-          c.rotate(Math.PI * 2 / 5);
-        }
-        c.fillStyle = 'rgba(255,220,180,0.8)';
-        c.beginPath();
-        c.arc(0, 0, r * 0.2, 0, Math.PI * 2);
-        c.fill();
-        c.restore();
-      }
+      drawBlossomCluster(c, endX, endY, length * 0.7);
     }
 
-    const shrink = 0.65 + Math.random() * 0.1;
-    const spread = 0.3 + Math.random() * 0.25;
-    drawBranchOn(c, endX, endY, angle - spread, length * shrink, depth + 1, maxDepth);
-    drawBranchOn(c, endX, endY, angle + spread, length * shrink, depth + 1, maxDepth);
-    if (Math.random() < 0.3) {
-      drawBranchOn(c, endX, endY, angle + (Math.random() - 0.5) * 0.5, length * shrink * 0.8, depth + 1, maxDepth);
+    var shrink = 0.6 + Math.random() * 0.12;
+    var spread = 0.3 + Math.random() * 0.3;
+    drawBranchesFrom(c, endX, endY, angle - spread, length * shrink, depth + 1, maxDepth);
+    drawBranchesFrom(c, endX, endY, angle + spread, length * shrink, depth + 1, maxDepth);
+    if (Math.random() < 0.35) {
+      drawBranchesFrom(c, endX, endY, angle + (Math.random() - 0.5) * 0.6, length * shrink * 0.7, depth + 1, maxDepth);
     }
+  }
+
+  function drawBlossomCluster(c, x, y, radius) {
+    var count = 6 + Math.floor(Math.random() * 10);
+    for (var i = 0; i < count; i++) {
+      var bx = x + (Math.random() - 0.5) * radius * 2.5;
+      var by = y + (Math.random() - 0.5) * radius * 2.5;
+      var r = 3 + Math.random() * 5;
+      drawFlower(c, bx, by, r);
+    }
+  }
+
+  function drawFlower(c, x, y, r) {
+    c.save();
+    c.translate(x, y);
+    c.rotate(Math.random() * Math.PI * 2);
+    var petalColors = ['rgba(255,185,200,0.75)', 'rgba(255,200,215,0.7)', 'rgba(255,170,190,0.65)', 'rgba(255,210,220,0.6)'];
+    c.fillStyle = petalColors[Math.floor(Math.random() * petalColors.length)];
+    for (var j = 0; j < 5; j++) {
+      c.beginPath();
+      c.ellipse(0, -r * 0.5, r * 0.4, r * 0.6, 0, 0, Math.PI * 2);
+      c.fill();
+      c.rotate(Math.PI * 2 / 5);
+    }
+    c.fillStyle = 'rgba(255,220,180,0.8)';
+    c.beginPath();
+    c.arc(0, 0, r * 0.2, 0, Math.PI * 2);
+    c.fill();
+    c.restore();
   }
 
   renderTree();
@@ -166,64 +146,56 @@
   });
 
   // ========== 花びら（強風） ==========
-  const PETAL_NORMAL = 50;    // 通常時の花びら数
-  const PETAL_BURST = 200;    // 開幕の吹雪数
-  const petals = [];
+  var PETAL_NORMAL = 50;
+  var PETAL_BURST = 200;
+  var petals = [];
 
-  // 開幕バースト制御
-  let burstPhase = true;
-  let burstTimer = 180;  // 約3秒間バースト（60fps想定）
-  let currentMax = PETAL_BURST;
+  var burstPhase = true;
+  var burstTimer = 180;
+  var currentMax = PETAL_BURST;
 
-  // 突風パラメータ
-  let windGust = 8;       // 開幕は強風から
-  let gustTarget = 8;
-  let gustTimer = 180;
+  var windGust = 8;
+  var gustTarget = 8;
+  var gustTimer = 180;
 
-  function randomPetalColor() {
-    const colors = [
-      'rgba(255,183,197,0.85)',
-      'rgba(255,200,210,0.80)',
-      'rgba(255,160,180,0.75)',
-      'rgba(255,220,230,0.70)',
-      'rgba(255,140,160,0.65)',
-    ];
-    return colors[Math.floor(Math.random() * colors.length)];
-  }
+  var PETAL_COLORS = [
+    'rgba(255,183,197,0.85)',
+    'rgba(255,200,210,0.80)',
+    'rgba(255,160,180,0.75)',
+    'rgba(255,220,230,0.70)',
+    'rgba(255,140,160,0.65)',
+  ];
 
   function createPetal(startFromTop) {
-    // 右端の木の付近から花びらを発生させることもある
-    const fromTree = Math.random() < 0.4;
-    let sx, sy;
+    // 右側の木の付近から花びらが生まれやすい
+    var fromTree = Math.random() < 0.45;
+    var sx, sy;
     if (fromTree) {
-      sx = W * 0.85 + Math.random() * W * 0.2;
-      sy = H * 0.1 + Math.random() * H * 0.4;
+      sx = W * 0.7 + Math.random() * W * 0.25;
+      sy = H * 0.05 + Math.random() * H * 0.5;
     } else {
       sx = startFromTop ? Math.random() * W : Math.random() * W;
       sy = startFromTop ? -20 - Math.random() * 60 : Math.random() * H;
     }
 
     return {
-      x: sx,
-      y: sy,
+      x: sx, y: sy,
       size: 5 + Math.random() * 10,
       speedY: 0.3 + Math.random() * 1.0,
-      speedX: 1.5 + Math.random() * 2.5, // 強めの横風
+      speedX: -1.5 - Math.random() * 2.5, // 左方向へ吹く
       rotation: Math.random() * Math.PI * 2,
-      rotSpeed: (Math.random() - 0.5) * 0.08, // 回転速め
+      rotSpeed: (Math.random() - 0.5) * 0.08,
       wobble: Math.random() * Math.PI * 2,
       wobbleSpeed: 0.015 + Math.random() * 0.04,
       wobbleAmp: 1.0 + Math.random() * 2.5,
-      color: randomPetalColor(),
+      color: PETAL_COLORS[Math.floor(Math.random() * PETAL_COLORS.length)],
       opacity: 0.5 + Math.random() * 0.5,
-      // 3D風の奥行き揺れ
       scalePhase: Math.random() * Math.PI * 2,
       scaleSpeed: 0.02 + Math.random() * 0.03,
     };
   }
 
-  // 開幕バースト：大量の花びらを画面全体に散らす
-  for (let i = 0; i < PETAL_BURST; i++) {
+  for (var i = 0; i < PETAL_BURST; i++) {
     petals.push(createPetal(false));
   }
 
@@ -231,24 +203,15 @@
     ctx.save();
     ctx.translate(p.x, p.y);
     ctx.rotate(p.rotation);
-    // 3D風のスケール変化
-    const s = 0.5 + Math.abs(Math.sin(p.scalePhase)) * 0.5;
+    var s = 0.5 + Math.abs(Math.sin(p.scalePhase)) * 0.5;
     ctx.scale(s, 1);
     ctx.globalAlpha = p.opacity;
     ctx.fillStyle = p.color;
 
     ctx.beginPath();
     ctx.moveTo(0, -p.size * 0.5);
-    ctx.bezierCurveTo(
-      p.size * 0.5, -p.size * 0.3,
-      p.size * 0.4, p.size * 0.4,
-      0, p.size * 0.5
-    );
-    ctx.bezierCurveTo(
-      -p.size * 0.4, p.size * 0.4,
-      -p.size * 0.5, -p.size * 0.3,
-      0, -p.size * 0.5
-    );
+    ctx.bezierCurveTo(p.size * 0.5, -p.size * 0.3, p.size * 0.4, p.size * 0.4, 0, p.size * 0.5);
+    ctx.bezierCurveTo(-p.size * 0.4, p.size * 0.4, -p.size * 0.5, -p.size * 0.3, 0, -p.size * 0.5);
     ctx.fill();
 
     ctx.strokeStyle = 'rgba(255,120,140,0.3)';
@@ -257,12 +220,10 @@
     ctx.moveTo(0, -p.size * 0.35);
     ctx.lineTo(0, p.size * 0.35);
     ctx.stroke();
-
     ctx.restore();
   }
 
   function update() {
-    // バーストフェーズの管理
     if (burstPhase) {
       burstTimer--;
       if (burstTimer <= 0) {
@@ -272,7 +233,6 @@
       }
     }
 
-    // 突風の更新
     gustTimer--;
     if (gustTimer <= 0) {
       if (burstPhase) {
@@ -285,16 +245,15 @@
     }
     windGust += (gustTarget - windGust) * 0.02;
 
-    for (let i = petals.length - 1; i >= 0; i--) {
-      const p = petals[i];
+    for (var i = petals.length - 1; i >= 0; i--) {
+      var p = petals[i];
       p.wobble += p.wobbleSpeed;
       p.scalePhase += p.scaleSpeed;
-      p.x += (p.speedX + windGust) + Math.sin(p.wobble) * p.wobbleAmp;
+      p.x += (p.speedX - windGust) + Math.sin(p.wobble) * p.wobbleAmp; // 左方向
       p.y += p.speedY + Math.cos(p.wobble) * 0.5;
       p.rotation += p.rotSpeed + windGust * 0.01;
 
-      if (p.y > H + 30 || p.x > W + 50) {
-        // バースト後は花びらを減らしていく
+      if (p.y > H + 30 || p.x < -50) {
         if (petals.length > currentMax) {
           petals.splice(i, 1);
         } else {
@@ -306,14 +265,8 @@
 
   function draw() {
     ctx.clearRect(0, 0, W, H);
-
-    // 木（キャッシュを描画）
-    if (treeCanvas) {
-      ctx.drawImage(treeCanvas, 0, 0);
-    }
-
-    // 花びら
-    for (const p of petals) drawPetal(p);
+    if (treeCanvas) ctx.drawImage(treeCanvas, 0, 0);
+    for (var i = 0; i < petals.length; i++) drawPetal(petals[i]);
   }
 
   function animate() {

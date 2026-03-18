@@ -28,10 +28,9 @@
     treeCanvas.height = H;
     const c = treeCanvas.getContext('2d');
 
-    // 右端に見切れる桜の木
-    // 幹は画面右80%あたり、やや左に傾いて上に伸びる
-    var trunkX = W * 0.82;
-    var trunkLen = H * 0.28;
+    // 右端に見切れる桜の木（大きくズーム）
+    var trunkX = W * 0.88;
+    var trunkLen = H * 1.2;
 
     // 幹（太い曲線で描く）
     drawTrunk(c, trunkX, H + 10, trunkLen);
@@ -47,8 +46,8 @@
     var cp2y = y - length * 0.7;
 
     // 幹の太さ（下が太く上が細い）
-    var widthBottom = 18;
-    var widthTop = 8;
+    var widthBottom = 55;
+    var widthTop = 22;
 
     c.save();
     c.fillStyle = '#5a3a2a';
@@ -85,7 +84,7 @@
     var endX = x + Math.cos(angle) * length;
     var endY = y + Math.sin(angle) * length;
 
-    var thickness = Math.max(1, (maxDepth - depth + 1) * 1.6);
+    var thickness = Math.max(2, (maxDepth - depth + 1) * 4);
     c.save();
     c.strokeStyle = depth < 2 ? '#5a3a2a' : depth < 4 ? '#7a5040' : '#8a6050';
     c.lineWidth = thickness;
@@ -115,7 +114,7 @@
     for (var i = 0; i < count; i++) {
       var bx = x + (Math.random() - 0.5) * radius * 2.5;
       var by = y + (Math.random() - 0.5) * radius * 2.5;
-      var r = 3 + Math.random() * 5;
+      var r = 6 + Math.random() * 10;
       drawFlower(c, bx, by, r);
     }
   }
@@ -147,7 +146,7 @@
 
   // ========== 花びら（強風） ==========
   var PETAL_NORMAL = 50;
-  var PETAL_BURST = 200;
+  var PETAL_BURST = 500;
   var petals = [];
 
   var burstPhase = true;

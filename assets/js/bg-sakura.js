@@ -28,12 +28,12 @@
     treeCanvas.height = H;
     const c = treeCanvas.getContext('2d');
 
-    // 右端に見切れる桜の木（大きくズーム）
-    var trunkX = W * 0.88;
-    var trunkLen = H * 1.2;
+    // 右端に見切れる桜の木（超ズーム：上も右も見切れる）
+    var trunkX = W * 0.92;
+    var trunkLen = H * 2.5;
 
     // 幹（太い曲線で描く）
-    drawTrunk(c, trunkX, H + 10, trunkLen);
+    drawTrunk(c, trunkX, H + 60, trunkLen);
   }
 
   function drawTrunk(c, x, y, length) {
@@ -46,8 +46,8 @@
     var cp2y = y - length * 0.7;
 
     // 幹の太さ（下が太く上が細い）
-    var widthBottom = 55;
-    var widthTop = 22;
+    var widthBottom = 90;
+    var widthTop = 40;
 
     c.save();
     c.fillStyle = '#5a3a2a';
@@ -179,7 +179,7 @@
 
     return {
       x: sx, y: sy,
-      size: 5 + Math.random() * 10,
+      size: 10 + Math.random() * 18,
       speedY: 0.3 + Math.random() * 1.0,
       speedX: -1.5 - Math.random() * 2.5, // 左方向へ吹く
       rotation: Math.random() * Math.PI * 2,

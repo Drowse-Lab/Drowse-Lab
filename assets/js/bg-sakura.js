@@ -98,9 +98,8 @@
     // ctxを一時差し替え
     Object.defineProperty(window, '__sakuraCtx', { value: tCtx, writable: true });
 
-    drawTreeOn(tCtx, W * 0.08, H, -Math.PI / 2 + 0.15, H * 0.18, 7);
-    // 右側の木
-    drawTreeOn(tCtx, W * 0.92, H, -Math.PI / 2 - 0.15, H * 0.16, 7);
+    // 右端から見切れる桜の木（幹が右端、枝が左に広がる）
+    drawTreeOn(tCtx, W + 15, H, -Math.PI / 2 - 0.2, H * 0.22, 8);
   }
 
   function drawTreeOn(c, x, y, angle, length, maxDepth) {
@@ -193,20 +192,15 @@
   }
 
   function createPetal(startFromTop) {
-    // 木の近くから花びらを発生させることもある
+    // 右端の木の付近から花びらを発生させることもある
     const fromTree = Math.random() < 0.4;
     let sx, sy;
-    if (fromTree && !startFromTop) {
-      // 左右の木の上部付近から
-      if (Math.random() < 0.5) {
-        sx = W * 0.08 + (Math.random() - 0.5) * W * 0.12;
-      } else {
-        sx = W * 0.92 + (Math.random() - 0.5) * W * 0.12;
-      }
-      sy = H * 0.15 + Math.random() * H * 0.35;
+    if (fromTree) {
+      sx = W * 0.85 + Math.random() * W * 0.2;
+      sy = H * 0.1 + Math.random() * H * 0.4;
     } else {
-      sx = startFromTop ? -20 - Math.random() * 40 : Math.random() * W;
-      sy = startFromTop ? Math.random() * H * 0.5 : Math.random() * H;
+      sx = startFromTop ? Math.random() * W : Math.random() * W;
+      sy = startFromTop ? -20 - Math.random() * 60 : Math.random() * H;
     }
 
     return {

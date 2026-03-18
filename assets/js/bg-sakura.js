@@ -46,8 +46,8 @@
     var cp2y = y - length * 0.7;
 
     // 幹の太さ（下が太く上が細い）
-    var widthBottom = 90;
-    var widthTop = 40;
+    var widthBottom = 50;
+    var widthTop = 20;
 
     c.save();
     c.fillStyle = '#5a3a2a';
@@ -62,20 +62,19 @@
     c.fill();
     c.restore();
 
-    // 枝を生やす（幹の途中と先端から）
-    drawBranchesFrom(c, topX, topY, -Math.PI / 2 - 0.3, length * 0.55, 0, 6);  // 左上に大きく
-    drawBranchesFrom(c, topX, topY, -Math.PI / 2 + 0.2, length * 0.4, 0, 5);   // 右上（見切れる側）
+    // 幹の先端から枝（左上へ大きく広がる）
+    drawBranchesFrom(c, topX, topY, -Math.PI / 2 - 0.4, length * 0.5, 0, 6);
+    drawBranchesFrom(c, topX, topY, -Math.PI / 2 + 0.3, length * 0.35, 0, 5);
 
-    // 幹の途中から枝
-    var midX = (x + topX) * 0.5 + 5;
-    var midY = (y + topY) * 0.5;
-    drawBranchesFrom(c, midX, midY, -Math.PI / 2 - 0.6, length * 0.45, 0, 6);  // 左に大きく伸びる
-    drawBranchesFrom(c, midX + 15, midY + 30, -Math.PI / 2 + 0.4, length * 0.35, 0, 5); // 右へ（見切れ）
+    // 幹の上部(70%)から左に1本
+    var upX = x + (topX - x) * 0.7;
+    var upY = y + (topY - y) * 0.7;
+    drawBranchesFrom(c, upX, upY, -Math.PI / 2 - 0.7, length * 0.4, 0, 6);
 
-    // 下の方からも1本
-    var lowX = x - 3;
-    var lowY = y - length * 0.3;
-    drawBranchesFrom(c, lowX, lowY, -Math.PI / 2 - 0.8, length * 0.35, 0, 5);
+    // 幹の中間(45%)から左に1本
+    var midX = x + (topX - x) * 0.45;
+    var midY = y + (topY - y) * 0.45;
+    drawBranchesFrom(c, midX, midY, -Math.PI / 2 - 0.9, length * 0.3, 0, 5);
   }
 
   function drawBranchesFrom(c, x, y, angle, length, depth, maxDepth) {
@@ -84,7 +83,7 @@
     var endX = x + Math.cos(angle) * length;
     var endY = y + Math.sin(angle) * length;
 
-    var thickness = Math.max(2, (maxDepth - depth + 1) * 4);
+    var thickness = Math.max(1.5, (maxDepth - depth + 1) * 2.5);
     c.save();
     c.strokeStyle = depth < 2 ? '#5a3a2a' : depth < 4 ? '#7a5040' : '#8a6050';
     c.lineWidth = thickness;

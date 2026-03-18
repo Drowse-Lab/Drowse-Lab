@@ -28,9 +28,9 @@
     treeCanvas.height = H;
     const c = treeCanvas.getContext('2d');
 
-    // 右端に見切れる桜の木（花の部分が画面上部で見切れる）
+    // 右端に見切れる桜の木（花が画面右上に見え、一部が上と右で見切れる）
     var trunkX = W * 0.92;
-    var trunkLen = H * 0.75;
+    var trunkLen = H * 0.55;
 
     // 幹（太い曲線で描く）
     drawTrunk(c, trunkX, H + 60, trunkLen);

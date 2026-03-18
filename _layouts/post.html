@@ -1,6 +1,26 @@
 ---
 layout: default
 ---
+{% if page.blog_bg == "sakura" %}
+<style>body { background: linear-gradient(180deg, #ffe4ec 0%, #fff5f7 40%, #ffffff 100%) fixed; }</style>
+<script src="{{ '/assets/js/bg-sakura.js' | relative_url }}" defer></script>
+{% elsif page.blog_bg == "snow" %}
+<style>body { background: linear-gradient(180deg, #d0dce8 0%, #e8eef5 30%, #f5f7fa 100%) fixed; }</style>
+<script src="{{ '/assets/js/bg-snow.js' | relative_url }}" defer></script>
+{% elsif page.blog_bg == "autumn" %}
+<style>body { background: linear-gradient(180deg, #f5e6d0 0%, #faf2e8 40%, #ffffff 100%) fixed; }</style>
+<script src="{{ '/assets/js/bg-autumn.js' | relative_url }}" defer></script>
+{% elsif page.blog_bg == "firefly" %}
+<style>body { background: linear-gradient(180deg, #0a1628 0%, #162040 40%, #1a1a2e 100%) fixed; color: #d0d0d0; }
+.post-header .title, .post-meta, .post-content { color: #e0e0e0; }
+.post-content a { color: #7dafea; }</style>
+<script src="{{ '/assets/js/bg-firefly.js' | relative_url }}" defer></script>
+{% elsif page.blog_bg == "rain" %}
+<style>body { background: linear-gradient(180deg, #8a9bae 0%, #b0bec5 30%, #cfd8dc 100%) fixed; }</style>
+<script src="{{ '/assets/js/bg-rain.js' | relative_url }}" defer></script>
+{% endif %}
+<!-- 夜間(18:00〜5:59)は自動で夜空+星+流れ星 -->
+<script src="{{ '/assets/js/bg-night-auto.js' | relative_url }}" defer></script>
 <div class="post">
 
 <div class="post-header-container {% if page.cover %}has-cover{% endif %}" {% if page.cover %}style="background-image: url({{ page.cover | prepend: site.baseurl }});"{% endif %}>

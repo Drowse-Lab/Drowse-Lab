@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const membersDiv = document.getElementById('members');
     try {
-        const response = await fetch('assets/data/members.json');
+        const response = await fetch('/Drowse-Lab/assets/data/members.json');
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const members = await response.json();
 

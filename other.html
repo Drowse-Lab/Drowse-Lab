@@ -1,7 +1,7 @@
 ---
 layout: page
 title: その他の機能
-permalink: /other.html
+permalink: /other/
 hide_title: true
 ---
 
@@ -12,7 +12,7 @@ hide_title: true
     <p data-i18n="other.description">便利なツールと機能を提供しています。</p>
     
     <div class="features-grid">
-        <a href="/Drowse-Lab/encrypt.html" class="feature-card encrypt-card">
+        <a href="{{ '/encrypt/' | relative_url }}" class="feature-card encrypt-card">
             <div class="feature-icon">🔐</div>
             <div class="feature-title" data-i18n="other.encryptFile">ファイルを暗号化</div>
             <div class="feature-description" data-i18n="other.encryptDescription">ファイルを安全に暗号化・復号化します</div>
@@ -24,7 +24,7 @@ hide_title: true
             </div>
         </a>
         
-        <a href="/Drowse-Lab/download.html" class="feature-card download-card">
+        <a href="{{ '/download/' | relative_url }}" class="feature-card download-card">
             <div class="feature-icon">⬇️</div>
             <div class="feature-title" data-i18n="other.downloadFile">ファイルダウンロード</div>
             <div class="feature-description" data-i18n="other.downloadDescription">URLからファイルをダウンロードします</div>
@@ -69,7 +69,7 @@ hide_title: true
 <!-- フッターナビゲーション -->
 <nav class="footer-nav">
     <ul>
-        <li><a href="/Drowse-Lab/contactpolicy.html" data-i18n="footer.contactPolicy">お問い合わせ・ポリシー</a></li>
+        <li><a href="{{ '/contactpolicy/' | relative_url }}" data-i18n="footer.contactPolicy">お問い合わせ・ポリシー</a></li>
         <li class="divider"></li>
         <li><button id="langToggleBottom" class="lang-toggle-bottom">Language</button></li>
     </ul>

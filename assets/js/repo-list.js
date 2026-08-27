@@ -7,9 +7,9 @@ let issuesMap = {};
 
 // まとめてロード
 Promise.all([
-  fetch("assets/data/theme-list.json").then(res => res.json()).catch(() => []),
-  fetch("assets/data/languages.json").then(res => res.json()).catch(() => ({})),
-  fetch("assets/data/issues.json").then(res => res.json()).catch(() => ({}))
+  fetch("/Drowse-Lab/assets/data/theme-list.json").then(res => res.json()).catch(() => []),
+  fetch("/Drowse-Lab/assets/data/languages.json").then(res => res.json()).catch(() => ({})),
+  fetch("/Drowse-Lab/assets/data/issues.json").then(res => res.json()).catch(() => ({}))
 ]).then(([themeList, languagesJson, issuesJson]) => {
   themeMap = Object.fromEntries(themeList.map(item => [item.repo, item.img]));
   languagesMap = languagesJson;
@@ -18,7 +18,7 @@ Promise.all([
 });
 
 async function getThemeForRepo(repoName) {
-  const path = `assets/theme/${repoName}.md`;
+  const path = `/Drowse-Lab/assets/theme/${repoName}.md`;
   try {
     const res = await fetch(path);
     if (!res.ok) return "default";
@@ -31,7 +31,7 @@ async function getThemeForRepo(repoName) {
 }
 async function fetchRepos() {
   try {
-    const response = await fetch("assets/data/repos.json");
+    const response = await fetch("/Drowse-Lab/assets/data/repos.json");
     if (!response.ok) {
       throw new Error(`Error fetching repos: ${response.statusText}`);
     }

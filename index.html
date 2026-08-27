@@ -13,7 +13,7 @@
             position: fixed;
             top: 20px;
             right: 20px;
-            background-color: #007bff;
+            background-color: #111;
             color: white;
             padding: 10px 20px;
             border: none;
@@ -23,7 +23,7 @@
             z-index: 1000;
         }
         .lang-toggle:hover {
-            background-color: #0056b3;
+            background-color: #444;
         }
     </style>
 </head>
@@ -31,46 +31,70 @@
 <body>
     <nav>
         <ul>
-            <li><a href="index.html" data-i18n="nav.home">ホーム</a></li>
-            <li><a href="blog.html" data-i18n="nav.blog">ブログ</a></li>
-            <li><a href="contributors.html" data-i18n="nav.members">メンバー紹介</a></li>
-            <li><a href="repo-list.html" data-i18n="nav.repositories">リポジトリ紹介</a></li>
-            <li><a href="other.html" data-i18n="nav.other">その他</a></li>
+            <li><a href="/Drowse-Lab/" data-i18n="nav.home">ホーム</a></li>
+            <li><a href="/Drowse-Lab/blog/" data-i18n="nav.blog">ブログ</a></li>
+            <li><a href="/Drowse-Lab/contributors/" data-i18n="nav.members">メンバー紹介</a></li>
+            <li><a href="/Drowse-Lab/repo-list/" data-i18n="nav.repositories">リポジトリ紹介</a></li>
+            <li><a href="/Drowse-Lab/other/" data-i18n="nav.other">その他</a></li>
         </ul>
     </nav>
 
-    <h1 data-i18n="home.welcome">ようこそ、Drowse Labへ</h1>
-    <h2 data-i18n="home.about">このOrganizationについて</h2>
-    <p data-i18n="home.aboutText1">Drowse Labは、minecraft mod,webを開発をするOrganizationです。</p>
-    <p data-i18n="home.aboutText2">このOrganizationは会社ではなく同好会です。</p>
+    <main class="club-home">
+        <section class="club-hero">
+            <p class="club-label">開発同好会</p>
+            <h1>Drowse Lab</h1>
+            <p class="club-lead" data-i18n="home.aboutText1">Minecraft MODやWebサイトなどを、興味のあるメンバーで作っています。</p>
+            <p data-i18n="home.aboutText2">会社やサービスではなく、ものづくりを楽しむための同好会です。</p>
+        </section>
 
-    <h2 data-i18n="home.features">機能一覧</h2>
-    <ul>
-        <li data-i18n="home.featureBlog"><strong>ブログ機能</strong>: 今日の更新内容やふざけた内容のblogを投稿しています。</li>
-        <li data-i18n="home.featureMembers"><strong>メンバー一覧</strong>: このOrganizationのメンバー一覧が載っています。</li>
-    </ul>
+        <section class="club-section">
+            <h2 data-i18n="home.features">活動を見る</h2>
+            <div class="club-links">
+                <a href="/Drowse-Lab/blog/">
+                    <span data-i18n="nav.blog">ブログ</span>
+                    <small>活動記録やメンバーの投稿</small>
+                </a>
+                <a href="/Drowse-Lab/contributors/">
+                    <span data-i18n="nav.members">メンバー紹介</span>
+                    <small>一緒に活動しているメンバー</small>
+                </a>
+                <a href="/Drowse-Lab/repo-list/">
+                    <span data-i18n="nav.repositories">リポジトリ紹介</span>
+                    <small>制作中・公開中のプロジェクト</small>
+                </a>
+            </div>
+        </section>
 
-    <h2 data-i18n="home.purpose">このOrganizationを作った目的</h2>
-    <p data-i18n="home.purposeText1">Drowse Labの目的は、開発を通して知人を作り交流を深め、開発などを楽しむことを目的にしています。</p>
-    <p data-i18n="home.purposeText2">開発以外にも動画編集、グラフィックデザインなどをできる方も歓迎しています。</p>
+        <section class="club-section club-text-section">
+            <h2 data-i18n="home.purpose">このOrganizationを作った目的</h2>
+            <p data-i18n="home.purposeText1">Drowse Labの目的は、開発を通して知人を作り交流を深め、開発などを楽しむことを目的にしています。</p>
+            <p data-i18n="home.purposeText2">開発以外にも動画編集、グラフィックデザインなどをできる方も歓迎しています。</p>
+        </section>
 
-    <h2 data-i18n="home.contribution">コントリビューション</h2>
-    <p data-i18n="home.contributionText">Drowse Labへの貢献を歓迎します！バグの報告や新機能の提案、コードの改善など、さまざまな方法で貢献できます。</p>
-    <ul>
-        <li data-i18n="home.contributionStep1">リポジトリをフォークする</li>
-        <li data-i18n="home.contributionStep2">新しいブランチを作成する</li>
-        <li data-i18n="home.contributionStep3">変更をコミットする</li>
-        <li data-i18n="home.contributionStep4">プルリクエストを作成する</li>
-    </ul>
+        <section class="club-section club-text-section">
+            <h2 data-i18n="home.contribution">コントリビューション</h2>
+            <p data-i18n="home.contributionText">Drowse Labへの貢献を歓迎します！バグの報告や新機能の提案、コードの改善など、さまざまな方法で貢献できます。</p>
+            <p class="club-github"><span data-i18n="home.moreInfo">Drowse Labに関する詳細情報や最新の更新情報については、</span><a href="https://github.com/Drowse-Lab" data-i18n="home.github">GitHub</a><span data-i18n="home.visitSite">をご覧ください。</span></p>
+        </section>
 
-    <h2 data-i18n="home.license">ライセンス</h2>
-    <!-- <p>このプロジェクトはMITライセンスの下で提供されています。詳細については、<a href="LICENSE">LICENSE</a>ファイルを参照してください。</p> -->
-
-    <p><span data-i18n="home.moreInfo">Drowse Labに関する詳細情報や最新の更新情報については、</span><a href="https://github.com/Drowse-Lab" data-i18n="home.github">GitHub</a><span data-i18n="home.visitSite">をご覧ください。</span></p>
+        <section class="club-section club-social">
+            <h2>SNS</h2>
+            <div class="club-social__links">
+                <a href="https://www.instagram.com/drowse_lab/" target="_blank" rel="noopener noreferrer">
+                    <span>Instagram</span>
+                    <small>@drowse_lab</small>
+                </a>
+                <a href="https://x.com/Drowse_Lab" target="_blank" rel="noopener noreferrer">
+                    <span>X / Twitter</span>
+                    <small>@Drowse_Lab</small>
+                </a>
+            </div>
+        </section>
+    </main>
     <!-- フッターナビゲーション -->
     <nav class="footer-nav">
         <ul>
-            <li><a href="/Drowse-Lab/contactpolicy.html" data-i18n="footer.contactPolicy">お問い合わせ・ポリシー</a></li>
+            <li><a href="/Drowse-Lab/contactpolicy/" data-i18n="footer.contactPolicy">お問い合わせ・ポリシー</a></li>
             <li class="divider"></li>
             <li><button id="langToggleBottom" class="lang-toggle-bottom">Language</button></li>
         </ul>

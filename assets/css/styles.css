@@ -1,6 +1,9 @@
 /* 定義されないもののUI */
 body {
-    font-family: Arial, sans-serif;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Yu Gothic UI", "Yu Gothic", sans-serif;
+    color: #111;
+    font-weight: 400;
+    letter-spacing: .01em;
     line-height: 1.6;
     margin: 0;
     padding: 0;
@@ -39,12 +42,12 @@ nav ul li a {
 }
 
 nav ul li a:hover {
-    color: #ffeb3b; /* ホバー時の文字色変更 */
+    color: #cfcfcf;
 }
 
 /* Language toggle button in top navigation */
 nav ul li .lang-toggle {
-    background-color: #007BFF;
+    background-color: #111;
     color: white;
     padding: 5px 15px;
     border: none;
@@ -55,7 +58,7 @@ nav ul li .lang-toggle {
 }
 
 nav ul li .lang-toggle:hover {
-    background-color: #0056b3;
+    background-color: #444;
 }
 
 /* フッターナビゲーション（下部） */
@@ -98,7 +101,7 @@ nav ul li .lang-toggle:hover {
 }
 
 .footer-nav ul li a:hover {
-    color: #007bff;
+    color: #000;
 }
 
 .footer-nav .divider {
@@ -151,6 +154,163 @@ a {
   padding-left: 2%;
 }
 /* ここまで定義されないもののUI */
+
+/* 同好会トップページ */
+.club-home {
+    width: min(880px, calc(100% - 40px));
+    margin: 0 auto 100px;
+    color: #111;
+}
+
+.club-home h1,
+.club-home h2,
+.club-home p,
+.club-home a {
+    padding-left: 0;
+}
+
+.club-hero {
+    padding: clamp(72px, 13vw, 140px) 0 clamp(60px, 10vw, 100px);
+    border-bottom: 1px solid #111;
+}
+
+.club-label {
+    margin: 0 0 24px;
+    color: #555;
+    font-size: .85rem;
+    font-weight: 600;
+    letter-spacing: .12em;
+}
+
+.club-hero h1 {
+    margin: 0 0 36px;
+    text-align: left;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: clamp(2.8rem, 7vw, 5rem);
+    font-weight: 620;
+    line-height: 1.05;
+    letter-spacing: -.045em;
+}
+
+.club-lead {
+    max-width: 680px;
+    margin-bottom: 12px;
+    font-size: clamp(1.1rem, 2.2vw, 1.35rem);
+    font-weight: 500;
+    line-height: 1.8;
+}
+
+.club-section {
+    padding: 56px 0;
+    border-bottom: 1px solid #d8d8d8;
+}
+
+.club-section h2 {
+    margin: 0 0 28px;
+    font-size: clamp(1.35rem, 3vw, 1.8rem);
+    font-weight: 650;
+    letter-spacing: -.02em;
+}
+
+.club-links {
+    border-top: 1px solid #111;
+}
+
+.club-links a {
+    display: grid;
+    grid-template-columns: minmax(160px, .45fr) 1fr;
+    gap: 24px;
+    align-items: baseline;
+    padding: 22px 4px !important;
+    border-bottom: 1px solid #bbb;
+    color: #111;
+    text-decoration: none;
+    transition: padding .2s, background-color .2s;
+}
+
+.club-links a:hover {
+    padding-left: 14px !important;
+    background: #f4f4f4;
+}
+
+.club-links span {
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.club-links small {
+    color: #666;
+    font-size: .9rem;
+}
+
+.club-text-section p {
+    max-width: 720px;
+    margin: 0 0 12px;
+}
+
+.club-github a {
+    color: #111;
+    font-weight: 700;
+    text-underline-offset: 3px;
+}
+
+.club-social__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 32px;
+}
+
+.club-social__links a {
+    display: inline-flex;
+    gap: 10px;
+    align-items: baseline;
+    padding: 4px 0 !important;
+    border-bottom: 1px solid #111;
+    color: #111;
+    text-decoration: none;
+}
+
+.club-social__links a:hover {
+    border-bottom-color: #888;
+    color: #555;
+}
+
+.club-social__links span {
+    font-weight: 700;
+}
+
+.club-social__links small {
+    color: #666;
+}
+
+@media (max-width: 760px) {
+    nav {
+        overflow-x: auto;
+    }
+
+    nav ul {
+        justify-content: flex-start;
+        width: max-content;
+        padding: 6px 10px;
+    }
+
+    .club-home {
+        width: min(100% - 32px, 880px);
+    }
+
+    .club-hero {
+        padding: 72px 0 56px;
+    }
+
+.club-links a {
+        grid-template-columns: 1fr;
+        gap: 5px;
+    }
+
+    .club-section {
+        padding: 42px 0;
+    }
+}
 
 /* comntributorsの見た目 */
 .member nav ul {
@@ -273,14 +433,14 @@ a {
 /* リポジトリ名のスタイル */
 .repo h3 {
     margin: 0;
-    color: #007bff; /* 青色 */
+    color: #111;
     font-size: 120%; 
     text-decoration: none;
 }
 
 /* 特定リポジトリをハイライト */
 .repo.highlight {
-    background-color: #ffeb3b; 
+    background-color: #ddd;
 }
 
 /* GitHubリンクのスタイル */
@@ -288,7 +448,7 @@ a {
     display: inline-block;
     margin-top: 5%; 
     text-decoration: none;
-    color: #007bff;
+    color: #111;
 }
 
 .repo a:hover {
@@ -327,7 +487,7 @@ a {
 .post-card h2 {
   font-size: 1.5em;
   font-weight: bold;
-  color: #26a69a; /* 緑系 */
+  color: #111;
   margin-bottom: 0.3em;
 }
 
@@ -445,7 +605,7 @@ pre {
   width: 90%;
   margin: 2% auto;
   font-family: monospace;
-  background: #1e1e2e;
+  background: #171717;
   border-radius: 5px;
   overflow: hidden;
 }
@@ -454,18 +614,18 @@ pre {
 .code-box-bottom {
   display: flex;
   justify-content: space-between;
-  background: #2a2a3f;
-  color: #a0a0b0;
+  background: #292929;
+  color: #aaa;
   padding: 0.5% 1%;
 }
 
 .code-box-top .label {
   font-weight: bold;
-  color: #ffd700;
+  color: #fff;
 }
 
 .copy-btn {
-  background: #3a3a5a;
+  background: #3a3a3a;
   border: none;
   color: white;
   padding: 0.3em 0.8em;
@@ -474,12 +634,12 @@ pre {
 }
 
 .copy-btn:hover {
-  background: #505072;
+  background: #505050;
 }
 
 .code-box-middle {
-  background: #1e1e2e;
-  color: #e0e0e8;
+  background: #171717;
+  color: #e0e0e0;
   padding: 1% 2%;
   max-height: 60vh;
   overflow-y: auto;
@@ -491,7 +651,7 @@ pre {
 
 .code-box-bottom .filler {
   flex-grow: 1;
-  border-bottom: 1px solid #2a2a3f;
+  border-bottom: 1px solid #292929;
   margin: 0 0.5%;
 }
 
@@ -643,9 +803,9 @@ pre {
 }
 
 .filter-button.active {
-  background: #007aff;
+  background: #111;
   color: #fff;
-  border-color: #007aff;
+  border-color: #111;
 }
 /* 一応フィルター枠内の（この後もだけど） */
 
@@ -720,7 +880,7 @@ pre {
 }
 
 .month-button.active {       /* ← 末尾のカンマ削除 */
-  background-color: #3f51b5;
+  background-color: #111;
   color: white;
   font-weight: bold;
 }
@@ -765,7 +925,7 @@ pre {
 }
 
 .day-button.active {
-  background-color: #3f51b5;
+  background-color: #111;
   color: white;
 }
 /* ここまで日付やで〜 */

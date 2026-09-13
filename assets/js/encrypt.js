@@ -166,16 +166,31 @@ function downloadFile(data, filename) {
     }, 100);
 }
 
-// メッセージを表示
+// エラーは次の操作まで残し、前の通知のタイマーで消えないようにする。
+let messageTimer;
 function showMessage(message, type) {
+    clearTimeout(messageTimer);
     statusMessage.textContent = message;
     statusMessage.className = 'status-message ' + type;
     statusMessage.style.display = 'block';
-    
-    // 5秒後に自動的に非表示
-    setTimeout(() => {
-        statusMessage.style.display = 'none';
-    }, 5000);
+
+    if (type !== 'error') {
+        messageTimer = setTimeout(() => {
+            statusMessage.style.display = 'none';
+        }, 5000);
+    }
+}
+
+function getCryptoErrorMessage(error, operation) {
+    if (operation === 'decrypt' && error?.name === 'OperationError') {
+        return '復号できませんでした。パスワードが暗号化時と異なるか、ファイルが破損・変更されている可能性があります。暗号化時のパスワードと元の暗号化ファイルを確認してください。';
+    }
+    if (operation === 'decrypt' && (error?.name === 'SyntaxError' || error?.name === 'RangeError')) {
+        return '暗号化ファイルの形式を読み取れませんでした。このツールで暗号化したファイルか、ファイルが途中で切れていないか確認してください。';
+    }
+    const action = operation === 'decrypt' ? '復号化' : '暗号化';
+    const detail = error?.message?.trim() || error?.name || '原因の詳細を取得できませんでした。';
+    return action + '中にエラーが発生しました: ' + detail;
 }
 
 // 暗号化設定のデフォルト値
@@ -481,7 +496,7 @@ document.addEventListener('DOMContentLoaded', () => {
             downloadFile(encrypted, selectedFile.name + '.encrypted');
             showMessage('ファイルが正常に暗号化されました（設定適用済み）', 'success');
         } catch (error) {
-            showMessage('暗号化中にエラーが発生しました: ' + error.message, 'error');
+            showMessage(getCryptoErrorMessage(error, 'encrypt'), 'error');
         }
         });
     }
@@ -512,7 +527,7 @@ document.addEventListener('DOMContentLoaded', () => {
             downloadFile(decrypted, originalName);
             showMessage('ファイルが正常に復号化されました', 'success');
         } catch (error) {
-            showMessage('復号化中にエラーが発生しました: ' + error.message, 'error');
+            showMessage(getCryptoErrorMessage(error, 'decrypt'), 'error');
         }
         });
     }

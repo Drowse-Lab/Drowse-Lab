@@ -36,7 +36,7 @@ hide_title: true
         <button class="btn btn-secondary" id="decryptBtn" disabled data-i18n="encrypt.decrypt">復号化</button>
     </div>
 
-    <div class="status-message" id="statusMessage"></div>
+    <div class="status-message" id="statusMessage" role="status" aria-live="polite"></div>
 
     <div class="settings-section">
         <h2 data-i18n="encrypt.settings">暗号化設定</h2>
@@ -105,16 +105,6 @@ hide_title: true
     </div>
 </div>
 
-  <script src="/Drowse-Lab/assets/js/language.js" defer></script>
-<script src="/Drowse-Lab/assets/js/footer-nav.js" defer></script>
-  
-<nav class="footer-nav">
-    <ul>
-        <li><a href="{{ '/contactpolicy/' | relative_url }}" data-i18n="footer.contactPolicy">お問い合わせ・ポリシー</a></li>
-        <li class="divider"></li>
-        <li><button id="langToggleBottom" class="lang-toggle-bottom">Language</button></li>
-    </ul>
-</nav>
 <script src="/Drowse-Lab/assets/js/encrypt.js" defer></script>
 <script src="/Drowse-Lab/scripts/manifest-loader.js"></script>
 
